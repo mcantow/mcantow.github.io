@@ -1,1 +1,75 @@
-<h1>Hello, World!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Michael Cantow</title>
+    <link rel="icon" href="img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="css/main.css">
+    <script src="js/main.js"></script>
+</head>
+<body>
+    <header>
+        <div class="video-container">
+            <video autoplay muted loop id="background-video">
+                <source src="video/background2.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <!-- <div class="overlay"></div> -->
+        </div>
+        <nav>
+            <div class="logo">Michael Cantow</div>
+            <ul>
+                <li><a href="#about">Home</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#ex">Experience</a></li>
+                <li><a href="#edu">Quotes</a></li>
+                <li><a href="#contact">Connect</a></li>
+            </ul>
+        </nav>
+        <div class="header-content">
+            <h1>High Tech Entrepreneur</h1>
+            <p>Blending multifaceted expertise to build tomorrow's solutions</p>
+        </div>
+    </header>
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Hello! I'm [Your Name], a [Your Profession]. Welcome to my personal website.</p>
+        </section>
+        <section id="portfolio">
+            <h2>Portfolio</h2>
+            <div class="gallery">
+                <!-- Add your portfolio items here -->
+                <div class="portfolio-item">
+                    <img src="path/to/image1.jpg" alt="Project 1">
+                    <p>Project 1 Description</p>
+                </div>
+                <div class="portfolio-item">
+                    <img src="path/to/image2.jpg" alt="Project 2">
+                    <p>Project 2 Description</p>
+                </div>
+            </div>
+        </section>
+        <section id="contact">
+            <h2>Contact</h2>
+            <form id="contact-form">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="message">Message:</label>
+                <textarea id="message" name="message" required></textarea>
+                
+                <button type="submit">Send</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Michael Cantow</p>
+    </footer>
+    <script src="scripts.js"></script>
+</body>
+</html>
