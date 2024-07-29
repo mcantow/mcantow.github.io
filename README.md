@@ -2,6 +2,8 @@
 
 This repository contains the code for my personal resume website, a simple and fully serverless single-page application (SPA) built with vanilla HTML, CSS, and JavaScript. The site is deployed using GitHub Pages and enhanced with Cloudflare services for performance and security.
 
+My goal with this project is to keep the implementation as simple as possible, so that a non technical person could feasibly fork my repo and build their own personal website! 
+
 ## Architecture
 
 ### GitHub Pages and Cloudflare
@@ -50,7 +52,7 @@ async function handleRequest(request) {
 }
 ```
 
-## Notes
+## Notes, Enhancement Opportunities
 
 ### Jekyll Integration
 [Jekyll](https://jekyllrb.com/) is a popular static site generator that easily integrates into this deployment architecture. For a larger-scale personal site, you may want to consider using Jekyll to manage your content more efficiently.
