@@ -144,7 +144,7 @@ nav ul li a:hover{
     margin-top: 0px;
     opacity: 0;
     animation: fadeIn 1s forwards;
-    animation-delay: 0.5s;
+    animation-delay: 1s;
 }
 
 .header-content p {
@@ -152,7 +152,7 @@ nav ul li a:hover{
     margin-bottom: 0px;
     opacity: 0;
     animation: fadeIn 1s forwards;
-    animation-delay: 1.5s;
+    animation-delay: 2s;
 }
 
 @media (max-width: 768px ) {
