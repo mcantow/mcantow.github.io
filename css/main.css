@@ -309,6 +309,10 @@ header {
     .header-content p {
         font-size: 1.4em;
     }
+
+    .expandedNav a{
+        font-size: 1.3em;
+    }
 }
 
 main {
@@ -322,7 +326,7 @@ section {
 
 footer {
     background-color: var(--dBlue);
-    color: var(--green);
+    color: #71768B;
     text-align: center;
     padding: 1px 0;
     position: fixed;
