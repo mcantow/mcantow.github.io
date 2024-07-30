@@ -5,7 +5,8 @@
     --lav:#D1CCDC;
     --dBlue:#343B59;
     --lBlue:#2DC7FF;
-
+    --khaki:#C6AD94;
+    --green:#2CA6A4;
 
     --brown:#776D5A;
     --grey:#5AB1BB;
@@ -13,8 +14,7 @@
     --fs:1.5em;
     --plat:#D3D4D9;
     --red:#E54B4B;
-    --khaki:#C6AD94;
-    --green:#2CA6A4;
+
 }
 
 @keyframes fadeIn {
@@ -57,7 +57,7 @@ body{
 
 /* Scrollbar Thumb Hover */
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--brown);
+    background-color: var(--khaki);
     cursor: pointer;
 }
 
@@ -312,6 +312,19 @@ header {
 
     .expandedNav a{
         font-size: 1.3em;
+    }
+
+    .expandedNav  ul{
+        margin-left: 38px !important;
+    }
+
+    .topnavContainer svg{
+        width: 40px;
+        height: 40px;
+    }
+
+    .topnavContainer .logo{
+        font-size: 2em;
     }
 }
 
