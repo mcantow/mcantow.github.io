@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
     let expandedNavContainer = document.getElementById("expandedNavContainer")
     // open the nav menu
-    document.getElementById("burger").onclick = function(){
+    document.getElementById("topnavContainer").onclick = function(){
         expandedNavContainer.classList.add("expanded");
     };
     // close the nav menu

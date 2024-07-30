@@ -1,11 +1,20 @@
 :root{
-    --blue:#0366FF;
-    --tBlue:rgb(3, 102, 255, 0.1);
     --bg: #040404;
     --invbg:#fefefe;
+
+    --lav:#D1CCDC;
+    --dBlue:#343B59;
+    --lBlue:#2DC7FF;
+
+
+    --brown:#776D5A;
+    --grey:#5AB1BB;
+
     --fs:1.5em;
     --plat:#D3D4D9;
-    --red:#B02E0C;
+    --red:#E54B4B;
+    --khaki:#C6AD94;
+    --green:#2CA6A4;
 }
 
 @keyframes fadeIn {
@@ -27,7 +36,7 @@ body, html {
 }
 
 html{
-    background-color: var(--bg)!important;
+    background-color: var(--dBlue)!important;
 }
 
 body{
@@ -37,18 +46,18 @@ body{
 }
 /* Scrollbar Track */
 ::-webkit-scrollbar-track {
-    background-color:transparent !important;
+    background-color:var(--dBlue) !important;
 }
 
 /* Scrollbar Thumb */
 ::-webkit-scrollbar-thumb {
-    background-color: #888;
+    background-color: #71768B;
     border-radius: 5px;
 }
 
 /* Scrollbar Thumb Hover */
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
+    background-color: var(--brown);
     cursor: pointer;
 }
 
@@ -57,49 +66,41 @@ body{
     width: 10px; /* Set the width of the scrollbar */
 }
 
-#burger {
+.topnavContainer{
     position: fixed;
-    top: 0.8em;
-    right: 1.5em;
+    top: 0.5em;
+    left: 1em;
     cursor: pointer;
     z-index: 2;
-    background-color: var(--tBlue);
-    padding: 0em;
+    background-color: var(--bg);
+    padding: 0.2em 1em;
     border-radius: 0.2em;
-    z-index: 2;
-    box-shadow: 0 0 3px 0 var(--bg);
+    box-shadow: 0 0 3px 0 var(--invbg);
     transition: 0.3s all;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    z-index: 3;
 }
 
-#burger:hover{
+.topnavContainer:hover{
     box-shadow: 0 0 0.5em 0.2em var(--bg);
-    background-color: var(--blue);
+    background-color: var(--lBlue);
+}
+
+#burger{
+    margin-right: 10px;
 }
 
 .logo{
     box-sizing: border-box;
-    position: fixed;
-    top: 0.6em;
     color: var(--invbg);
     font-size: var(--fs);
-    box-shadow: 0 0 3px 0 var(--bg);
-    /* height: 2em; */
-    left: 1em;
-    background-color: var(--tBlue);
-    padding: 0.3em 0.6em;
-    border-radius: 0.2em;
-    z-index: 2;
     line-height: 1.5em;
-    transition: 0.3s all;
+    font-size: 2.2em;
 }
 
-.logo:hover{
-    box-shadow: 0 0 0.5em 0.2em var(--bg);
-    cursor: pointer;
-    background-color: var(--blue);
-    /* color: var(--blue); */
-}
 
 .logo img{
     width: 0.5em;
@@ -154,10 +155,10 @@ header {
     width: 80%;
     max-width: 240px;
     position: fixed;
-    background-color: var(--bg);
+    background-color: var(--dBlue);
     height: 100vh;
     top: 0px;
-    right: 0px;
+    left: 0px;
     z-index: 3;
     opacity: 0;
     visibility: hidden;
@@ -172,9 +173,9 @@ header {
 
 #closeExpandedNavSvg{
     position: absolute;
-    top: 1em;
-    right: 1.1em;
-    fill: var(--invbg);
+    top: 0.5em;
+    left: 33px;
+    fill: var(--red);
     width: 35px;
     height: 35px;
     padding: 0.3em;
@@ -182,10 +183,12 @@ header {
     cursor: pointer;
     /* background-color: var(--invbg);  */
     /* box-shadow: 0 0 0.2em 0.05em var(--invbg); */
+    transition: 0.5s all;
 }
 
 #closeExpandedNavSvg:hover{
     fill: var(--red);
+    rotate: 90deg;
 }
 
 
@@ -203,12 +206,12 @@ header {
 }
 
 .expandedNav a:hover{
-    color: var(--blue);
+    color: var(--lBlue);
     cursor: pointer;
 }
 
 .expandedNav a.active{
-    color: var(--blue);
+    color: var(--lBlue);
 }
 
 .expandedNav svg{
@@ -222,7 +225,8 @@ header {
 }
 
 .expandedNav li{
-    padding-bottom: 1.5em;
+    padding-bottom: 0.7em;
+    list-style: none;
 }
 
 
@@ -237,6 +241,8 @@ header {
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .header-content h1 {
@@ -245,7 +251,7 @@ header {
     margin-top: 0px;
     opacity: 0;
     animation: fadeIn 1s forwards;
-    animation-delay: 1s;
+    animation-delay: 0.5s;
     
 }
 
@@ -254,8 +260,45 @@ header {
     margin-bottom: 0px;
     opacity: 0;
     animation: fadeIn 1s forwards;
-    animation-delay: 2s;
+    animation-delay: 1.5s;
+    margin-top: 0px;
 }
+
+.header-content .contactMe{
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    animation-delay: 2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 250px;
+    margin: 2em auto 0 auto;
+    cursor: pointer;
+}
+
+.header-content .contactMe svg{
+    width: 25px;
+    height: 25px;
+}
+
+.header-content .contactMe:hover svg{
+    fill: var(--lBlue);
+}
+
+.header-content img {
+    font-size: 1.4em;
+    margin-bottom: 0px;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    animation-delay: 0.3s;
+    width: 150px;
+    height: 150px;
+    margin-bottom: 30px;
+    border-radius: 75px;
+    box-shadow: 0 0 0.5em 0.1em var(--invbg);
+}
+
+
 
 @media (max-width: 768px ) {
     .header-content h1 {
@@ -277,8 +320,8 @@ section {
 }
 
 footer {
-    background-color: var(--bg);
-    color: var(--invbg);
+    background-color: var(--dBlue);
+    color: var(--brown);
     text-align: center;
     padding: 1px 0;
     position: fixed;
