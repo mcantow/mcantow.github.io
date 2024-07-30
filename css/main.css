@@ -246,22 +246,23 @@ header {
 }
 
 .header-content h1 {
-    font-size: 3em;
-    margin-bottom: 0.5em;
+    font-size: 3.5em;
+    margin-bottom: 20px !important;
     margin-top: 0px;
     opacity: 0;
     animation: fadeIn 1s forwards;
     animation-delay: 0.5s;
+    color: var(--khaki);
     
 }
 
 .header-content p {
-    font-size: 1.4em;
-    margin-bottom: 0px;
+    font-size: 1.8em;
+    margin-bottom: 0px !important;
     opacity: 0;
     animation: fadeIn 1s forwards;
     animation-delay: 1.5s;
-    margin-top: 0px;
+    margin-top: 0px !important;
 }
 
 .header-content .contactMe{
@@ -272,7 +273,7 @@ header {
     align-items: center;
     justify-content: space-evenly;
     width: 250px;
-    margin: 2em auto 0 auto;
+    margin: 30px auto 0 auto;
     cursor: pointer;
 }
 
@@ -306,7 +307,7 @@ header {
     }
 
     .header-content p {
-        font-size: 1.11em;
+        font-size: 1.4em;
     }
 }
 
@@ -321,7 +322,7 @@ section {
 
 footer {
     background-color: var(--dBlue);
-    color: var(--brown);
+    color: var(--green);
     text-align: center;
     padding: 1px 0;
     position: fixed;
