@@ -7,14 +7,15 @@
     --lBlue:#2DC7FF;
     --khaki:#C6AD94;
     --green:#2CA6A4;
-
-    --brown:#776D5A;
-    --grey:#5AB1BB;
+    --offDBlue:#71768B;
 
     --fs:1.5em;
     --plat:#D3D4D9;
     --red:#E54B4B;
 
+    /*legacy*/
+    --brown:#776D5A;
+    --grey:#5AB1BB;
 }
 
 @keyframes fadeIn {
@@ -51,7 +52,7 @@ body{
 
 /* Scrollbar Thumb */
 ::-webkit-scrollbar-thumb {
-    background-color: #71768B;
+    background-color: var(--offDBlue);
     border-radius: 5px;
 }
 
@@ -112,6 +113,7 @@ header {
     width: 100%;
     height: calc(100% - 15px);
     overflow: hidden;
+    box-shadow: 0 0 2.5em 0.3em var(--invbg);
 }
 
 .video-container {
@@ -329,7 +331,6 @@ header {
 }
 
 main {
-    padding-bottom: 2em;
     background-color: var(--bg);
 }
 
@@ -339,7 +340,7 @@ section {
 
 footer {
     background-color: var(--dBlue);
-    color: #71768B;
+    color: var(--offDBlue);
     text-align: center;
     padding: 1px 0;
     position: fixed;
