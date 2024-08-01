@@ -5,7 +5,7 @@
 ///////////////////////////////////
 
 
-var fadeTime = 400
+var fadeTime = 500
 
 ////////////////////////////////////
 // DOCUMENT READY EVENT LISTENERS //
@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // setup the video background
     const video = document.getElementById('background-video');
-    const repeatStartTime = 5; // Time in seconds to start the repeat from
+    const repeatStartTime = 0; // Time in seconds to start the repeat from
     video.addEventListener('ended', () => {
         video.currentTime = repeatStartTime;
         video.play();
@@ -59,14 +59,17 @@ function navigateTo(page) {
     selector.classList.add('active');
     // Show the specified page
     showPage(page, selector.innerHTML);
-
-
+    // close the menu
+    let expandedNavContainer = document.getElementById("expandedNavContainer")
+    expandedNavContainer.classList.remove("expanded");
 }
 
 function showPage(page, selectorInnerHTML) {
     /**
      * Docstring TODO
      */
+    if (page == 'home'){formatHomeHeader()}
+    else {formatOtherHeader()};
     const subpages = document.querySelectorAll('.subpage');
     subpages.forEach(subpage => {
         if (page === 'home') {
@@ -83,15 +86,14 @@ function showPage(page, selectorInnerHTML) {
                 setTimeout(function(){
                     $('#subpageTitleContainer').html(selectorInnerHTML);
                     $(subpage).fadeIn(fadeTime);
-                    $('#subpageTitleContainer').fadeIn(fadeTime + 200);
+                    $('#subpageTitleContainer').fadeIn(fadeTime);
                 }, fadeTime)
             } else {
                 $(subpage).fadeOut(fadeTime);
             }
         }
     });
-    if (page == 'home'){formatHomeHeader()}
-    else {formatOtherHeader()};
+
 }
 
 function formatHomeHeader(){
