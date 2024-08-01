@@ -336,7 +336,7 @@ main .subpage {
 #subpageTitleContainer{
     position: fixed;
     display: none;
-    top: 2px;
+    top: 1px;
     right: 10%;
     /* transform: translateX(-50%); */
     z-index: 999;
@@ -352,7 +352,7 @@ main .subpage {
     height: 1.2em;
     margin-right: 15px;
     position: relative; 
-    top: 9px;
+    top: 10px;
 }
 
 main .subpage .inner{
