@@ -4,7 +4,7 @@
 
     --lav:#D1CCDC;
     --dBlue:#343B59;
-    --lBlue:#2DC7FF;
+    --lBlue:#69d7ff;
     --khaki:#C6AD94;
     --green:#2CA6A4;
     --offDBlue:#71768B;
@@ -99,9 +99,8 @@ body{
     color: var(--invbg);
     font-size: var(--fs);
     line-height: 1.5em;
-    font-size: 2.2em;
+    font-size: 2em;
 }
-
 
 .logo img{
     width: 0.5em;
@@ -110,10 +109,23 @@ body{
 
 header {
     position: relative;
+    z-index: 99999;
     width: 100%;
     height: calc(100% - 15px);
     overflow: hidden;
-    box-shadow: 0 0 2.5em 0.3em var(--invbg);
+    box-shadow: 0 0 1em 0.1em var(--invbg);
+    transition: 0.6s all;
+}
+
+header.minify{
+    height: 70px !important;
+    position: sticky;
+    top: 0px;
+}
+
+header.minify .header-content{
+    visibility: hidden;
+    opacity: 0;
 }
 
 .video-container {
@@ -245,6 +257,9 @@ header {
     width: 100%;
     display: flex;
     flex-direction: column;
+    visibility: visible;
+    opacity: 1;
+    transition: 0.3s all;
 }
 
 .header-content h1 {
@@ -303,35 +318,77 @@ header {
 
 
 
-@media (max-width: 768px ) {
-    .header-content h1 {
-        font-size: 2.4em;
-    }
-
-    .header-content p {
-        font-size: 1.4em;
-    }
-
-    .expandedNav a{
-        font-size: 1.3em;
-    }
-
-    .expandedNav  ul{
-        margin-left: 40px !important;
-    }
-
-    .topnavContainer svg{
-        width: 40px;
-        height: 40px;
-    }
-
-    .topnavContainer .logo{
-        font-size: 2em;
-    }
-}
 
 main {
     background-color: var(--bg);
+    background: rgb(4,4,4);
+    background: linear-gradient(180deg, rgba(4,4,4,1) 0%, rgba(52,59,89,1) 100%);
+}
+
+main.minify{
+    min-height: calc(100vh - 75px);
+}
+
+main .subpage {
+    display: none;
+    z-index: 9999999;
+}
+
+#subpageTitleContainer{
+    position: fixed;
+    display: none;
+    top: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    color: var(--lBlue);
+    font-size: 2.5em;
+    font-weight: 700;
+    width: fit-content;
+    text-wrap: nowrap;
+}
+
+#subpageTitleContainer svg{
+    width: 1.2em;
+    height: 1.2em;
+    margin-right: 15px;
+    position: relative; 
+    top: 9px;
+}
+
+main .subpage .inner{
+    width: 100%;
+    max-width: 1200px;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+}
+
+main .subpage h2{
+    color: var(--khaki);
+    font-size: 3em;
+    display: flex;
+    align-items: center;
+    margin: auto auto 30px auto;
+    position: fixed;
+    z-index: 999999;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+main .subpage p{
+    color: var(--invbg);
+    font-size: 1.1em;
+}
+
+main .subpage h2 svg{
+    color: var(--khaki);
+    width: 1em;
+    height: 1em;
+    margin-right: 15px;
+
 }
 
 section {
@@ -347,7 +404,7 @@ footer {
     width: 100%;
     bottom: 0;
     font-size: small;
-    z-index: 9;
+    z-index: 99999;
 }
 
 footer p{
