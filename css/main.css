@@ -113,7 +113,7 @@ header {
     width: 100%;
     height: calc(100% - 15px);
     overflow: hidden;
-    box-shadow: 0 0 1em 0.1em var(--invbg);
+    box-shadow: 0 0 0.3em 0.1em var(--lBlue);
     transition: 1s all;
 }
 
@@ -337,8 +337,8 @@ main .subpage {
     position: fixed;
     display: none;
     top: 2px;
-    left: 50%;
-    transform: translateX(-50%);
+    right: 10%;
+    /* transform: translateX(-50%); */
     z-index: 999;
     color: var(--lBlue);
     font-size: 2.5em;
