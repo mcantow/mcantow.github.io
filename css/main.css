@@ -4,7 +4,8 @@
 
     --lav:#D1CCDC;
     --dBlue:#343B59;
-    --lBlue:#69d7ff;
+    /* --dBlue:#27314B; */
+    --lBlue:#59A7EB;
     --khaki:#C6AD94;
     --green:#2CA6A4;
     --offDBlue:#71768B;
@@ -43,7 +44,7 @@ html{
 body{
     opacity: 0;
     animation: fadeIn 2s forwards;
-
+    overflow: hidden;
 }
 /* Scrollbar Track */
 ::-webkit-scrollbar-track {
@@ -113,7 +114,8 @@ header {
     width: 100%;
     height: calc(100% - 15px);
     overflow: hidden;
-    box-shadow: 0 0 0.3em 0.1em var(--lBlue);
+    box-shadow: 0 0 1.5em 0.3em var(--dBlue);
+    border-bottom: 1px solid var(--lBlue);
     transition: 1s all;
 }
 
@@ -137,6 +139,14 @@ header.minify .header-content{
     overflow: hidden;
     /* width: 1005px;
     left: calc(100% - 1005px); */
+}
+
+#background-video{
+    transition: 1s all;
+}
+
+header.minify #background-video{
+    top: 17em !important;
 }
 
 #background-video {
@@ -321,7 +331,9 @@ header.minify .header-content{
 main {
     background-color: var(--bg);
     background: rgb(4,4,4);
-    background: linear-gradient(180deg, rgba(4,4,4,1) 0%, rgba(52,59,89,1) 100%);
+    background: linear-gradient(180deg, rgba(4,4,4,1) 0%, var(--dBlue) 100%);
+    height: calc(100vh - 75px);
+    bottom: -100vh !important;
 }
 
 main.minify{
