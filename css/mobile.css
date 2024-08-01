@@ -1,0 +1,48 @@
+@media (max-width: 768px ) {
+    .header-content h1 {
+        font-size: 2.4em;
+    }
+
+    .header-content p {
+        font-size: 1.4em;
+    }
+
+    .expandedNav a{
+        font-size: 1.3em;
+    }
+
+    .expandedNav  ul{
+        margin-left: 40px !important;
+    }
+
+    .topnavContainer svg{
+        width: 35px;
+        height: 35px;
+    }
+
+    .topnavContainer .logo{
+        font-size: 1.8em;
+    }
+
+    header.minify{
+        height: 65px !important;
+    }
+
+    main .subpage h2{
+        color: var(--khaki);
+        font-size: 2.6em;
+        display: flex;
+        align-items: center;
+        margin: auto auto 30px auto;
+        top: 10px;
+        right: 0%;
+        transform: translateX(0%);
+        width: fit-content;
+    }
+
+    #subpageTitleContainer{
+        left: 100%;
+        transform: translateX(calc(-100% - 20px));
+        top: -1px;
+    }
+}
