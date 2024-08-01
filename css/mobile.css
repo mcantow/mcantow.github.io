@@ -43,6 +43,10 @@
     #subpageTitleContainer{
         left: 100%;
         transform: translateX(calc(-100% - 20px));
-        top: -1px;
+        top: 12px;
+        font-size: 1.5em;
+    }
+    #subpageTitleContainer svg{
+        top: 7px;
     }
 }
