@@ -325,6 +325,15 @@ header.minify #background-video{
     box-shadow: 0 0 0.5em 0.1em var(--invbg);
 }
 
+.header-content a{
+    color: var(--invbg);
+    transition: 0.3s all;
+}
+
+.header-content a:hover {
+    color: var(--lBlue);
+}
+
 
 
 
