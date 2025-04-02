@@ -4,6 +4,8 @@ This repository contains the code for my personal resume website, a simple and f
 
 My goal with this project is to keep the implementation as simple as possible, so that a non technical person could feasibly fork my repo and build their own personal website! 
 
+Since starting the project, I pivoted towards MC-AI, which will replace 99% of personal websites with an AI Agent that's your biggest fan. Stay tuned!
+
 ## Architecture
 
 ### GitHub Pages and Cloudflare
@@ -61,4 +63,4 @@ async function handleRequest(request) {
 If you are looking to run a server, check out the DockMed server architecture I published in my MEng thesis: [DockMed Server Architecture](https://dspace.mit.edu/bitstream/handle/1721.1/151277/cantow-mcantow-meng-eecs-2023-thesis.pdf?sequence=1&isAllowed=y).
 
 ## License
-This project is licensed under the MIT License - see the LICENSE.md file for details.
+This project is licensed under the MIT License - see the LICENSE.md file for details. 
