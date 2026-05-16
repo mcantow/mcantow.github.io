@@ -1,184 +1,953 @@
 <!DOCTYPE html>
 <html lang="en">
-    
-    <head>
-        <!-- Meta Tags -->
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="High-tech entrepreneur innovating tomorrow's solutions">
-        <!-- Page Title -->
-        <title>Michael Cantow</title>
-        <link rel="icon" href="img/favicon.png" type="image/png">
-        <!-- CSS Style -->
-        <link rel="stylesheet" href="css/main.css">
-        <link rel="stylesheet" href="css/mobile.css">
-        <!-- JS Scripts -->
-        <script src="js/main.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
-    </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#F8F7F4" />
+  <meta name="color-scheme" content="light" />
 
-    <body>
-        <header id="headerElement">
-            <!-- Button to expand nav menu -->
-            <div class="topnavContainer" id="topnavContainer">
-                <svg id="burger" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="white" class="bi bi-list" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+  <!-- Primary SEO -->
+  <title>Michael Cantow | Founder, CustomerNode</title>
+  <meta name="description" content="Michael Cantow is the founder of CustomerNode — the execution layer for multi-stage B2B deals. MIT-trained engineer, designer, and operator based in NYC." />
+  <meta name="author" content="Michael Cantow" />
+  <meta name="keywords" content="Michael Cantow, CustomerNode, B2B software founder, MIT engineer, execution flow, buyer enablement, multi-stage sales, customer journey software, NYC founder, B2B SaaS" />
+  <link rel="canonical" href="https://michaelcantow.com/" />
+
+  <!-- Robots -->
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+  <meta name="googlebot" content="index, follow" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://michaelcantow.com/" />
+  <meta property="og:site_name" content="Michael Cantow" />
+  <meta property="og:title" content="Michael Cantow — Founder of CustomerNode" />
+  <meta property="og:description" content="MIT-trained engineer building CustomerNode, the execution layer for the deals a CRM only watches. Based in NYC." />
+  <meta property="og:image" content="https://michaelcantow.com/img/headshot.png" />
+  <meta property="og:image:alt" content="Michael Cantow, founder of CustomerNode" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Michael Cantow — Founder of CustomerNode" />
+  <meta name="twitter:description" content="MIT-trained engineer building CustomerNode — the execution layer for multi-stage B2B deals." />
+  <meta name="twitter:image" content="https://michaelcantow.com/img/headshot.png" />
+  <meta name="twitter:image:alt" content="Michael Cantow, founder of CustomerNode" />
+
+  <!-- Icons -->
+  <link rel="icon" href="img/favicon.png" type="image/png" />
+  <link rel="apple-touch-icon" href="img/favicon.png" />
+
+  <!-- Performance hints -->
+  <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
+  <link rel="preload" as="image" href="img/headshot.png" />
+
+  <!-- Fonts -->
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700,800,900&f[]=space-grotesk@400,500,600,700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/mobile.css" />
+
+  <!-- Structured data: Person + Organization + WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": "https://michaelcantow.com/#michael",
+        "name": "Michael Cantow",
+        "givenName": "Michael",
+        "familyName": "Cantow",
+        "url": "https://michaelcantow.com/",
+        "image": "https://michaelcantow.com/img/headshot.png",
+        "jobTitle": "Founder",
+        "description": "Founder of CustomerNode. MIT-trained engineer building the execution layer for multi-stage B2B deals.",
+        "worksFor": { "@id": "https://customernode.com/#org" },
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "Massachusetts Institute of Technology",
+          "url": "https://web.mit.edu/"
+        },
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "New York",
+          "addressRegion": "NY",
+          "addressCountry": "US"
+        },
+        "knowsAbout": [
+          "B2B software",
+          "Buyer enablement",
+          "Customer journey software",
+          "Machine learning",
+          "Multi-stage sales",
+          "Sales engineering",
+          "Product design",
+          "Startup founding"
+        ],
+        "sameAs": [
+          "https://www.linkedin.com/in/mcantow/",
+          "https://www.linkedin.com/company/customernode/",
+          "https://customernode.com/"
+        ]
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://customernode.com/#org",
+        "name": "CustomerNode",
+        "url": "https://customernode.com",
+        "description": "The execution layer for multi-stage B2B deals. The CRM watches; CustomerNode moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.",
+        "founder": { "@id": "https://michaelcantow.com/#michael" },
+        "foundingDate": "2023-06",
+        "foundingLocation": {
+          "@type": "Place",
+          "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "addressCountry": "US"
+          }
+        },
+        "sameAs": [
+          "https://www.linkedin.com/company/customernode/"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://michaelcantow.com/#website",
+        "url": "https://michaelcantow.com/",
+        "name": "Michael Cantow",
+        "description": "Personal site of Michael Cantow, founder of CustomerNode.",
+        "publisher": { "@id": "https://michaelcantow.com/#michael" },
+        "inLanguage": "en-US"
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://michaelcantow.com/#webpage",
+        "url": "https://michaelcantow.com/",
+        "name": "Michael Cantow — Founder of CustomerNode",
+        "isPartOf": { "@id": "https://michaelcantow.com/#website" },
+        "about": { "@id": "https://michaelcantow.com/#michael" },
+        "primaryImageOfPage": "https://michaelcantow.com/img/headshot.png"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <!-- Top nav -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-mark" aria-label="Home">
+      <span class="mc-tile">MC</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#thesis" data-magnet>Thesis</a>
+      <a href="#customernode" data-magnet>CustomerNode</a>
+      <a href="#journey" data-magnet>Journey</a>
+      <a href="#contact" data-magnet>Contact</a>
+    </nav>
+    <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="nav-cta">
+      <span>Follow</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+    </a>
+  </header>
+
+  <main id="top">
+
+    <!-- Crawler / screen-reader context (visually hidden) -->
+    <p class="sr-only">
+      Michael Cantow is the founder of CustomerNode, the execution layer for multi-stage B2B deals. An MIT-trained engineer (B.S. EECS 2022, MEng in AI 2023) based in New York City, Michael previously led ThoughtLine at the MIT Media Lab — a multi-sided platform for audiotherapy research — taught Intro to Machine Learning at MIT (6.390), interned at Teamworthy Ventures, and led astrophysics and space research at the MIT Kavli Institute on the NASA TESS and NICER missions. Before MIT he grew up in Mahwah, NJ, where he captained the football team and became the first Mahwah student admitted to MIT in over 30 years. He is shipping CustomerNode from NYC.
+    </p>
+
+    <!-- ═══════════ HERO ═══════════ -->
+    <section class="hero">
+      <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+      <div class="hero-grid" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <div class="hero-byline reveal" data-reveal-delay="0">
+          <img src="img/headshot.png" alt="" aria-hidden="true" class="byline-avatar" width="26" height="26" />
+          <span class="byline-text byline-full">MICHAEL CANTOW · FOUNDER @ CUSTOMERNODE · MIT · NYC</span>
+          <span class="byline-text byline-short">FOUNDER @ CUSTOMERNODE · MIT · NYC</span>
+        </div>
+
+        <h1 class="hero-title">
+          <span class="line reveal" data-reveal-delay="140">I'm <span class="role-flip" data-roles="a founder,an engineer,a designer,a sales rep,a marketer,a recruiter,a support rep,a sysadmin,a janitor"></span></span>
+          <span class="line line-sub reveal" data-reveal-delay="320">Moving B2B software from record to action.</span>
+        </h1>
+
+        <div class="hero-cta reveal" data-reveal-delay="500">
+          <a href="https://customernode.com" target="_blank" rel="noopener" class="btn btn-primary">
+            <span>See what we're shipping</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#thesis" class="btn btn-ghost">
+            <span>Read the thesis</span>
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════ MARQUEE ═══════════ -->
+    <section class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span class="marquee-item">CustomerNode<sup class="tm-mark">™</sup></span>
+        <span class="marquee-item">First Party AI<sup class="tm-mark">™</sup> · Patent Pending</span>
+        <span class="marquee-item">MIT EECS '22</span>
+        <span class="marquee-item">MIT MEng AI '23</span>
+        <span class="marquee-item">MIT Media Lab</span>
+        <span class="marquee-item">Teamworthy Ventures</span>
+        <span class="marquee-item">MIT Kavli</span>
+        <span class="marquee-item">NASA TESS</span>
+        <!-- duplicate for seamless loop -->
+        <span class="marquee-item">CustomerNode<sup class="tm-mark">™</sup></span>
+        <span class="marquee-item">First Party AI<sup class="tm-mark">™</sup> · Patent Pending</span>
+        <span class="marquee-item">MIT EECS '22</span>
+        <span class="marquee-item">MIT MEng AI '23</span>
+        <span class="marquee-item">MIT Media Lab</span>
+        <span class="marquee-item">Teamworthy Ventures</span>
+        <span class="marquee-item">MIT Kavli</span>
+        <span class="marquee-item">NASA TESS</span>
+      </div>
+    </section>
+
+    <!-- ═══════════ THESIS ═══════════ -->
+    <section class="thesis" id="thesis" aria-labelledby="thesis-heading">
+      <header class="thesis-head">
+        <span class="section-kicker">01 · THE THESIS</span>
+        <h2 class="section-title" id="thesis-heading">
+          The next platform wins on <span class="grad-text">three axes</span>.
+        </h2>
+      </header>
+
+      <div class="thesis-frame reveal">
+        <ol class="axes">
+          <li class="axis">
+            <span class="axis-num">01</span>
+            <div class="axis-name">
+              <h4>Stack position</h4>
+              <span class="axis-tag">Where in the stack you sit</span>
+            </div>
+            <div class="axis-shift">
+              <span class="from">System of Record</span>
+              <span class="arrow" aria-hidden="true">→</span>
+              <span class="to">System of Action</span>
+            </div>
+          </li>
+          <li class="axis">
+            <span class="axis-num">02</span>
+            <div class="axis-name">
+              <h4>Architecture</h4>
+              <span class="axis-tag">What the software does</span>
+            </div>
+            <div class="axis-shift">
+              <span class="from">State-centric</span>
+              <span class="arrow" aria-hidden="true">→</span>
+              <span class="to">Process-centric</span>
+            </div>
+          </li>
+          <li class="axis">
+            <span class="axis-num">03</span>
+            <div class="axis-name">
+              <h4>Strategic data asset</h4>
+              <span class="axis-tag">What compounds at scale</span>
+            </div>
+            <div class="axis-shift">
+              <span class="from">Enterprise records</span>
+              <span class="arrow" aria-hidden="true">→</span>
+              <span class="to">Interaction &amp; workflow data</span>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="cluster-compare reveal">
+        <article class="cluster cluster-red">
+          <span class="cluster-label">Red Ocean</span>
+          <h4>What's saturated.</h4>
+          <ul>
+            <li>System of Record</li>
+            <li>State-centric architecture</li>
+            <li>Enterprise records</li>
+          </ul>
+          <p class="cluster-foot">Distribution, trust, switching costs still matter. The position doesn't.</p>
+        </article>
+
+        <div class="cluster-arrow" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </div>
+
+        <article class="cluster cluster-blue">
+          <span class="cluster-label">Blue Ocean</span>
+          <h4>Where the next platforms get built.</h4>
+          <ul>
+            <li>System of Action</li>
+            <li>Process-centric architecture</li>
+            <li>Interaction &amp; workflow data</li>
+          </ul>
+          <p class="cluster-foot">Data compounds. Process becomes the moat. Outcome is the deliverable.</p>
+        </article>
+      </div>
+
+      <div class="thesis-cta reveal">
+        <div class="thesis-cta-body">
+          <h3 class="summary-headline">
+            From systems that record to <em>systems that act</em>.
+          </h3>
+          <p class="summary-deck">
+            Sears owned the record. Amazon owned the <em>process</em>. B2B software is about to learn the same lesson.
+          </p>
+        </div>
+        <a href="https://www.linkedin.com/pulse/platform-playbook-built-b2b-software-now-red-ocean-customernode-o71ge/?trackingId=qh%2FCX3DP6sh6T1fTwrphbw%3D%3D" target="_blank" rel="noopener" class="btn btn-primary thesis-cta-btn">
+          <span>Read it on LinkedIn</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- ═══════════ CUSTOMERNODE SHOWCASE ═══════════ -->
+    <section class="cn-showcase" id="customernode" aria-labelledby="cn-heading">
+      <div class="cn-content">
+        <div class="cn-left">
+          <span class="section-kicker">02 · WHAT I'M BUILDING</span>
+          <h2 class="section-title" id="cn-heading">
+            <span class="grad-text">CustomerNode</span><span class="tm">™</span>
+          </h2>
+          <p class="cn-lead">
+            Turn complex deals into executable journeys.
+          </p>
+
+          <ul class="cn-features">
+            <li class="reveal">
+              <span class="feature-check">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M10.9 11.77C10.7943 11.7701 10.6898 11.7479 10.5933 11.7049C10.4968 11.6618 10.4105 11.5988 10.34 11.52C10.2704 11.4397 10.2185 11.3457 10.1875 11.2441C10.1564 11.1425 10.1471 11.0355 10.16 10.93C10.16 10.84 11.39 1.79001 19.38 1.79001C19.5625 1.79112 19.7384 1.85877 19.8746 1.98027C20.0109 2.10177 20.0981 2.26879 20.12 2.45001C20.3565 4.80481 19.6559 7.15798 18.17 9.00001C16.57 10.85 14.12 11.77 10.9 11.77Z"/>
+                  <path d="M10.9 11.76H10.81C8.4 11.46 3.81 9.59001 3.81 4.70001C3.81082 4.51636 3.87812 4.33921 3.99945 4.20133C4.12078 4.06346 4.28793 3.97418 4.47 3.95002C6.29444 3.76532 8.11851 4.30392 9.55 5.45001C10.2852 6.16484 10.8543 7.03244 11.2172 7.99148C11.5801 8.95052 11.7278 9.97758 11.65 11C11.6501 11.1057 11.6279 11.2102 11.5849 11.3067C11.5418 11.4032 11.4788 11.4896 11.4 11.56C11.2624 11.6839 11.0851 11.7548 10.9 11.76Z"/>
+                  <path d="M10.9 15.9C10.7011 15.9 10.5103 15.821 10.3697 15.6803C10.229 15.5397 10.15 15.3489 10.15 15.15V11C10.15 10.8011 10.229 10.6103 10.3697 10.4697C10.5103 10.329 10.7011 10.25 10.9 10.25C11.0989 10.25 11.2897 10.329 11.4303 10.4697C11.571 10.6103 11.65 10.8011 11.65 11V15.13C11.6541 15.2305 11.6376 15.3308 11.6016 15.4248C11.5657 15.5187 11.5109 15.6043 11.4407 15.6764C11.3705 15.7485 11.2864 15.8055 11.1934 15.8439C11.1004 15.8824 11.0006 15.9014 10.9 15.9Z"/>
+                  <path d="M13.5 22.21H8.7C7.71495 22.1943 6.77542 21.7926 6.08348 21.0913C5.39155 20.39 5.00249 19.4452 5 18.46V15.15C5 14.9511 5.07902 14.7603 5.21967 14.6197C5.36032 14.479 5.55109 14.4 5.75 14.4H16.5C16.6989 14.4 16.8897 14.479 17.0303 14.6197C17.171 14.7603 17.25 14.9511 17.25 15.15V18.46C17.2474 19.4537 16.8514 20.406 16.1487 21.1087C15.446 21.8114 14.4938 22.2074 13.5 22.21Z"/>
                 </svg>
-                <div class="logo">MC</div>
-            </div>
-            <!-- video background for page heade -->
-            <div class="video-container">
-                <video autoplay muted playsinline id="background-video">
-                    <source src="video/background2.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <div class="overlay"></div>
-            </div>
-            <!-- navigation menu -->
-            <nav>
-                <div class="expandedNav" id="expandedNavContainer">
-                    <div class="inner">
-                        <!-- close button -->
-                        <svg xmlns="http://www.w3.org/2000/svg"  id="closeExpandedNavSvg" width="16" height="16" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-                            <path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-                        </svg>
-                        <!-- subpage options -->
-                        <div  style="display: flex; flex-direction: column; padding-top: 4em;">
-                            <ul style="padding-left: 0px; width: fit-content; margin: auto;">
-                                <li>
-                                    
-                                </li>
-                                <li><a id="navL_home" onclick="navigateTo('home')" class="active"><svg style="margin-top:-0.1em" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
-                                    <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
-                                    <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z"/>
-                                </svg>Home</a></li>
-                                <li>
-                                    <a id="navL_ai"  onclick="navigateTo('ai')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stars" viewBox="0 0 16 16">
-                                        <path d="M7.657 6.247c.11-.33.576-.33.686 0l.645 1.937a2.89 2.89 0 0 0 1.829 1.828l1.936.645c.33.11.33.576 0 .686l-1.937.645a2.89 2.89 0 0 0-1.828 1.829l-.645 1.936a.361.361 0 0 1-.686 0l-.645-1.937a2.89 2.89 0 0 0-1.828-1.828l-1.937-.645a.361.361 0 0 1 0-.686l1.937-.645a2.89 2.89 0 0 0 1.828-1.828zM3.794 1.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387A1.73 1.73 0 0 0 4.593 5.69l-.387 1.162a.217.217 0 0 1-.412 0L3.407 5.69A1.73 1.73 0 0 0 2.31 4.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387A1.73 1.73 0 0 0 3.407 2.31zM10.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732L9.1 2.137a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
-                                      </svg>Talk to MC-AI</a></li>
-                                <!-- <li>
-                                    <a id="navL_skills"  onclick="navigateTo('skills')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-award-fill" viewBox="0 0 16 16">
-                                    <path d="m8 0 1.669.864 1.858.282.842 1.68 1.337 1.32L13.4 6l.306 1.854-1.337 1.32-.842 1.68-1.858.282L8 12l-1.669-.864-1.858-.282-.842-1.68-1.337-1.32L2.6 6l-.306-1.854 1.337-1.32.842-1.68L6.331.864z"/>
-                                    <path d="M4 11.794V16l4-1 4 1v-4.206l-2.018.306L8 13.126 6.018 12.1z"/>
-                                </svg>Skills</a></li> -->
-                                <!-- <li><a id="navL_experience"  onclick="navigateTo('experience')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-bounding-box" viewBox="0 0 16 16">
-                                    <path d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5M.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5m15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5"/>
-                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-                                  </svg>Experience</a></li> -->
-                                <!-- <li><a id="navL_education"  onclick="navigateTo('education')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
-                                    <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z"/>
-                                    <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z"/>
-                                </svg>Education</a></li> -->
-                                <!-- <li><a id="navL_blog"  onclick="navigateTo('blog')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-medium" viewBox="0 0 16 16">
-                                    <path d="M9.025 8c0 2.485-2.02 4.5-4.513 4.5A4.506 4.506 0 0 1 0 8c0-2.486 2.02-4.5 4.512-4.5A4.506 4.506 0 0 1 9.025 8m4.95 0c0 2.34-1.01 4.236-2.256 4.236S9.463 10.339 9.463 8c0-2.34 1.01-4.236 2.256-4.236S13.975 5.661 13.975 8M16 8c0 2.096-.355 3.795-.794 3.795-.438 0-.793-1.7-.793-3.795 0-2.096.355-3.795.794-3.795.438 0 .793 1.699.793 3.795"/>
-                                </svg>Blog</a></li> -->
-                                <!-- <li><a id="navL_contact"  onclick="navigateTo('contact')"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-                                    <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
-                                </svg>Contact</a></li> -->
+              </span>
+              <div>
+                <strong>Create</strong>
+                <span>Capture your process as a journey template.</span>
+              </div>
+            </li>
+            <li class="reveal">
+              <span class="feature-check">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M9 6C9 7.65685 10.3431 9 12 9C13.6569 9 15 7.65685 15 6C15 4.34315 13.6569 3 12 3C10.3431 3 9 4.34315 9 6Z"/>
+                  <path d="M2.5 18C2.5 19.6569 3.84315 21 5.5 21C7.15685 21 8.5 19.6569 8.5 18C8.5 16.3431 7.15685 15 5.5 15C3.84315 15 2.5 16.3431 2.5 18Z"/>
+                  <path d="M18.5 21C16.8431 21 15.5 19.6569 15.5 18C15.5 16.3431 16.8431 15 18.5 15C20.1569 15 21.5 16.3431 21.5 18C21.5 19.6569 20.1569 21 18.5 21Z"/>
+                  <path d="M7.20468 7.56231C7.51523 7.28821 7.54478 6.81426 7.27069 6.5037C6.99659 6.19315 6.52264 6.1636 6.21208 6.43769C4.39676 8.03991 3.25 10.3865 3.25 13C3.25 13.4142 3.58579 13.75 4 13.75C4.41421 13.75 4.75 13.4142 4.75 13C4.75 10.8347 5.69828 8.89187 7.20468 7.56231Z"/>
+                  <path d="M17.7879 6.43769C17.4774 6.1636 17.0034 6.19315 16.7293 6.5037C16.4552 6.81426 16.4848 7.28821 16.7953 7.56231C18.3017 8.89187 19.25 10.8347 19.25 13C19.25 13.4142 19.5858 13.75 20 13.75C20.4142 13.75 20.75 13.4142 20.75 13C20.75 10.3865 19.6032 8.03991 17.7879 6.43769Z"/>
+                  <path d="M10.1869 20.0217C9.7858 19.9184 9.37692 20.1599 9.27367 20.561C9.17043 20.9622 9.41192 21.3711 9.81306 21.4743C10.5129 21.6544 11.2458 21.75 12 21.75C12.7542 21.75 13.4871 21.6544 14.1869 21.4743C14.5881 21.3711 14.8296 20.9622 14.7263 20.561C14.6231 20.1599 14.2142 19.9184 13.8131 20.0217C13.2344 20.1706 12.627 20.25 12 20.25C11.373 20.25 10.7656 20.1706 10.1869 20.0217Z"/>
+                </svg>
+              </span>
+              <div>
+                <strong>Share</strong>
+                <span>Bring the customer inside the journey from day one.</span>
+              </div>
+            </li>
+            <li class="reveal">
+              <span class="feature-check">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                  <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0"/>
+                  <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"/>
+                </svg>
+              </span>
+              <div>
+                <strong>Navigate</strong>
+                <span>Stages, owners, outcomes — and agents that move it forward.</span>
+              </div>
+            </li>
+          </ul>
 
-                            </ul>
-                        </div>
-                        <p style="position: fixed; bottom: 6px; text-align: center; left: 0px; width: 240px;  color: var(--khaki); font-size: 1em;">MichaelCantow<b style="font-size: 0.5em; font-weight: 500;">.com</b></p>
-                        <img style="position: fixed; bottom: 42px; text-align: center; left: 58px; width: 120px; height: auto; border-radius: 5px; border: 2px solid var(--khaki);" src="img/me.jpg">
+          <div class="cn-ctas">
+            <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="btn btn-primary" data-magnet>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+              <span>Follow CustomerNode</span>
+            </a>
+            <a href="https://customernode.com" target="_blank" rel="noopener" class="btn btn-ghost" data-magnet>
+              <span>customernode.com</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+          </div>
+
+        </div>
+
+        <div class="cn-right">
+          <div class="cn-mockup" id="cnJourneyMockup" aria-hidden="true">
+            <div class="cn-mockup-glow"></div>
+
+            <!-- Floating "next action" callout (left) -->
+            <div class="cn-callout cn-callout-action">
+              <div class="callout-row">
+                <span class="callout-dot"></span>
+                <span class="callout-label">NEXT ACTION</span>
+              </div>
+              <div class="callout-body" id="cnNextAction">Review pricing with Sarah K.</div>
+              <div class="callout-meta">auto-suggested · due Fri</div>
+            </div>
+
+            <!-- Floating stakeholders chip (right) -->
+            <div class="cn-callout cn-callout-people">
+              <div class="callout-label">STAKEHOLDERS</div>
+              <div class="avatar-stack">
+                <span class="av av-1">SK</span>
+                <span class="av av-2">JB</span>
+                <span class="av av-3">LA</span>
+                <span class="av av-4">MC</span>
+                <span class="av av-more">+3</span>
+              </div>
+            </div>
+
+            <!-- Main journey card — rectangular screen-like UI -->
+            <div class="cn-journey-card">
+              <div class="journey-head">
+                <div class="journey-title">
+                  <span class="journey-co">Acme Co · Enterprise</span>
+                  <span class="journey-meta">$480K ARR · stage <span class="progress-current">3</span> of 6</span>
+                </div>
+                <!-- Circular progress donut -->
+                <div class="journey-donut" aria-hidden="true">
+                  <svg width="40" height="40" viewBox="0 0 36 36">
+                    <defs>
+                      <linearGradient id="cnRingGrad" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0%" stop-color="#569AF1"/>
+                        <stop offset="100%" stop-color="#7873F5"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(10,10,11,0.08)" stroke-width="2.5"/>
+                    <circle id="cnRingProgress" cx="18" cy="18" r="15.5" fill="none" stroke="url(#cnRingGrad)" stroke-width="2.5"
+                      stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="50"
+                      transform="rotate(-90 18 18)"/>
+                    <text x="18" y="22" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="var(--ink)" id="cnDonutText">3/6</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Journey body: overview (circle) ⇄ detail (stage UI) -->
+              <div class="journey-body" id="cnJourneyBody">
+
+                <!-- ── OVERVIEW: circular flow ── -->
+                <div class="journey-overview">
+                  <svg class="overview-svg" viewBox="0 0 200 200" preserveAspectRatio="xMidYMid meet">
+                    <circle cx="100" cy="100" r="74" fill="none" stroke="rgba(10,10,11,0.10)" stroke-width="0.6" stroke-dasharray="0.8 1.8"/>
+                    <circle id="cnOverviewProgress" cx="100" cy="100" r="74" fill="none" stroke="url(#cnRingGrad)" stroke-width="1.3"
+                      stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="50"
+                      transform="rotate(-90 100 100)"/>
+                  </svg>
+
+                  <div class="overview-nodes">
+                    <button class="ov-node" data-stage="0" type="button" style="--angle: 0deg;" aria-label="Discovery">
+                      <span class="ov-circle"><span class="ov-num">1</span><span class="ov-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+                      <span class="ov-tag">Discovery</span>
+                    </button>
+                    <button class="ov-node" data-stage="1" type="button" style="--angle: 60deg;" aria-label="Experience">
+                      <span class="ov-circle"><span class="ov-num">2</span><span class="ov-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+                      <span class="ov-tag">Experience</span>
+                    </button>
+                    <button class="ov-node" data-stage="2" type="button" style="--angle: 120deg;" aria-label="Scope">
+                      <span class="ov-circle"><span class="ov-num">3</span><span class="ov-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+                      <span class="ov-tag">Scope</span>
+                    </button>
+                    <button class="ov-node" data-stage="3" type="button" style="--angle: 180deg;" aria-label="Commit">
+                      <span class="ov-circle"><span class="ov-num">4</span><span class="ov-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+                      <span class="ov-tag">Commit</span>
+                    </button>
+                    <button class="ov-node" data-stage="4" type="button" style="--angle: 240deg;" aria-label="Deploy">
+                      <span class="ov-circle"><span class="ov-num">5</span><span class="ov-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+                      <span class="ov-tag">Deploy</span>
+                    </button>
+                    <button class="ov-node" data-stage="5" type="button" style="--angle: 300deg;" aria-label="Success">
+                      <span class="ov-circle"><span class="ov-num">6</span><span class="ov-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></span>
+                      <span class="ov-tag">Success</span>
+                    </button>
+                  </div>
+
+                  <div class="overview-center">
+                    <span class="oc-label">Current</span>
+                    <span class="oc-title" id="cnOverviewTitle">Scope</span>
+                    <span class="oc-hint">tap any stage</span>
+                  </div>
+                </div>
+
+                <!-- ── DETAIL: stage-specific UI ── -->
+                <div class="journey-detail">
+                  <div class="detail-head">
+                    <button class="detail-back" type="button" aria-label="Back to overview">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    </button>
+                    <span class="detail-title" id="cnDetailTitle">SCOPE · solution configuration</span>
+                    <span class="detail-step" id="cnDetailStep">3 of 6</span>
+                  </div>
+
+                  <div class="detail-body">
+
+                <!-- ── 0 · Discovery ── -->
+                <div class="stage-panel" data-panel="0">
+                  <div class="panel-eyebrow">DISCOVERY · questionnaire</div>
+                  <div class="qq-list">
+                    <div class="qq-row">
+                      <span class="qq-icon">
+                        <svg class="qq-check" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span class="qq-dots"><span></span><span></span><span></span></span>
+                      </span>
+                      <div class="qq-text">
+                        <span class="qq-q">Team size & structure</span>
+                        <span class="qq-a" data-answer="220 employees · 3 buying centers"></span>
+                      </div>
                     </div>
+                    <div class="qq-row">
+                      <span class="qq-icon">
+                        <svg class="qq-check" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span class="qq-dots"><span></span><span></span><span></span></span>
+                      </span>
+                      <div class="qq-text">
+                        <span class="qq-q">Current tooling stack</span>
+                        <span class="qq-a" data-answer="Salesforce, Slack, Notion"></span>
+                      </div>
+                    </div>
+                    <div class="qq-row">
+                      <span class="qq-icon">
+                        <svg class="qq-check" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                        <span class="qq-dots"><span></span><span></span><span></span></span>
+                      </span>
+                      <div class="qq-text">
+                        <span class="qq-q">Decision criteria</span>
+                        <span class="qq-a" data-answer="Cost, security, time-to-value"></span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-            </nav>
-            <!-- title for sub pages -->
-            <div id="subpageTitleContainer">dooo</div>
-            <!-- header area for home page-->
-            <div class="header-content">
-                <h1>High-Tech Entrepreneur</h1>
-                <p><a target="_blank" href="https://mitathletics.com/sports/football/roster/michael-cantow/10312">MIT</a> | <a target="_blank" href="https://customernode.com">CustomerNode™</a> | <a target="_blank" href="https://first-party-ai.com/">First-Party AI™</a>  </p>
-                <span class="contactMe">
-                <!-- <span class="contactMe" onclick="navigateTo('contact')"> -->
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send-fill" viewBox="0 0 16 16">
-                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471z"/>
-                    </svg> -->
 
-                    <a target="_blank" href="https://www.linkedin.com/in/mcantow/" style="color: currentColor !important;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16" style="width: 50px; height:50px !important">
-                            <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/>
-                        </svg>
-                    </a>
-                    <!-- <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
-                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-instagram" viewBox="0 0 16 16">
-                        <path d="M8 0C5.829 0 5.556.01 4.703.048 3.85.088 3.269.222 2.76.42a3.9 3.9 0 0 0-1.417.923A3.9 3.9 0 0 0 .42 2.76C.222 3.268.087 3.85.048 4.7.01 5.555 0 5.827 0 8.001c0 2.172.01 2.444.048 3.297.04.852.174 1.433.372 1.942.205.526.478.972.923 1.417.444.445.89.719 1.416.923.51.198 1.09.333 1.942.372C5.555 15.99 5.827 16 8 16s2.444-.01 3.298-.048c.851-.04 1.434-.174 1.943-.372a3.9 3.9 0 0 0 1.416-.923c.445-.445.718-.891.923-1.417.197-.509.332-1.09.372-1.942C15.99 10.445 16 10.173 16 8s-.01-2.445-.048-3.299c-.04-.851-.175-1.433-.372-1.941a3.9 3.9 0 0 0-.923-1.417A3.9 3.9 0 0 0 13.24.42c-.51-.198-1.092-.333-1.943-.372C10.443.01 10.172 0 7.998 0zm-.717 1.442h.718c2.136 0 2.389.007 3.232.046.78.035 1.204.166 1.486.275.373.145.64.319.92.599s.453.546.598.92c.11.281.24.705.275 1.485.039.843.047 1.096.047 3.231s-.008 2.389-.047 3.232c-.035.78-.166 1.203-.275 1.485a2.5 2.5 0 0 1-.599.919c-.28.28-.546.453-.92.598-.28.11-.704.24-1.485.276-.843.038-1.096.047-3.232.047s-2.39-.009-3.233-.047c-.78-.036-1.203-.166-1.485-.276a2.5 2.5 0 0 1-.92-.598 2.5 2.5 0 0 1-.6-.92c-.109-.281-.24-.705-.275-1.485-.038-.843-.046-1.096-.046-3.233s.008-2.388.046-3.231c.036-.78.166-1.204.276-1.486.145-.373.319-.64.599-.92s.546-.453.92-.598c.282-.11.705-.24 1.485-.276.738-.034 1.024-.044 2.515-.045zm4.988 1.328a.96.96 0 1 0 0 1.92.96.96 0 0 0 0-1.92m-4.27 1.122a4.109 4.109 0 1 0 0 8.217 4.109 4.109 0 0 0 0-8.217m0 1.441a2.667 2.667 0 1 1 0 5.334 2.667 2.667 0 0 1 0-5.334"/>
-                    </svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">
-                    <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/>
-                    </svg> -->
+                <!-- ── 1 · Experience ── -->
+                <div class="stage-panel" data-panel="1">
+                  <div class="panel-eyebrow">EXPERIENCE · curated content</div>
+                  <div class="content-grid">
+                    <div class="cc-card cc-video">
+                      <div class="cc-thumb"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7L8 5z"/></svg></div>
+                      <div class="cc-meta"><strong>3-min demo</strong><span>Tailored to discovery</span></div>
+                    </div>
+                    <div class="cc-card cc-doc">
+                      <div class="cc-thumb cc-thumb-doc"><span class="doc-line"></span><span class="doc-line"></span><span class="doc-line short"></span></div>
+                      <div class="cc-meta"><strong>Customer story</strong><span>FinServ, 240 seats</span></div>
+                    </div>
+                    <div class="cc-card cc-roi">
+                      <div class="cc-thumb cc-thumb-chart"><span class="chart-bar"></span><span class="chart-bar"></span><span class="chart-bar"></span><span class="chart-bar tall"></span></div>
+                      <div class="cc-meta"><strong>ROI one-pager</strong><span>Personalized</span></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── 2 · Scope ── -->
+                <div class="stage-panel" data-panel="2">
+                  <div class="panel-eyebrow">SCOPE · solution configuration</div>
+                  <div class="cfg-list">
+                    <div class="cfg-row cfg-on">
+                      <span class="cfg-label">Multi-region deployment</span>
+                      <span class="toggle is-on"><span class="toggle-knob"></span></span>
+                    </div>
+                    <div class="cfg-row cfg-on">
+                      <span class="cfg-label">SSO via Okta</span>
+                      <span class="toggle is-on"><span class="toggle-knob"></span></span>
+                    </div>
+                    <div class="cfg-row">
+                      <span class="cfg-label">Advanced analytics</span>
+                      <span class="toggle"><span class="toggle-knob"></span></span>
+                    </div>
+                    <div class="cfg-row cfg-input">
+                      <span class="cfg-label">Seats</span>
+                      <span class="cfg-value">240</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── 3 · Commit ── -->
+                <div class="stage-panel" data-panel="3">
+                  <div class="panel-eyebrow">COMMIT · master service agreement</div>
+                  <div class="contract-card">
+                    <div class="contract-doc">
+                      <span class="contract-line"></span>
+                      <span class="contract-line"></span>
+                      <span class="contract-line short"></span>
+                    </div>
+                    <div class="signatures">
+                      <div class="sig">
+                        <span class="sig-row">
+                          <span class="sig-name">Sarah K.</span>
+                          <span class="sig-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                          <span class="sig-pen">awaiting</span>
+                        </span>
+                        <span class="sig-label">Signed · CFO, Acme</span>
+                      </div>
+                      <div class="sig">
+                        <span class="sig-row">
+                          <span class="sig-name">M. Cantow</span>
+                          <span class="sig-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+                          <span class="sig-pen">awaiting</span>
+                        </span>
+                        <span class="sig-label">Countersign · CustomerNode</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── 4 · Deploy ── -->
+                <div class="stage-panel" data-panel="4">
+                  <div class="panel-eyebrow">DEPLOY · gantt</div>
+                  <div class="gantt">
+                    <div class="gantt-body">
+                      <ul class="gantt-labels">
+                        <li>Provision</li>
+                        <li>Integrate</li>
+                        <li>Migrate</li>
+                        <li>Onboard</li>
+                      </ul>
+                      <div class="gantt-tracks">
+                        <div class="gantt-axis">
+                          <span>W1</span><span>W2</span><span>W3</span><span>W4</span>
+                        </div>
+                        <div class="gantt-row">
+                          <span class="gantt-bar" data-start="0" data-width="22" style="left:0%; width:22%"><span class="gantt-fill"></span></span>
+                        </div>
+                        <div class="gantt-row">
+                          <span class="gantt-bar" data-start="18" data-width="30" style="left:18%; width:30%"><span class="gantt-fill"></span></span>
+                        </div>
+                        <div class="gantt-row">
+                          <span class="gantt-bar" data-start="38" data-width="32" style="left:38%; width:32%"><span class="gantt-fill"></span></span>
+                        </div>
+                        <div class="gantt-row">
+                          <span class="gantt-bar" data-start="60" data-width="38" style="left:60%; width:38%"><span class="gantt-fill"></span></span>
+                        </div>
+                        <div class="gantt-now" aria-hidden="true"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- ── 5 · Success ── -->
+                <div class="stage-panel" data-panel="5">
+                  <div class="panel-eyebrow">SUCCESS · health & outcomes</div>
+                  <div class="kpi-grid">
+                    <div class="kpi">
+                      <span class="kpi-label">Adoption</span>
+                      <span class="kpi-value" data-from="0" data-to="73" data-suffix="%">0%</span>
+                      <span class="kpi-trend up">↑ 12</span>
+                      <svg class="kpi-spark" viewBox="0 0 60 20" preserveAspectRatio="none">
+                        <polyline class="kpi-spark-line" fill="none" stroke="url(#cnRingGrad)" stroke-width="1.5" points="0,16 10,14 20,15 30,11 40,12 50,7 60,4"/>
+                      </svg>
+                    </div>
+                    <div class="kpi">
+                      <span class="kpi-label">NPS</span>
+                      <span class="kpi-value" data-from="0" data-to="8.4" data-decimals="1">0.0</span>
+                      <span class="kpi-trend up">↑ 1.2</span>
+                    </div>
+                    <div class="kpi">
+                      <span class="kpi-label">Open tickets</span>
+                      <span class="kpi-value" data-from="5" data-to="2">5</span>
+                      <span class="kpi-trend down">↓ 3</span>
+                    </div>
+                  </div>
+                </div>
+
+                  </div><!-- /.detail-body -->
+
+                  <!-- "Stage complete" success overlay -->
+                  <div class="stage-success" aria-hidden="true">
+                    <span class="ss-check">
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    <span class="ss-label">Stage complete</span>
+                  </div>
+                </div><!-- /.journey-detail -->
+              </div><!-- /.journey-body -->
+
+              <div class="agent-bar">
+                <span class="agent-orb"></span>
+                <span class="agent-label" id="cnAgentLabel">Agent is filling answers from your last call</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ JOURNEY / EXPERIENCE ═══════════ -->
+    <section class="journey" id="journey" aria-labelledby="journey-heading">
+      <div class="section-head">
+        <span class="section-kicker">03 · THE JOURNEY</span>
+        <h2 class="section-title" id="journey-heading">
+          My journey <br />
+          <span class="grad-text">to here.</span>
+        </h2>
+        <p class="section-sub">
+          Engineering, research, investing, teaching, football. Each stage shaped how I build today: rigorous thinking, clear communication, systems designed to perform under pressure.
+        </p>
+      </div>
+
+      <ol class="timeline">
+
+        <li class="timeline-item reveal">
+          <div class="timeline-node"><span class="node-core"></span></div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo" aria-hidden="true">
+                  <img src="img/mahwah.jpg" alt="" loading="lazy" />
                 </span>
-            </div>
-
-        </header>
-
-        <!-- main content -->
-        <main id="mainElement">
-            <div data-page="home" style="background: rgb(4,4,4); background: linear-gradient(180deg, rgba(4,4,4,1) 0%, rgba(52,59,89,1) 100%);">
-                <div style="padding: 0vh;">
-
+                <div>
+                  <h3>Hometown</h3>
+                  <span class="tl-org">Mahwah, NJ · Mahwah High School</span>
                 </div>
+              </div>
+              <span class="tl-meta">Sep 2014 – Jun 2018 · Mahwah, NJ</span>
+            </header>
+            <p>Captained the football team and played baseball. Earned a spot on the Academic Wall of Fame, and became the first Mahwah student admitted to MIT in over 30 years.</p>
+            <div class="tag-row">
+              <span class="tag">Football Captain</span>
+              <span class="tag">Baseball</span>
+              <span class="tag">Academic Wall of Fame</span>
+              <span class="tag">MIT-bound</span>
             </div>
+          </div>
+        </li>
 
-            <div class="subpage" data-subpagename="skills">
-                <div class="inner">
-                    <p style="display: flex; margin: auto;">Coming Soon!</p>
+        <li class="timeline-item reveal">
+          <div class="timeline-node"><span class="node-core"></span></div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo" aria-hidden="true">
+                  <img src="img/mit-seal.png" alt="" loading="lazy" />
+                </span>
+                <div>
+                  <h3>MEng in AI · BSc EECS · Student-Athlete</h3>
+                  <span class="tl-org">Massachusetts Institute of Technology</span>
                 </div>
+              </div>
+              <span class="tl-meta">Sep 2018 – Jun 2023 · Cambridge</span>
+            </header>
+            <p>Earned a BSc in EECS and an MEng in AI while playing varsity football and joining Delta Kappa Epsilon. Learned to balance practice, travel, and labs, and how to perform when both the playbook and the problem set are due Saturday (and yes, sometimes literally at the same time).</p>
+            <div class="tag-row">
+              <span class="tag">Football</span>
+              <span class="tag">Computer Science</span>
+              <span class="tag">MIT Athletics</span>
+              <span class="tag">Delta Kappa Epsilon</span>
             </div>
+          </div>
+        </li>
 
-            <div class="subpage" data-subpagename="experience">
-                <div class="inner">
-                    <p style="display: flex; margin: auto;">Coming Soon!</p>
+        <li class="timeline-item reveal">
+          <div class="timeline-node"><span class="node-core"></span></div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo tl-icon-photo" aria-hidden="true">
+                  <img src="img/tess.jpg" alt="" loading="lazy" />
+                </span>
+                <div>
+                  <h3>ML Researcher — TESS & NICER</h3>
+                  <span class="tl-org">MIT Kavli Institute for Astrophysics</span>
                 </div>
+              </div>
+              <span class="tl-meta">Feb 2020 – Jan 2021 · Cambridge</span>
+            </header>
+            <p>Led astrophysics and space research at the Kavli Institute, with one researcher reporting to me. Built an image-classification pipeline that now analyzes TESS satellite images daily, hunting for supernovae and tidal-disruption events. Also designed an anomaly-detection model for NICER spacecraft health, replacing rigid rule-based monitoring with a scalable ML approach.</p>
+            <div class="tag-row">
+              <span class="tag">Astrophysics</span>
+              <span class="tag">Space Research</span>
+              <span class="tag">Computer Vision</span>
+              <span class="tag">Anomaly Detection</span>
             </div>
+          </div>
+        </li>
 
-            <div class="subpage" data-subpagename="education">
-                <div class="inner">
-
-                    <p style="display: flex; margin: auto;">Coming Soon!</p>
+        <li class="timeline-item reveal">
+          <div class="timeline-node"><span class="node-core"></span></div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo tl-icon-photo" aria-hidden="true">
+                  <img src="img/teamworthy.jpg" alt="" loading="lazy" />
+                </span>
+                <div>
+                  <h3>Associate</h3>
+                  <span class="tl-org">Teamworthy Ventures</span>
                 </div>
+              </div>
+              <span class="tl-meta">Jun 2021 – Aug 2021 · Greenwich, CT</span>
+            </header>
+            <p>Sourced and evaluated early- and growth-stage investments, then worked directly with portfolio companies (SeatGeek, HuntClub) on technical projects, shipping work alongside the investing.</p>
+            <div class="tag-row">
+              <span class="tag">Venture</span>
+              <span class="tag">Sourcing</span>
+              <span class="tag">Portfolio Ops</span>
             </div>
-            <div class="subpage" data-subpagename="blog">
-                <div class="inner">
-                    <p style="display: flex; margin: auto;">Coming Soon!</p>
+          </div>
+        </li>
+
+        <li class="timeline-item reveal">
+          <div class="timeline-node"><span class="node-core"></span></div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo" aria-hidden="true">
+                  <img src="img/390.png" alt="" loading="lazy" />
+                </span>
+                <div>
+                  <h3>Teaching Assistant — 6.390: Intro to ML</h3>
+                  <span class="tl-org">Massachusetts Institute of Technology</span>
                 </div>
+              </div>
+              <span class="tl-meta">Aug 2022 – Jun 2023 · Cambridge</span>
+            </header>
+            <p>Helped shape the learning experience for students across linear / logistic regression, neural networks, reinforcement learning, and attention-based methods. Created content, ran labs, and held office hours.</p>
+            <div class="tag-row">
+              <span class="tag">Teaching</span>
+              <span class="tag">Python</span>
+              <span class="tag">Machine Learning</span>
             </div>
+          </div>
+        </li>
 
-            <div class="subpage" data-subpagename="contact">
-                <div class="inner">
-
-                    <p style="display: flex; margin: auto;">Coming Soon!</p>
+        <li class="timeline-item reveal">
+          <div class="timeline-node"><span class="node-core"></span></div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo tl-icon-photo" aria-hidden="true">
+                  <img src="img/thoughtline.png" alt="" loading="lazy" />
+                </span>
+                <div>
+                  <h3>ThoughtLine — Lead Researcher</h3>
+                  <span class="tl-org">MIT Media Lab</span>
                 </div>
+              </div>
+              <span class="tl-meta">Sep 2022 – Jun 2023 · Cambridge</span>
+            </header>
+            <p>My first system of action. Led a team of undergraduate researchers building ThoughtLine, a multi-sided platform for audiotherapy research. Participants got a Spotify-like listening experience inside medical studies. Clinicians got a research backend: design studies, recruit real patients, track listening data, and administer questionnaires over time. NLP analyzed the responses, all in service of formally testing the efficacy of audiotherapy for mental wellness. Also designed DockMed, a flexible containerized architecture supporting quantitative research at scale.</p>
+            <a class="tl-link" href="https://dspace.mit.edu/handle/1721.1/151277" target="_blank" rel="noopener">
+              Read the MIT thesis
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+            <div class="tag-row">
+              <span class="tag">System of Action</span>
+              <span class="tag">Audiotherapy</span>
+              <span class="tag">Multi-sided Platform</span>
+              <span class="tag">NLP</span>
+              <span class="tag">Mental Wellness</span>
+              <span class="tag">Containers</span>
             </div>
+          </div>
+        </li>
 
-            <div class="subpage" data-subpagename="ai" style="display: flex; align-items: center; height: 100%;">
-                <div class="inner">
-
-                   <div style="margin: auto;"> 
-                    <h1 style="color: var(--khaki); margin-bottom: 0;">Talk to MC-AI</h1>
-                    <p style="display: flex; margin: 0; opacity: 0.5;  margin-top: 10px; margin-bottom: 20px;">(Coming Soon) Your personal guide to my work, projects, and ideas</p>
-                    <div style="width: 100%; height: 1px; background-color: var(--khaki);"></div>
-                    <p style="display: flex; margin: 0;  margin-top: 30px;">✨ MC-AI is an AI Agent that replaces personal websites. </p>
-                    <p style="display: flex; margin: 0; margin-top: 10px; opacity: 0.5; font-size: 14px;">Maybe commercial too? 🤷‍♂️</p>
-                    <p style="display: flex; margin: 0; margin-top: 30px;">🖥️ I was going to build a normal website, but this felt more... 🧙‍♂️ Magical!</p>
-                    <p style="display: flex; margin: 0; margin-top: 10px; opacity: 0.5; font-size: 14px;">I've never met a talking website before... have you?</p>
-                    <p style="display: flex; margin: 0; margin-top: 30px; color: orange;">🔥 Why have a website when people can just talk to your biggest fan?</p>
-                    <p style="display: flex; margin: 0; margin-top: 10px; opacity: 0.5; font-size: 14px;"> Imagine your own AI whose sole purpose for existing is to hype you up? So many use cases.</p>
-                    <p style="display: flex; margin: 0; margin-top: 30px;">📖 MC-AI will be open-source, so you can have your version for free.</p>
-                    <p style="display: flex; margin: 0; margin-top: 10px; opacity: 0.5; font-size: 14px;">Current Estimate: Q3 2026 ± 2.7 Qs</p>
-                    <p style="display: flex; margin: 0; margin-top: 30px;">💸 Just don’t steal my idea and start a company.</p>
-                    <p style="display: flex; margin: 0; margin-top: 10px; opacity: 0.5; font-size: 14px;">Or do if you want to compete with free. I made a deal with open source and I owe them this one.</p>
+        <li class="timeline-item active reveal">
+          <div class="timeline-node">
+            <span class="node-pulse"></span>
+            <span class="node-core"></span>
+          </div>
+          <div class="timeline-card glass-card" data-tilt>
+            <header class="tl-head">
+              <div class="tl-title">
+                <span class="tl-icon tl-icon-logo" aria-hidden="true">
+                  <img src="img/cn-logo-black-edge.webp" alt="" loading="lazy" />
+                </span>
+                <div>
+                  <h3>Founder</h3>
+                  <span class="tl-org">CustomerNode</span>
                 </div>
+              </div>
+              <span class="tl-meta">Jun 2023 – Present · NYC</span>
+            </header>
+            <p>My second system of action. Shipping CustomerNode, the execution layer for multi-stage B2B deals. The CRM watches; CustomerNode moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.</p>
+            <div class="tag-row">
+              <span class="tag">System of Action</span>
+              <span class="tag">Enterprise SaaS</span>
+              <span class="tag">B2B</span>
+              <span class="tag">Buyer Enablement</span>
+              <span class="tag">Founder</span>
             </div>
-        </main>
+          </div>
+        </li>
 
-        <!-- footer -->
-        <footer>
-            <p>&copy; 2025 Michael Cantow</p>
-        </footer>
+      </ol>
+    </section>
 
-    </body>
+    <!-- ═══════════ CONTACT ═══════════ -->
+    <section class="contact" id="contact" aria-labelledby="contact-heading">
+      <div class="contact-card glass-card">
+        <div class="contact-portrait">
+          <img src="img/headshot.png" alt="Portrait of Michael Cantow, founder of CustomerNode" width="220" height="220" loading="lazy" />
+          <div class="portrait-ring"></div>
+        </div>
+
+        <div class="contact-body">
+          <span class="section-kicker">04 · LET'S CONNECT</span>
+          <h2 class="section-title" id="contact-heading">
+            If you sell a solution with a <br />
+            <span class="grad-text">multi-stage buying process,</span> <br />
+            let's talk.
+          </h2>
+          <p class="contact-sub">
+            The fastest way to keep up is the CustomerNode page, where the thought leadership and announcements live.
+          </p>
+
+          <div class="contact-links">
+            <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="contact-link primary" data-magnet>
+              <span class="cl-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+              </span>
+              <div class="cl-body">
+                <span class="cl-label">CustomerNode</span>
+                <span class="cl-val">/company/customernode</span>
+              </div>
+              <svg class="cl-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+
+            <a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="me noopener" class="contact-link" data-magnet>
+              <span class="cl-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
+              </span>
+              <div class="cl-body">
+                <span class="cl-label">Personal LinkedIn</span>
+                <span class="cl-val">/in/mcantow</span>
+              </div>
+              <svg class="cl-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+
+            <a href="https://customernode.com" target="_blank" rel="noopener" class="contact-link" data-magnet>
+              <span class="cl-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+              </span>
+              <div class="cl-body">
+                <span class="cl-label">Product</span>
+                <span class="cl-val">customernode.com</span>
+              </div>
+              <svg class="cl-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="foot-left">
+        <span class="mc-tile mc-tile-sm">MC</span>
+        <span>© <span id="year">2026</span> Michael Cantow</span>
+      </div>
+      <div class="foot-right">
+        <span>Built in NYC</span>
+      </div>
+    </footer>
+
+  </main>
+
+  <script src="js/main.js" defer></script>
+</body>
 </html>
-<!-- https://hs.mahwah.k12.nj.us/academics/academic-recognition-accolades/academic-hall-of-fame -->

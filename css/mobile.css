@@ -1,52 +1,268 @@
-@media (max-width: 768px ) {
-    .header-content h1 {
-        font-size: 2.4em;
-    }
+/* ═══════════════════════════════════════════════════════════════
+   Responsive overrides
+   ═══════════════════════════════════════════════════════════════ */
 
-    .header-content p {
-        font-size: 1.4em;
-    }
+@media (max-width: 920px) {
+  .cn-content {
+    grid-template-columns: 1fr;
+    gap: 56px;
+  }
+  .cn-right { order: -1; }
+  .cn-mockup { max-width: 380px; }
+}
 
-    .expandedNav a{
-        font-size: 1.3em;
-    }
+@media (max-width: 768px) {
+  :root { --gutter: 20px; }
 
-    .expandedNav  ul{
-        margin-left: 40px !important;
-    }
+  /* ── Nav: strip the floating pill, anchor each button to an edge ── */
+  .nav {
+    top: 14px;
+    left: 16px;
+    right: 16px;
+    transform: none;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    gap: 0;
+    justify-content: space-between;
+    width: auto;
+    max-width: none;
+  }
+  .nav.hidden { transform: translateY(-180%); }
+  .nav-links { display: none; }
+  .nav-cta {
+    padding: 8px 14px;
+    font-size: 12px;
+    box-shadow: 0 4px 14px rgba(10, 10, 11, 0.18);
+  }
+  .mc-tile {
+    width: 36px; height: 36px;
+    font-size: 14px;
+    border-radius: 9px;
+    box-shadow: 0 4px 14px rgba(10, 10, 11, 0.18);
+  }
 
-    .topnavContainer svg{
-        width: 35px;
-        height: 35px;
-    }
+  /* ── Hero: mobile-native centered column ── */
+  .hero {
+    padding: 84px 24px 36px;
+  }
+  .hero-inner {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 
-    .topnavContainer .logo{
-        font-size: 1.8em;
-    }
+  /* Byline: drop pill, stack big avatar above text */
+  .hero-byline {
+    flex-direction: column;
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 14px;
+    margin-bottom: clamp(20px, 4vh, 36px);
+    align-items: center;
+    text-align: center;
+    max-width: 100%;
+  }
+  .byline-avatar {
+    width: 58px;
+    height: 58px;
+    box-shadow: 0 8px 24px rgba(10, 10, 11, 0.12);
+  }
+  .byline-full { display: none; }
+  .byline-short {
+    display: inline;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+  }
 
-    header.minify{
-        height: 65px !important;
-    }
+  /* Title: bigger, center, no width cap */
+  .hero-title {
+    font-size: clamp(38px, 10vw, 56px);
+    max-width: none;
+    line-height: 1.06;
+    margin-bottom: clamp(20px, 3vh, 28px);
+    letter-spacing: -0.035em;
+    text-align: center;
+  }
+  /* Role-flip drops to its own line so "I'm" sits alone above it */
+  .role-flip {
+    display: grid;
+    margin: 0.06em auto 0;
+  }
+  .hero-title .line-sub {
+    font-size: clamp(15px, 4.2vw, 20px);
+    max-width: 24ch;
+    margin: 12px auto 0;
+    letter-spacing: -0.015em;
+    color: var(--ink-2);
+  }
 
-    main .subpage h2{
-        color: var(--khaki);
-        font-size: 2.6em;
-        display: flex;
-        align-items: center;
-        margin: auto auto 30px auto;
-        top: 10px;
-        right: 0%;
-        transform: translateX(0%);
-        width: fit-content;
-    }
+  /* CTAs: stacked, full-width — easy thumb targets */
+  .hero-cta {
+    flex-direction: column;
+    width: 100%;
+    max-width: 360px;
+    gap: 10px;
+    align-items: stretch;
+  }
+  .hero-cta .btn {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 14px;
+    justify-content: center;
+  }
 
-    #subpageTitleContainer{
-        left: 100%;
-        transform: translateX(calc(-100% - 20px));
-        top: 12px;
-        font-size: 1.5em;
-    }
-    #subpageTitleContainer svg{
-        top: 7px;
-    }
+  /* Less busy hero decoration on mobile */
+  .hero-grid { background-size: 50px 50px; opacity: 0.7; }
+  .hero-canvas { opacity: 0.5; }
+  .hero-scroll { display: none; }
+
+  /* Thesis — editorial layout collapses to single column */
+  .thesis { padding: 80px 20px; }
+  .thesis-head { margin-bottom: 24px; }
+  .thesis .section-title { font-size: 22px; }
+
+  .summary-headline { font-size: 20px; line-height: 1.2; }
+  .summary-deck { font-size: 14px; padding-left: 12px; max-width: none; }
+  .axis {
+    grid-template-columns: 38px 1fr;
+    grid-template-rows: auto auto;
+    gap: 10px 16px;
+    padding: 20px 0;
+  }
+  .axis-num { grid-row: 1; grid-column: 1; align-self: start; padding-top: 4px; }
+  .axis-name { grid-row: 1; grid-column: 2; }
+  .axis-shift { grid-row: 2; grid-column: 2; font-size: 14px; gap: 10px; }
+  .cluster-compare {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 14px;
+    margin: 56px 0;
+  }
+  .cluster { padding: 24px; }
+  .cluster h4 { font-size: 20px; margin-bottom: 18px; }
+  .cluster li { padding: 12px 0; font-size: 15px; }
+  .cluster-arrow {
+    transform: rotate(90deg);
+    height: 30px;
+  }
+  .thesis-implications ul { grid-template-columns: 1fr; gap: 18px; }
+  .thesis-implications li { padding: 18px 0 0; }
+  .thesis-cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .thesis-cta-btn { width: 100%; justify-content: center; }
+  .section-head { margin-bottom: 48px; }
+
+  /* CN Showcase */
+  .cn-showcase { padding: 80px 20px; }
+  .cn-features li { padding: 14px 16px; }
+  .cn-ctas { width: 100%; }
+  .cn-ctas .btn { flex: 1; justify-content: center; }
+
+  /* Product mockup — rectangular layout, drop 3D tilt on mobile */
+  .cn-mockup {
+    max-width: min(380px, 92vw);
+    padding: 36px 14px;
+  }
+  .cn-journey-card {
+    transform: none;
+    animation: none;
+    padding: 16px 18px;
+  }
+  .cn-callout-action {
+    top: 0;
+    left: -8px;
+    padding: 10px 12px;
+    max-width: 200px;
+  }
+  .cn-callout-action .callout-body { font-size: 12px; }
+  .cn-callout-people {
+    bottom: 0;
+    right: -8px;
+    padding: 10px 12px;
+  }
+  .avatar-stack .av { width: 22px; height: 22px; font-size: 8px; }
+  .journey-co { font-size: 12px; }
+  .journey-meta { font-size: 9px; }
+  .journey-donut svg { width: 36px; height: 36px; }
+
+  /* Overview circle — tighter radius on mobile */
+  .journey-body { min-height: 240px; }
+  .overview-nodes { --node-radius: 84px; }
+  .ov-circle { width: 32px; height: 32px; font-size: 11px; }
+  .oc-title { font-size: 18px; }
+  .oc-label, .oc-hint { font-size: 8.5px; }
+
+  /* Detail view */
+  .detail-back { width: 24px; height: 24px; }
+  .detail-title { font-size: 9px; }
+  .panel-eyebrow { font-size: 8px; }
+  .qq-row, .cfg-row, .d-task { padding: 6px 8px; }
+  .qq-q, .cfg-label, .d-label { font-size: 10px; }
+  .qq-a, .d-meta, .cc-meta span { font-size: 8.5px; }
+  .cc-card { padding: 6px; }
+  .cc-meta strong { font-size: 9px; }
+  .kpi { padding: 8px; }
+  .kpi-value { font-size: 16px; }
+  .agent-label { font-size: 9.5px; }
+  .agent-orb { width: 12px; height: 12px; }
+  .ss-check { width: 40px; height: 40px; }
+  .ss-label { font-size: 13px; }
+
+  /* Journey */
+  .journey { padding: 80px 20px; }
+  .timeline { padding-left: 36px; margin-top: 56px; }
+  .timeline-node { left: -36px; }
+  .timeline-card { padding: 22px 20px; }
+  .tl-head { flex-direction: column; gap: 8px; }
+  .tl-head h3 { font-size: 18px; }
+  .tl-meta { white-space: normal; }
+
+  /* Contact */
+  .contact { padding: 80px 20px 60px; }
+  .contact-card {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    text-align: left;
+    padding: 32px 24px;
+  }
+  .contact-portrait { width: 140px; margin: 0; }
+  .contact-body .section-title { font-size: clamp(28px, 7vw, 40px); }
+  .contact-link { padding: 14px 16px; gap: 12px; }
+  .cl-icon { width: 36px; height: 36px; }
+  .cl-label { font-size: 13px; }
+
+  /* Footer */
+  .footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px 20px; }
+
+  /* Marquee */
+  .marquee { padding: 12px 0; }
+  .marquee-item { font-size: 13px; gap: 32px; }
+
+  /* Hero grid less dense on mobile */
+  .hero-grid { background-size: 50px 50px; }
+}
+
+@media (max-width: 420px) {
+  .hero { padding: 78px 20px 32px; }
+  .hero-title { font-size: 38px; letter-spacing: -0.03em; }
+  .hero-title .line-sub { font-size: 16px; }
+  .byline-avatar { width: 52px; height: 52px; }
+  .byline-short { font-size: 10px; letter-spacing: 0.1em; }
+  .section-title { font-size: 36px; }
+}
+
+@media (max-width: 360px) {
+  .hero-title { font-size: 34px; }
+  .byline-avatar { width: 48px; height: 48px; }
+  .hero-cta .btn { font-size: 13px; padding: 14px 16px; }
 }
