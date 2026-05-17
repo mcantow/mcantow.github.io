@@ -33,6 +33,9 @@
   }
   .nav.hidden { transform: translateY(-180%); }
   .nav-links { display: none; }
+  /* Push toggle right so it sits next to Follow (mc-tile stays alone on left).
+     Reserve breathing room between toggle and Follow button. */
+  .theme-toggle { margin-left: auto; margin-right: 10px; }
   .nav-cta {
     padding: 8px 14px;
     font-size: 12px;
@@ -83,11 +86,11 @@
 
   /* Title: bigger, center, no width cap */
   .hero-title {
-    font-size: clamp(38px, 10vw, 56px);
+    font-size: clamp(54px, 14vw, 76px);
     max-width: none;
-    line-height: 1.06;
-    margin-bottom: clamp(20px, 3vh, 28px);
-    letter-spacing: -0.035em;
+    line-height: 1.02;
+    margin-bottom: clamp(24px, 3.4vh, 32px);
+    letter-spacing: -0.04em;
     text-align: center;
   }
   /* Role-flip drops to its own line so "I'm" sits alone above it */
@@ -96,9 +99,9 @@
     margin: 0.06em auto 0;
   }
   .hero-title .line-sub {
-    font-size: clamp(15px, 4.2vw, 20px);
+    font-size: clamp(19px, 5vw, 24px);
     max-width: 24ch;
-    margin: 12px auto 0;
+    margin: 14px auto 0;
     letter-spacing: -0.015em;
     color: var(--ink-2);
   }
@@ -164,7 +167,10 @@
 
   /* CN Showcase */
   .cn-showcase { padding: 80px 20px; }
-  .cn-features li { padding: 14px 16px; }
+  .cn-steps > li { grid-template-columns: 48px 1fr; gap: 12px; padding: 18px 0; }
+  .step-num { font-size: 10px; padding-top: 4px; }
+  .step-body h3 { font-size: 20px; }
+  .step-body p { font-size: 13.5px; }
   .cn-ctas { width: 100%; }
   .cn-ctas .btn { flex: 1; justify-content: center; }
 
@@ -220,12 +226,48 @@
 
   /* Journey */
   .journey { padding: 80px 20px; }
-  .timeline { padding-left: 36px; margin-top: 56px; }
+  .timeline { padding-left: 36px; margin-top: 32px; }
   .timeline-node { left: -36px; }
   .timeline-card { padding: 22px 20px; }
-  .tl-head { flex-direction: column; gap: 8px; }
+
+  /* Journey aside: drop sticky on mobile, stack above timeline */
+  .journey-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .journey-aside {
+    position: static;
+    top: auto;
+  }
+  .journey-aside .section-title { font-size: clamp(38px, 10vw, 56px); }
+  .tracker-text { font-size: 20px; }
+
+  /* Section opener — compact on mobile */
+  .section-opener {
+    gap: 14px;
+    padding: 20px 0 8px;
+    margin-bottom: 32px;
+  }
+  .opener-num { font-size: 24px; }
+  .opener-label { font-size: 10px; letter-spacing: 0.14em; }
+  /* Timeline card head — left-align everything on mobile, top-align icons
+     so they sit consistently regardless of title line count */
+  .tl-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
   .tl-head h3 { font-size: 18px; }
+  .tl-title { align-items: flex-start; }
   .tl-meta { white-space: normal; }
+
+  /* Mobile: subtle scale-up on the card currently in view, no blur */
+  .timeline-item .timeline-card {
+    transition: transform 420ms var(--ease-spring), border-color 280ms, box-shadow 420ms ease;
+  }
+  .timeline-item.is-current .timeline-card {
+    transform: scale(1.025);
+  }
 
   /* Contact */
   .contact { padding: 80px 20px 60px; }
@@ -254,15 +296,16 @@
 
 @media (max-width: 420px) {
   .hero { padding: 78px 20px 32px; }
-  .hero-title { font-size: 38px; letter-spacing: -0.03em; }
-  .hero-title .line-sub { font-size: 16px; }
+  .hero-title { font-size: 52px; letter-spacing: -0.035em; }
+  .hero-title .line-sub { font-size: 19px; }
   .byline-avatar { width: 52px; height: 52px; }
   .byline-short { font-size: 10px; letter-spacing: 0.1em; }
   .section-title { font-size: 36px; }
 }
 
 @media (max-width: 360px) {
-  .hero-title { font-size: 34px; }
+  .hero-title { font-size: 46px; }
+  .hero-title .line-sub { font-size: 18px; }
   .byline-avatar { width: 48px; height: 48px; }
   .hero-cta .btn { font-size: 13px; padding: 14px 16px; }
 }

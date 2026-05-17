@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -150,6 +150,15 @@
       <a href="#journey" data-magnet>Journey</a>
       <a href="#contact" data-magnet>Contact</a>
     </nav>
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme" title="Toggle theme">
+      <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
     <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="nav-cta">
       <span>Follow</span>
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
@@ -198,14 +207,14 @@
     <section class="thesis" id="thesis" aria-labelledby="thesis-heading">
       <header class="thesis-head">
         <span class="section-kicker">01 · THE THESIS</span>
-        <h2 class="section-title" id="thesis-heading">
+        <h2 class="section-title reveal" id="thesis-heading">
           The next platform wins on <span class="grad-text">three axes</span>.
         </h2>
       </header>
 
       <div class="thesis-frame reveal">
-        <ol class="axes">
-          <li class="axis">
+        <ol class="axes reveal-stagger">
+          <li class="axis reveal-right">
             <span class="axis-num">01</span>
             <div class="axis-name">
               <h4>Stack position</h4>
@@ -217,7 +226,7 @@
               <span class="to">System of Action</span>
             </div>
           </li>
-          <li class="axis">
+          <li class="axis reveal-right">
             <span class="axis-num">02</span>
             <div class="axis-name">
               <h4>Architecture</h4>
@@ -229,7 +238,7 @@
               <span class="to">Process-centric</span>
             </div>
           </li>
-          <li class="axis">
+          <li class="axis reveal-right">
             <span class="axis-num">03</span>
             <div class="axis-name">
               <h4>Strategic data asset</h4>
@@ -244,8 +253,8 @@
         </ol>
       </div>
 
-      <div class="cluster-compare reveal">
-        <article class="cluster cluster-red">
+      <div class="cluster-compare reveal-stagger">
+        <article class="cluster cluster-red reveal-card">
           <span class="cluster-label">Red Ocean</span>
           <h4>What's saturated.</h4>
           <ul>
@@ -256,11 +265,11 @@
           <p class="cluster-foot">Distribution, trust, switching costs still matter. The position doesn't.</p>
         </article>
 
-        <div class="cluster-arrow" aria-hidden="true">
+        <div class="cluster-arrow reveal" aria-hidden="true">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         </div>
 
-        <article class="cluster cluster-blue">
+        <article class="cluster cluster-blue reveal-card">
           <span class="cluster-label">Blue Ocean</span>
           <h4>Where the next platforms get built.</h4>
           <ul>
@@ -290,60 +299,43 @@
 
     <!-- ═══════════ CUSTOMERNODE SHOWCASE ═══════════ -->
     <section class="cn-showcase" id="customernode" aria-labelledby="cn-heading">
+      <div class="section-opener reveal">
+        <span class="opener-num">— 02</span>
+        <span class="opener-rule"></span>
+        <span class="opener-label">What I'm building</span>
+      </div>
       <div class="cn-content">
-        <div class="cn-left">
-          <span class="section-kicker">02 · WHAT I'M BUILDING</span>
-          <h2 class="section-title" id="cn-heading">
+        <div class="cn-left reveal-left">
+          <h2 class="section-title reveal" id="cn-heading">
             <span class="grad-text">CustomerNode</span><span class="tm">™</span>
           </h2>
           <p class="cn-lead">
             Turn complex deals into executable journeys.
           </p>
 
-          <ul class="cn-features">
-            <li class="reveal">
-              <span class="feature-check">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M10.9 11.77C10.7943 11.7701 10.6898 11.7479 10.5933 11.7049C10.4968 11.6618 10.4105 11.5988 10.34 11.52C10.2704 11.4397 10.2185 11.3457 10.1875 11.2441C10.1564 11.1425 10.1471 11.0355 10.16 10.93C10.16 10.84 11.39 1.79001 19.38 1.79001C19.5625 1.79112 19.7384 1.85877 19.8746 1.98027C20.0109 2.10177 20.0981 2.26879 20.12 2.45001C20.3565 4.80481 19.6559 7.15798 18.17 9.00001C16.57 10.85 14.12 11.77 10.9 11.77Z"/>
-                  <path d="M10.9 11.76H10.81C8.4 11.46 3.81 9.59001 3.81 4.70001C3.81082 4.51636 3.87812 4.33921 3.99945 4.20133C4.12078 4.06346 4.28793 3.97418 4.47 3.95002C6.29444 3.76532 8.11851 4.30392 9.55 5.45001C10.2852 6.16484 10.8543 7.03244 11.2172 7.99148C11.5801 8.95052 11.7278 9.97758 11.65 11C11.6501 11.1057 11.6279 11.2102 11.5849 11.3067C11.5418 11.4032 11.4788 11.4896 11.4 11.56C11.2624 11.6839 11.0851 11.7548 10.9 11.76Z"/>
-                  <path d="M10.9 15.9C10.7011 15.9 10.5103 15.821 10.3697 15.6803C10.229 15.5397 10.15 15.3489 10.15 15.15V11C10.15 10.8011 10.229 10.6103 10.3697 10.4697C10.5103 10.329 10.7011 10.25 10.9 10.25C11.0989 10.25 11.2897 10.329 11.4303 10.4697C11.571 10.6103 11.65 10.8011 11.65 11V15.13C11.6541 15.2305 11.6376 15.3308 11.6016 15.4248C11.5657 15.5187 11.5109 15.6043 11.4407 15.6764C11.3705 15.7485 11.2864 15.8055 11.1934 15.8439C11.1004 15.8824 11.0006 15.9014 10.9 15.9Z"/>
-                  <path d="M13.5 22.21H8.7C7.71495 22.1943 6.77542 21.7926 6.08348 21.0913C5.39155 20.39 5.00249 19.4452 5 18.46V15.15C5 14.9511 5.07902 14.7603 5.21967 14.6197C5.36032 14.479 5.55109 14.4 5.75 14.4H16.5C16.6989 14.4 16.8897 14.479 17.0303 14.6197C17.171 14.7603 17.25 14.9511 17.25 15.15V18.46C17.2474 19.4537 16.8514 20.406 16.1487 21.1087C15.446 21.8114 14.4938 22.2074 13.5 22.21Z"/>
-                </svg>
-              </span>
-              <div>
-                <strong>Create</strong>
-                <span>Capture your process as a journey template.</span>
+          <ol class="cn-steps reveal-stagger" aria-label="What you do in CustomerNode">
+            <li class="cn-step reveal-left">
+              <span class="step-num">01 ⟶</span>
+              <div class="step-body">
+                <h3>Create<span class="step-verb-dot"></span></h3>
+                <p>Your best practices, made repeatable.</p>
               </div>
             </li>
-            <li class="reveal">
-              <span class="feature-check">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M9 6C9 7.65685 10.3431 9 12 9C13.6569 9 15 7.65685 15 6C15 4.34315 13.6569 3 12 3C10.3431 3 9 4.34315 9 6Z"/>
-                  <path d="M2.5 18C2.5 19.6569 3.84315 21 5.5 21C7.15685 21 8.5 19.6569 8.5 18C8.5 16.3431 7.15685 15 5.5 15C3.84315 15 2.5 16.3431 2.5 18Z"/>
-                  <path d="M18.5 21C16.8431 21 15.5 19.6569 15.5 18C15.5 16.3431 16.8431 15 18.5 15C20.1569 15 21.5 16.3431 21.5 18C21.5 19.6569 20.1569 21 18.5 21Z"/>
-                  <path d="M7.20468 7.56231C7.51523 7.28821 7.54478 6.81426 7.27069 6.5037C6.99659 6.19315 6.52264 6.1636 6.21208 6.43769C4.39676 8.03991 3.25 10.3865 3.25 13C3.25 13.4142 3.58579 13.75 4 13.75C4.41421 13.75 4.75 13.4142 4.75 13C4.75 10.8347 5.69828 8.89187 7.20468 7.56231Z"/>
-                  <path d="M17.7879 6.43769C17.4774 6.1636 17.0034 6.19315 16.7293 6.5037C16.4552 6.81426 16.4848 7.28821 16.7953 7.56231C18.3017 8.89187 19.25 10.8347 19.25 13C19.25 13.4142 19.5858 13.75 20 13.75C20.4142 13.75 20.75 13.4142 20.75 13C20.75 10.3865 19.6032 8.03991 17.7879 6.43769Z"/>
-                  <path d="M10.1869 20.0217C9.7858 19.9184 9.37692 20.1599 9.27367 20.561C9.17043 20.9622 9.41192 21.3711 9.81306 21.4743C10.5129 21.6544 11.2458 21.75 12 21.75C12.7542 21.75 13.4871 21.6544 14.1869 21.4743C14.5881 21.3711 14.8296 20.9622 14.7263 20.561C14.6231 20.1599 14.2142 19.9184 13.8131 20.0217C13.2344 20.1706 12.627 20.25 12 20.25C11.373 20.25 10.7656 20.1706 10.1869 20.0217Z"/>
-                </svg>
-              </span>
-              <div>
-                <strong>Share</strong>
-                <span>Bring the customer inside the journey from day one.</span>
+            <li class="cn-step reveal-left">
+              <span class="step-num">02 ⟶</span>
+              <div class="step-body">
+                <h3>Share<span class="step-verb-dot"></span></h3>
+                <p>One workflow, both teams. No handoffs.</p>
               </div>
             </li>
-            <li class="reveal">
-              <span class="feature-check">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                  <path d="M8 16.016a7.5 7.5 0 0 0 1.962-14.74A1 1 0 0 0 9 0H7a1 1 0 0 0-.962 1.276A7.5 7.5 0 0 0 8 16.016m6.5-7.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0"/>
-                  <path d="m6.94 7.44 4.95-2.83-2.83 4.95-4.949 2.83 2.828-4.95z"/>
-                </svg>
-              </span>
-              <div>
-                <strong>Navigate</strong>
-                <span>Stages, owners, outcomes — and agents that move it forward.</span>
+            <li class="cn-step reveal-left">
+              <span class="step-num">03 ⟶</span>
+              <div class="step-body">
+                <h3>Navigate<span class="step-verb-dot"></span></h3>
+                <p>Predictable execution, at any scale.</p>
               </div>
             </li>
-          </ul>
+          </ol>
 
           <div class="cn-ctas">
             <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="btn btn-primary" data-magnet>
@@ -358,8 +350,8 @@
 
         </div>
 
-        <div class="cn-right">
-          <div class="cn-mockup" id="cnJourneyMockup" aria-hidden="true">
+        <div class="cn-right reveal-right">
+          <div class="cn-mockup" id="cnJourneyMockup" data-mouse-tilt aria-hidden="true">
             <div class="cn-mockup-glow"></div>
 
             <!-- Floating "next action" callout (left) -->
@@ -658,20 +650,23 @@
 
     <!-- ═══════════ JOURNEY / EXPERIENCE ═══════════ -->
     <section class="journey" id="journey" aria-labelledby="journey-heading">
-      <div class="section-head">
-        <span class="section-kicker">03 · THE JOURNEY</span>
-        <h2 class="section-title" id="journey-heading">
-          My journey <br />
-          <span class="grad-text">to here.</span>
-        </h2>
-        <p class="section-sub">
-          Engineering, research, investing, teaching, football. Each stage shaped how I build today: rigorous thinking, clear communication, systems designed to perform under pressure.
-        </p>
-      </div>
+      <div class="journey-grid">
+        <aside class="journey-aside">
+          <div class="journey-aside-inner reveal">
+            <span class="section-kicker journey-kicker">— 03</span>
+            <h2 class="section-title" id="journey-heading">My journey.</h2>
+            <div class="journey-tracker" aria-hidden="true">
+              <span class="tracker-label">Now showing</span>
+              <span class="tracker-text" id="trackerText">Mahwah · 2014</span>
+              <div class="tracker-bar" id="trackerBar"></div>
+              <span class="tracker-count" id="trackerCount">01 / 07</span>
+            </div>
+          </div>
+        </aside>
 
-      <ol class="timeline">
+      <ol class="timeline reveal-stagger" id="journeyTimeline">
 
-        <li class="timeline-item reveal">
+        <li class="timeline-item reveal-card" data-tracker="Mahwah, NJ · 2014">
           <div class="timeline-node"><span class="node-core"></span></div>
           <div class="timeline-card glass-card" data-tilt>
             <header class="tl-head">
@@ -696,7 +691,7 @@
           </div>
         </li>
 
-        <li class="timeline-item reveal">
+        <li class="timeline-item reveal-card" data-tracker="MIT · 2018">
           <div class="timeline-node"><span class="node-core"></span></div>
           <div class="timeline-card glass-card" data-tilt>
             <header class="tl-head">
@@ -721,7 +716,7 @@
           </div>
         </li>
 
-        <li class="timeline-item reveal">
+        <li class="timeline-item reveal-card" data-tracker="MIT Kavli · 2020">
           <div class="timeline-node"><span class="node-core"></span></div>
           <div class="timeline-card glass-card" data-tilt>
             <header class="tl-head">
@@ -746,7 +741,7 @@
           </div>
         </li>
 
-        <li class="timeline-item reveal">
+        <li class="timeline-item reveal-card" data-tracker="Teamworthy · 2021">
           <div class="timeline-node"><span class="node-core"></span></div>
           <div class="timeline-card glass-card" data-tilt>
             <header class="tl-head">
@@ -770,7 +765,7 @@
           </div>
         </li>
 
-        <li class="timeline-item reveal">
+        <li class="timeline-item reveal-card" data-tracker="MIT 6.390 · 2022">
           <div class="timeline-node"><span class="node-core"></span></div>
           <div class="timeline-card glass-card" data-tilt>
             <header class="tl-head">
@@ -794,7 +789,7 @@
           </div>
         </li>
 
-        <li class="timeline-item reveal">
+        <li class="timeline-item reveal-card" data-tracker="ThoughtLine · 2022">
           <div class="timeline-node"><span class="node-core"></span></div>
           <div class="timeline-card glass-card" data-tilt>
             <header class="tl-head">
@@ -825,7 +820,7 @@
           </div>
         </li>
 
-        <li class="timeline-item active reveal">
+        <li class="timeline-item active reveal-card" data-tracker="CustomerNode · NOW">
           <div class="timeline-node">
             <span class="node-pulse"></span>
             <span class="node-core"></span>
@@ -855,19 +850,24 @@
         </li>
 
       </ol>
+      </div><!-- /.journey-grid -->
     </section>
 
     <!-- ═══════════ CONTACT ═══════════ -->
     <section class="contact" id="contact" aria-labelledby="contact-heading">
-      <div class="contact-card glass-card">
+      <div class="section-opener reveal">
+        <span class="opener-num">— 04</span>
+        <span class="opener-rule"></span>
+        <span class="opener-label">Let's connect</span>
+      </div>
+      <div class="contact-card glass-card reveal-card">
         <div class="contact-portrait">
           <img src="img/headshot.png" alt="Portrait of Michael Cantow, founder of CustomerNode" width="220" height="220" loading="lazy" />
           <div class="portrait-ring"></div>
         </div>
 
         <div class="contact-body">
-          <span class="section-kicker">04 · LET'S CONNECT</span>
-          <h2 class="section-title" id="contact-heading">
+          <h2 class="section-title reveal" id="contact-heading">
             If you sell a solution with a <br />
             <span class="grad-text">multi-stage buying process,</span> <br />
             let's talk.
@@ -876,8 +876,8 @@
             The fastest way to keep up is the CustomerNode page, where the thought leadership and announcements live.
           </p>
 
-          <div class="contact-links">
-            <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="contact-link primary" data-magnet>
+          <div class="contact-links reveal-stagger">
+            <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener" class="contact-link primary reveal-right" data-magnet>
               <span class="cl-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
               </span>
@@ -888,7 +888,7 @@
               <svg class="cl-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </a>
 
-            <a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="me noopener" class="contact-link" data-magnet>
+            <a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="me noopener" class="contact-link reveal-right" data-magnet>
               <span class="cl-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg>
               </span>
@@ -899,7 +899,7 @@
               <svg class="cl-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
             </a>
 
-            <a href="https://customernode.com" target="_blank" rel="noopener" class="contact-link" data-magnet>
+            <a href="https://customernode.com" target="_blank" rel="noopener" class="contact-link reveal-right" data-magnet>
               <span class="cl-icon">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
               </span>
@@ -920,7 +920,7 @@
         <span>© <span id="year">2026</span> Michael Cantow</span>
       </div>
       <div class="foot-right">
-        <span>Built in NYC</span>
+        <img src="img/dead.png" alt="" aria-hidden="true" class="foot-dead" loading="lazy" />
       </div>
     </footer>
 
