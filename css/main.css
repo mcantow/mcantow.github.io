@@ -85,18 +85,22 @@ button { font: inherit; cursor: pointer; }
   border: 0;
 }
 
-/* Paper grain texture (subtle) */
+/* Paper grain texture — ambient grid pattern across the page */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 1;
+  z-index: 0;
   opacity: 0.025;
   background-image:
     radial-gradient(circle at 1px 1px, var(--ink) 1px, transparent 0);
   background-size: 3px 3px;
   mix-blend-mode: multiply;
+}
+.theme-dark body::before {
+  mix-blend-mode: screen;
+  opacity: 0.04;
 }
 
 
@@ -193,6 +197,38 @@ body::before {
 }
 
 .nav.hidden { transform: translateX(-50%) translateY(-160%); opacity: 0; }
+
+/* Theme toggle — between nav-links and the Follow CTA */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid var(--hair-strong);
+  color: var(--ink-2);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    border-color var(--dur-fast),
+    color var(--dur-fast),
+    background var(--dur-fast);
+}
+.theme-toggle:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  transform: rotate(-12deg);
+}
+.theme-toggle svg { display: block; }
+/* Light theme: show moon (means: click to go dark) */
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+/* Dark theme: show sun (means: click to go light) */
+html.theme-dark .theme-toggle .icon-sun { display: block; }
+html.theme-dark .theme-toggle .icon-moon { display: none; }
 
 /* ═══════════ COMMON ═══════════ */
 .section-kicker {
@@ -854,12 +890,30 @@ body::before {
 
 /* ═══════════ CN SHOWCASE ═══════════ */
 .cn-showcase {
+  /* Inverted theme zone — the CN section always uses the OPPOSITE palette
+     from the rest of the site. Variables scoped to this section flip the
+     whole cascade: text, cards, mockup, callouts. */
+  --paper:  #0B0B14;
+  --paper-2: #11121D;
+  --paper-3: #1A1C2A;
+  --ink:   #F4F4ED;
+  --ink-2: rgba(244, 244, 237, 0.74);
+  --ink-3: rgba(244, 244, 237, 0.50);
+  --ink-4: rgba(244, 244, 237, 0.28);
+  --hair: rgba(255, 255, 255, 0.08);
+  --hair-strong: rgba(255, 255, 255, 0.16);
+
   position: relative;
   padding: 140px var(--gutter);
   overflow: hidden;
-  background: var(--paper-2);
-  border-top: 1px solid var(--hair);
-  border-bottom: 1px solid var(--hair);
+  color: var(--ink);
+  background:
+    radial-gradient(60% 50% at 72% 50%, rgba(120, 115, 245, 0.18), transparent 65%),
+    radial-gradient(50% 40% at 22% 50%, rgba(86, 154, 241, 0.12), transparent 65%),
+    var(--paper);
+  border-top: 1px solid rgba(10, 10, 11, 0.12);
+  border-bottom: 1px solid rgba(10, 10, 11, 0.12);
+  z-index: 2;
 }
 
 .cn-content {
@@ -880,47 +934,84 @@ body::before {
   line-height: 1.55;
 }
 
-.cn-features { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
-.cn-features li {
-  display: flex;
-  gap: 16px;
-  padding: 18px 20px;
-  background: var(--paper);
-  border: 1px solid var(--hair);
-  border-radius: var(--r-md);
-  transition: border-color var(--dur), transform var(--dur) var(--ease-spring), background var(--dur);
-  align-items: flex-start;
+/* ── CN steps: editorial numbered phases (replaces stock feature list) ── */
+.cn-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 36px;
+  border-top: 1px solid var(--hair);
 }
-.cn-features li:hover {
-  border-color: rgba(120, 115, 245, 0.4);
-  background: rgba(120, 115, 245, 0.03);
-  transform: translateX(4px);
+.cn-steps > li {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: baseline;
+  gap: 18px;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hair);
+  position: relative;
+  transition: background var(--dur);
 }
-.feature-check {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(120, 115, 245, 0.10);
-  border: 1px solid rgba(120, 115, 245, 0.22);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--purple);
-  flex-shrink: 0;
-  transition: all var(--dur) var(--ease-spring);
+.cn-steps > li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 1px;
+  width: 0;
+  background: var(--grad-cn);
+  transition: width 600ms var(--ease-reveal);
 }
-.cn-features li:hover .feature-check {
-  background: rgba(120, 115, 245, 0.16);
-  border-color: rgba(120, 115, 245, 0.4);
-  transform: scale(1.05);
-}
-.cn-features strong {
-  display: block;
-  font-size: 15px;
+.cn-steps > li:hover::before { width: 100%; }
+.step-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 600;
-  color: var(--ink);
-  margin-bottom: 2px;
+  letter-spacing: 0.16em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  padding-top: 6px;
+  transition: color var(--dur);
 }
-.cn-features span { font-size: 13px; color: var(--ink-3); }
+.cn-steps > li:hover .step-num {
+  background: var(--grad-cn);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+.step-body { min-width: 0; }
+.step-body h3 {
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.2vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.1;
+  margin: 0 0 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.step-verb-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--purple);
+  display: inline-block;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 350ms var(--ease-reveal), transform 450ms var(--ease-spring);
+}
+.cn-steps > li:hover .step-verb-dot {
+  opacity: 1;
+  transform: translateX(0);
+}
+.step-body p {
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-3);
+  margin: 0;
+  max-width: 38ch;
+}
 
 .cn-ctas { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
 
@@ -2147,13 +2238,14 @@ body::before {
   position: absolute;
   z-index: 3;
   padding: 14px 16px;
-  background: rgba(255, 255, 255, 0.88);
+  background: var(--callout-bg);
   backdrop-filter: blur(20px) saturate(1.4);
   -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  border: 1px solid var(--hair-strong);
+  border: 1px solid var(--callout-border);
   border-radius: var(--r-md);
-  box-shadow: 0 16px 40px rgba(10, 10, 11, 0.12), 0 4px 12px rgba(10, 10, 11, 0.05);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.20), 0 4px 12px rgba(0, 0, 0, 0.10);
   font-family: var(--font-body);
+  color: var(--ink);
 }
 .cn-callout-action {
   top: 6%;
@@ -2428,6 +2520,440 @@ body::before {
   max-width: var(--maxw);
   margin: 0 auto;
 }
+/* ═══════════════════════════════════════════════════════════════
+   THEME DARK — applied to the bottom of the page (Journey + Contact + Footer).
+   Inverts the paper/ink palette while keeping the CN brand accents.
+   ═══════════════════════════════════════════════════════════════ */
+.theme-dark {
+  /* Inverted paper/ink palette */
+  --paper:  #0B0B14;
+  --paper-2: #11121D;
+  --paper-3: #1A1C2A;
+  --ink:   #F4F4ED;
+  --ink-2: rgba(244, 244, 237, 0.74);
+  --ink-3: rgba(244, 244, 237, 0.50);
+  --ink-4: rgba(244, 244, 237, 0.28);
+  --hair: rgba(255, 255, 255, 0.07);
+  --hair-strong: rgba(255, 255, 255, 0.14);
+
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+}
+.theme-dark > * { position: relative; z-index: 1; }
+
+/* Subtle ambient gradient orbs scattered through the dark zone */
+.theme-dark::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(40% 30% at 80% 8%, rgba(120, 115, 245, 0.10), transparent 60%),
+    radial-gradient(50% 35% at 12% 55%, rgba(86, 154, 241, 0.08), transparent 60%),
+    radial-gradient(30% 25% at 75% 95%, rgba(120, 115, 245, 0.14), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Card treatments adjusted for dark — lifted off the page with strong cast +
+   a subtle blurple under-glow so each step reads as floating */
+.theme-dark .timeline-card {
+  background: linear-gradient(180deg, #15172A 0%, #11121D 100%);
+  border-color: rgba(255, 255, 255, 0.10);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 -1px 0 rgba(255, 255, 255, 0.02) inset,
+    0 2px 4px rgba(0, 0, 0, 0.4),
+    0 12px 32px rgba(0, 0, 0, 0.55),
+    0 32px 64px rgba(0, 0, 0, 0.35),
+    0 56px 96px rgba(86, 154, 241, 0.06);
+}
+.theme-dark .timeline-card:hover {
+  border-color: rgba(120, 115, 245, 0.4);
+  transform: translate(6px, -4px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.10) inset,
+    0 4px 8px rgba(0, 0, 0, 0.5),
+    0 24px 48px rgba(0, 0, 0, 0.6),
+    0 48px 96px rgba(120, 115, 245, 0.18);
+}
+.theme-dark .timeline::before {
+  background: rgba(255, 255, 255, 0.10);
+}
+.theme-dark .node-core {
+  background: var(--paper);
+  border-color: var(--ink-3);
+}
+.theme-dark .tl-icon {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+.theme-dark .tl-icon-logo {
+  background: #fff; /* keep logos on white tile for readability */
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+/* Tags on dark */
+.theme-dark .tag {
+  background: rgba(120, 115, 245, 0.10);
+  border-color: rgba(120, 115, 245, 0.25);
+  color: rgba(200, 200, 255, 0.95);
+}
+
+/* Contact section on dark */
+.theme-dark .contact-card {
+  background: rgba(17, 19, 30, 0.045);
+  border-color: rgba(255, 255, 255, 0.22);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.10) inset,
+    0 24px 60px rgba(0, 0, 0, 0.5),
+    0 48px 120px rgba(120, 115, 245, 0.18);
+}
+.theme-dark .contact-card::after {
+  background: radial-gradient(circle, rgba(120, 115, 245, 0.14), transparent 60%);
+}
+.theme-dark .contact-link {
+  background: rgba(255, 255, 255, 0.025);
+  border-color: var(--hair);
+}
+.theme-dark .contact-link:hover {
+  background: rgba(120, 115, 245, 0.10);
+  border-color: rgba(120, 115, 245, 0.4);
+}
+.theme-dark .contact-link.primary {
+  background: var(--grad-cn);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(120, 115, 245, 0.35);
+  /* Gradients can't natively transition between values — drive the hover via
+     filter + shadow so the change is smooth instead of a flash */
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    filter 260ms ease,
+    box-shadow 260ms ease;
+}
+.theme-dark .contact-link.primary .cl-label,
+.theme-dark .contact-link.primary .cl-val,
+.theme-dark .contact-link.primary .cl-arrow { color: #fff; }
+.theme-dark .contact-link.primary .cl-val { opacity: 0.85; }
+.theme-dark .contact-link.primary:hover {
+  filter: brightness(1.12);
+  box-shadow: 0 14px 40px rgba(120, 115, 245, 0.55);
+}
+.theme-dark .contact-link.primary .cl-icon {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+.theme-dark .cl-icon {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--hair);
+  color: var(--ink);
+}
+.theme-dark .contact-portrait::after { background: var(--paper-2); }
+
+/* Footer on dark */
+.theme-dark .footer {
+  border-top-color: var(--hair);
+}
+.theme-dark .mc-tile {
+  background: var(--paper-2);
+  color: var(--ink);
+  border: 1px solid var(--hair-strong);
+}
+.theme-dark .foot-dead { filter: grayscale(1) invert(1); opacity: 0.4; }
+.theme-dark .foot-dead:hover {
+  filter: grayscale(0) invert(0)
+    drop-shadow(0 0 6px rgba(255, 80, 80, 0.55))
+    drop-shadow(0 0 12px rgba(86, 154, 241, 0.55))
+    drop-shadow(0 0 16px rgba(120, 115, 245, 0.5));
+  opacity: 1;
+}
+
+/* Section kicker on dark */
+.theme-dark .section-kicker {
+  color: var(--ink-3);
+}
+.theme-dark .section-kicker::before {
+  background: var(--ink-3);
+}
+
+/* Nav pill — hardcoded light cream, override for dark */
+.theme-dark .nav {
+  background: rgba(11, 11, 20, 0.7);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+.theme-dark .nav-links a:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Hero byline pill — was low-alpha dark (invisible on dark page) */
+.theme-dark .hero-byline {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--hair-strong);
+}
+
+/* Grain texture overlay: invisible on dark anyway, hide it */
+.theme-dark body::before { display: none; }
+html.theme-dark body::before { display: none; }
+
+/* Buttons: inverted naturally via vars (light bg with dark text on dark page) —
+   but .btn-primary's hover bg becomes light purple which might be too bright. */
+.theme-dark .btn-primary:hover {
+  background: var(--purple);
+  color: #fff;
+}
+
+/* Inline link: gradient underline still works, just ensure hover text contrast */
+.theme-dark .inline-link:hover { color: #fff; }
+
+/* When the SITE is dark, flip the CN section back to LIGHT — so the
+   section is always the opposite palette of the rest of the page */
+.theme-dark .cn-showcase {
+  --paper:  #F8F7F4;
+  --paper-2: #FFFFFF;
+  --paper-3: #EFEEE9;
+  --ink:   #0A0A0B;
+  --ink-2: rgba(10, 10, 11, 0.72);
+  --ink-3: rgba(10, 10, 11, 0.52);
+  --ink-4: rgba(10, 10, 11, 0.32);
+  --hair: rgba(10, 10, 11, 0.10);
+  --hair-strong: rgba(10, 10, 11, 0.16);
+  background:
+    radial-gradient(60% 50% at 72% 50%, rgba(120, 115, 245, 0.08), transparent 65%),
+    radial-gradient(50% 40% at 22% 50%, rgba(86, 154, 241, 0.06), transparent 65%),
+    var(--paper);
+  border-top-color: rgba(10, 10, 11, 0.10);
+  border-bottom-color: rgba(10, 10, 11, 0.10);
+}
+
+/* The mockup re-inverts back to the SITE theme so the "product screenshot"
+   always contrasts with the section it sits on top of */
+.cn-showcase .cn-mockup {
+  --paper:  #F8F7F4;
+  --paper-2: #FFFFFF;
+  --paper-3: #EFEEE9;
+  --ink:   #0A0A0B;
+  --ink-2: rgba(10, 10, 11, 0.72);
+  --ink-3: rgba(10, 10, 11, 0.52);
+  --ink-4: rgba(10, 10, 11, 0.32);
+  --hair: rgba(10, 10, 11, 0.10);
+  --hair-strong: rgba(10, 10, 11, 0.16);
+  --callout-bg: rgba(255, 255, 255, 0.92);
+  --callout-border: rgba(10, 10, 11, 0.16);
+  color: var(--ink);
+}
+.theme-dark .cn-showcase .cn-mockup {
+  --paper:  #0B0B14;
+  --paper-2: #11121D;
+  --paper-3: #1A1C2A;
+  --ink:   #F4F4ED;
+  --ink-2: rgba(244, 244, 237, 0.74);
+  --ink-3: rgba(244, 244, 237, 0.50);
+  --ink-4: rgba(244, 244, 237, 0.28);
+  --hair: rgba(255, 255, 255, 0.08);
+  --hair-strong: rgba(255, 255, 255, 0.16);
+  --callout-bg: rgba(17, 18, 29, 0.94);
+  --callout-border: rgba(255, 255, 255, 0.14);
+}
+
+/* Thesis cluster cards: had paper-2 bg, on dark looks like dark cards — that's fine */
+
+/* ─── Journey → Contact squiggle bridge ─── */
+.journey-bridge {
+  position: relative;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  height: 200px;
+  pointer-events: none;
+}
+.journey-bridge .bridge-svg {
+  position: absolute;
+  /* align start of path (x=11 in viewBox) with the timeline rail */
+  left: calc(var(--gutter) + 48px);
+  top: -56px; /* extend up so the curve appears to come out of the rail */
+  width: 60%;
+  max-width: 460px;
+  height: 260px;
+  overflow: visible;
+}
+.bridge-path {
+  stroke-dasharray: 700;
+  stroke-dashoffset: 700;
+  filter: drop-shadow(0 0 6px rgba(120, 115, 245, 0.35));
+  transition: stroke-dashoffset 1800ms var(--ease-reveal);
+}
+.journey-bridge.is-visible .bridge-path {
+  stroke-dashoffset: 0;
+}
+.bridge-end {
+  position: absolute;
+  left: calc(var(--gutter) + 48px + 60% - 8px);
+  bottom: -2px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--blurple);
+  box-shadow: 0 0 0 0 rgba(86, 154, 241, 0.55);
+  opacity: 0;
+  transition: opacity 0.4s 1.4s, box-shadow 1.6s ease 1.4s;
+}
+.journey-bridge.is-visible .bridge-end {
+  opacity: 1;
+  animation: bridgeEndPulse 2s ease-out 1.6s infinite;
+}
+@keyframes bridgeEndPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(86, 154, 241, 0.55); }
+  50%      { box-shadow: 0 0 0 10px rgba(86, 154, 241, 0); }
+}
+
+/* Body text in italic deck stays purple-rule, but italic em stays ink */
+.theme-dark .section-title em {
+  color: var(--ink-2);
+}
+
+/* ─── Section opener: dramatic chapter break across the section's full width ─── */
+.section-opener {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(20px, 3vw, 36px);
+  max-width: var(--maxw);
+  margin: 0 auto clamp(48px, 6vw, 80px);
+  padding: clamp(8px, 1vw, 16px) 0 clamp(12px, 1.5vw, 24px);
+}
+.opener-num {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.6vw, 48px);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.opener-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--hair-strong), transparent);
+  align-self: center;
+}
+.opener-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+/* Contact section as finale — atmospheric glow behind the contact card so
+   the section reads as a destination, not just another fade-in */
+.contact {
+  position: relative;
+  isolation: isolate;
+}
+.contact-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  pointer-events: auto;
+}
+.contact-canvas.is-ready { opacity: 0.9; }
+.contact > *:not(.contact-canvas) { position: relative; z-index: 1; }
+
+/* Journey section: sticky aside (header pins) + scrolling timeline */
+.journey-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) 1.6fr;
+  gap: clamp(40px, 6vw, 88px);
+  align-items: start;
+}
+.journey-aside {
+  position: sticky;
+  top: 96px; /* clear the fixed nav */
+  align-self: start;
+}
+.journey-aside-inner {
+  display: flex;
+  flex-direction: column;
+}
+.journey-aside .section-kicker { margin-bottom: 18px; }
+/* Special-case Journey kicker: no leading rule, larger, stand-alone */
+.journey-kicker {
+  font-family: var(--font-display);
+  font-size: clamp(14px, 1.4vw, 17px);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-3);
+  padding: 0;
+  background: none;
+  border: none;
+}
+.journey-kicker::before { display: none; }
+.journey-aside .section-title {
+  font-size: clamp(42px, 5.6vw, 76px);
+  margin: 0;
+}
+
+/* "Now showing" tracker — live label that updates as cards scroll past */
+.journey-tracker {
+  margin-top: clamp(28px, 3vw, 40px);
+  padding-top: clamp(20px, 2.4vw, 28px);
+  border-top: 1px solid var(--hair);
+}
+.tracker-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+.tracker-text {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(22px, 2.4vw, 30px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.15;
+  transition: opacity 220ms ease, transform 320ms var(--ease-reveal);
+}
+.tracker-text.is-changing {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+.tracker-bar {
+  display: flex;
+  gap: 4px;
+  margin-top: 18px;
+}
+.tracker-bar > span {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--hair-strong);
+  transition: background 360ms var(--ease-reveal);
+}
+.tracker-bar > span.is-on {
+  background: var(--grad-cn);
+}
+.tracker-count {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  margin-top: 10px;
+}
+
 .timeline {
   position: relative;
   margin-top: 80px;
@@ -2488,12 +3014,42 @@ body::before {
   background: var(--paper-2);
   border: 1px solid var(--hair);
   border-radius: var(--r-lg);
-  transition: transform var(--dur) var(--ease-spring), border-color var(--dur), box-shadow var(--dur);
+  /* Floating-card elevation at rest: subtle long shadow + inset top highlight
+     so cards read as physically lifted off the page */
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.7) inset,
+    0 1px 2px rgba(10, 10, 11, 0.04),
+    0 8px 24px rgba(10, 10, 11, 0.05),
+    0 24px 48px rgba(10, 10, 11, 0.03);
+  transition:
+    transform 360ms var(--ease-spring),
+    border-color 280ms,
+    box-shadow 360ms ease,
+    filter 600ms var(--ease-reveal),
+    opacity 600ms var(--ease-reveal);
+  position: relative;
+}
+
+/* Focus the card currently in the tracker zone; soften the others.
+   Desktop only — mobile has no sticky aside so depth-of-field doesn't apply. */
+@media (min-width: 769px) {
+  .timeline-item:not(.is-current) .timeline-card {
+    filter: blur(2px);
+    opacity: 0.38;
+  }
+  .timeline-item.is-current .timeline-card {
+    filter: blur(0);
+    opacity: 1;
+  }
 }
 .timeline-card:hover {
   border-color: var(--hair-strong);
-  box-shadow: var(--shadow-md);
-  transform: translateX(6px);
+  transform: translate(6px, -3px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.8) inset,
+    0 4px 8px rgba(10, 10, 11, 0.06),
+    0 16px 40px rgba(10, 10, 11, 0.10),
+    0 40px 80px rgba(10, 10, 11, 0.06);
 }
 .tl-head {
   display: flex;
@@ -2632,8 +3188,12 @@ body::before {
 }
 .contact-card {
   padding: clamp(40px, 6vw, 80px);
-  background: var(--paper-2);
-  border: 1px solid var(--hair);
+  /* Real frosted glass: very low tint + minimal blur so particles
+     are clearly individually visible through the card */
+  background: rgba(248, 247, 244, 0.045);
+  backdrop-filter: blur(0.75px) saturate(1.6);
+  -webkit-backdrop-filter: blur(0.75px) saturate(1.6);
+  border: 1px solid var(--hair-strong);
   border-radius: var(--r-xl);
   display: grid;
   grid-template-columns: 220px 1fr;
@@ -2641,6 +3201,10 @@ body::before {
   align-items: center;
   position: relative;
   overflow: hidden;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 24px 60px rgba(10, 10, 11, 0.20),
+    0 48px 120px rgba(120, 115, 245, 0.10);
 }
 .contact-card::after {
   content: '';
@@ -2711,14 +3275,24 @@ body::before {
   transform: translateX(4px);
 }
 .contact-link.primary {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: var(--paper);
+  background: var(--grad-cn);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(120, 115, 245, 0.30);
+  /* Gradients can't transition between values — drive hover via filter + shadow */
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    filter 260ms ease,
+    box-shadow 260ms ease;
 }
 .contact-link.primary:hover {
-  background: var(--purple);
-  border-color: var(--purple);
+  filter: brightness(1.12);
+  box-shadow: 0 14px 40px rgba(120, 115, 245, 0.50);
 }
+.contact-link.primary .cl-label,
+.contact-link.primary .cl-val,
+.contact-link.primary .cl-arrow { color: #fff; }
+.contact-link.primary .cl-val { opacity: 0.85; }
 
 .cl-icon {
   width: 40px; height: 40px;
@@ -2773,16 +3347,104 @@ body::before {
 }
 .foot-left { display: flex; align-items: center; gap: 14px; }
 
+/* Easter egg: Steal Your Face in the corner */
+.foot-dead {
+  height: 22px;
+  width: auto;
+  opacity: 0.35;
+  filter: grayscale(1);
+  transition: opacity 600ms var(--ease-reveal), filter 600ms var(--ease-reveal), transform 600ms var(--ease-spring);
+  cursor: default;
+}
+.foot-dead:hover {
+  opacity: 1;
+  filter: grayscale(0)
+    drop-shadow(0 0 6px rgba(255, 80, 80, 0.55))
+    drop-shadow(0 0 12px rgba(86, 154, 241, 0.55))
+    drop-shadow(0 0 16px rgba(120, 115, 245, 0.4));
+  transform: scale(1.08) rotate(-3deg);
+}
+
 /* ═══════════ REVEAL ═══════════ */
+/* ─── Premium scroll-reveal system ───
+   .reveal           — fade up + blur clear (base)
+   .reveal-card      — 3D card entry (rotateX + scale + blur)
+   .reveal-left/-right — side slide with blur
+   .reveal-stagger > * — children get cascading delay via auto-assigned --i
+   .reveal-shimmer   — light sweep across the element on enter
+*/
 .reveal {
   opacity: 0;
-  transform: translateY(28px);
-  transition: opacity var(--dur-slow) var(--ease-reveal), transform var(--dur-slow) var(--ease-reveal);
+  transform: translateY(24px);
+  filter: blur(5px);
+  transition:
+    opacity 520ms var(--ease-reveal) var(--reveal-delay, 0ms),
+    transform 640ms var(--ease-reveal) var(--reveal-delay, 0ms),
+    filter 480ms ease var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
 }
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+  filter: blur(0);
 }
+
+/* Card reveal — 3D depth entry, looks like the card hinges into place */
+.reveal-card {
+  opacity: 0;
+  transform: translateY(36px) rotateX(6deg) scale(0.97);
+  filter: blur(6px);
+  transform-origin: 50% 100%;
+  transition:
+    opacity 560ms var(--ease-reveal) var(--reveal-delay, 0ms),
+    transform 720ms var(--ease-spring) var(--reveal-delay, 0ms),
+    filter 500ms ease var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+.reveal-card.is-visible {
+  opacity: 1;
+  transform: translateY(0) rotateX(0) scale(1);
+  filter: blur(0);
+}
+
+/* Side slides */
+.reveal-left, .reveal-right {
+  opacity: 0;
+  filter: blur(5px);
+  transition:
+    opacity 520ms var(--ease-reveal) var(--reveal-delay, 0ms),
+    transform 640ms var(--ease-reveal) var(--reveal-delay, 0ms),
+    filter 460ms ease var(--reveal-delay, 0ms);
+  will-change: opacity, transform, filter;
+}
+.reveal-left  { transform: translateX(-32px); }
+.reveal-right { transform: translateX(32px); }
+.reveal-left.is-visible, .reveal-right.is-visible {
+  opacity: 1;
+  transform: translateX(0);
+  filter: blur(0);
+}
+
+/* Stagger: parent has .reveal-stagger, children auto-cascade.
+   JS sets --i on each child; CSS multiplies it into a delay. */
+.reveal-stagger > *.reveal,
+.reveal-stagger > *.reveal-card,
+.reveal-stagger > *.reveal-left,
+.reveal-stagger > *.reveal-right {
+  --reveal-delay: calc(var(--i, 0) * 70ms);
+}
+
+/* Establish 3D perspective on common parents of card reveals */
+.thesis-grid,
+.cluster-compare,
+.contact-links,
+.timeline,
+.axes,
+.cn-features {
+  perspective: 1600px;
+  perspective-origin: 50% 30%;
+}
+
 
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {

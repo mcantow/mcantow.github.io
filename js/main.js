@@ -13,6 +13,24 @@
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+  /* ──────────── Theme toggle (persists in localStorage) ──────────── */
+  const THEME_KEY = 'mc-theme';
+  const root = document.documentElement;
+  // Apply stored theme on load (overrides whatever class HTML shipped with)
+  try {
+    const stored = localStorage.getItem(THEME_KEY);
+    if (stored === 'dark') root.classList.add('theme-dark');
+    else if (stored === 'light') root.classList.remove('theme-dark');
+  } catch (e) { /* localStorage may be unavailable */ }
+
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', () => {
+      const isDark = root.classList.toggle('theme-dark');
+      try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch (e) {}
+    });
+  }
+
   /* ──────────── Role odometer (whole-word cinematic transition) ──────────── */
   document.querySelectorAll('.role-flip').forEach(el => {
     const roles = (el.dataset.roles || '').split(',').map(s => s.trim()).filter(Boolean);
@@ -65,18 +83,34 @@
     }
   }, { passive: true });
 
-  /* ──────────── Reveal on scroll ──────────── */
-  const reveals = document.querySelectorAll('.reveal');
+  /* ──────────── Reveal on scroll (premium variants + auto-stagger) ──────────── */
+  // Auto-assign --i to children of .reveal-stagger parents so their CSS
+  // transition-delay cascades naturally (no manual numbering needed).
+  document.querySelectorAll('.reveal-stagger').forEach(parent => {
+    let i = 0;
+    Array.from(parent.children).forEach(child => {
+      if (child.matches('.reveal, .reveal-card, .reveal-left, .reveal-right')) {
+        child.style.setProperty('--i', i++);
+      }
+    });
+  });
+
+  const revealSelectors = '.reveal, .reveal-card, .reveal-left, .reveal-right, .reveal-shimmer, .journey-bridge';
+  const reveals = document.querySelectorAll(revealSelectors);
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const delay = parseInt(entry.target.dataset.revealDelay || '0', 10);
-          setTimeout(() => entry.target.classList.add('is-visible'), delay);
+          if (delay) {
+            setTimeout(() => entry.target.classList.add('is-visible'), delay);
+          } else {
+            entry.target.classList.add('is-visible');
+          }
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.12, rootMargin: '0px 0px -80px 0px' });
     reveals.forEach(el => io.observe(el));
   } else {
     reveals.forEach(el => el.classList.add('is-visible'));
@@ -96,54 +130,84 @@
     });
   }
 
-  /* ──────────── Parallax (CN logo stage) ──────────── */
+  /* ──────────── Mouse-driven tilt (CN journey card) ────────────
+     The cursor's position over the container drives the card's rotateX/Y.
+     Spring-eased for buttery hand-feel. Pauses the ambient float anim on enter,
+     restores it on leave. */
   if (isFinePointer && !prefersReducedMotion) {
-    const parallaxEls = document.querySelectorAll('[data-parallax]');
-    parallaxEls.forEach(el => {
-      el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 18;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 18;
-        const img = el.querySelector('.cn-logo-img');
-        if (img) img.style.transform = `translate(${x}px, ${y}px)`;
+    const tiltEls = document.querySelectorAll('[data-mouse-tilt]');
+    tiltEls.forEach(container => {
+      const card = container.querySelector('.cn-journey-card');
+      if (!card) return;
+
+      let rafId = null;
+      let targetRX = 0, targetRY = 0;
+      let curRX = 0, curRY = 0;
+      let active = false;
+
+      const animate = () => {
+        // Easing toward target (spring-ish lerp)
+        curRX += (targetRX - curRX) * 0.12;
+        curRY += (targetRY - curRY) * 0.12;
+        card.style.transform =
+          `rotateY(${curRY.toFixed(2)}deg) rotateX(${curRX.toFixed(2)}deg) translateY(${active ? -2 : 0}px)`;
+        if (active || Math.abs(targetRX - curRX) > 0.05 || Math.abs(targetRY - curRY) > 0.05) {
+          rafId = requestAnimationFrame(animate);
+        } else {
+          // Settled — restore the floating animation
+          card.style.transform = '';
+          card.style.animation = '';
+          rafId = null;
+        }
+      };
+
+      container.addEventListener('mouseenter', () => {
+        active = true;
+        card.style.animation = 'none'; // pause ambient float
+        if (!rafId) rafId = requestAnimationFrame(animate);
       });
-      el.addEventListener('mouseleave', () => {
-        const img = el.querySelector('.cn-logo-img');
-        if (img) img.style.transform = '';
+      container.addEventListener('mousemove', (e) => {
+        const rect = container.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;   // -0.5 .. 0.5
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        targetRY = -x * 14;  // horizontal cursor → rotateY (±7°)
+        targetRX =  y * 10;  // vertical cursor → rotateX (±5°)
+        if (!rafId) rafId = requestAnimationFrame(animate);
+      });
+      container.addEventListener('mouseleave', () => {
+        active = false;
+        targetRX = 0;
+        targetRY = 0;
+        if (!rafId) rafId = requestAnimationFrame(animate);
       });
     });
   }
 
-  /* ──────────── Hero canvas: connecting node network ──────────── */
-  const canvas = document.getElementById('heroCanvas');
-  if (canvas && !prefersReducedMotion) {
+  /* ──────────── Particle-network canvas (reusable) ────────────
+     Connected-nodes background with mouse interaction. Used in hero AND
+     contact section (bookends the page). Theme-aware via MutationObserver. */
+  const setupNetworkCanvas = (canvas, opts = {}) => {
+    if (!canvas || prefersReducedMotion) return;
+    const densityMobile  = opts.densityMobile  ?? 28;
+    const densityDesktop = opts.densityDesktop ?? 64;
+    const linkDist = opts.linkDist ?? 130;
+
     const ctx = canvas.getContext('2d');
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0, h = 0;
     let nodes = [];
     let mouse = { x: -9999, y: -9999, active: false };
 
-    // Determine if we're on a light or dark base — read from --paper var
-    const root = getComputedStyle(document.documentElement);
-    const paper = root.getPropertyValue('--paper').trim() || '#F8F7F4';
-    const ink = root.getPropertyValue('--ink').trim() || '#0A0A0B';
-    const purple = '#7873F5';
-    const blurple = 'rgb(86, 154, 241)';
-
-    // Detect light vs dark theme to choose stroke colors
-    const isDarkTheme = (() => {
-      const c = paper.toLowerCase();
-      // Light if paper is mostly light hex
-      if (c.startsWith('#')) {
-        const r = parseInt(c.slice(1, 3), 16);
-        return r < 128;
-      }
-      return false;
-    })();
-
-    const nodeFill = isDarkTheme ? 'rgba(255,255,255,0.55)' : 'rgba(10,10,11,0.5)';
-    const lineBase = isDarkTheme ? 'rgba(143, 184, 255,' : 'rgba(120, 115, 245,';
-    const lineLight = isDarkTheme ? 'rgba(255,255,255,' : 'rgba(10,10,11,';
+    let nodeFill, lineBase;
+    const updateThemeColors = () => {
+      const isDark = document.documentElement.classList.contains('theme-dark');
+      nodeFill = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(10,10,11,0.5)';
+      lineBase = isDark ? 'rgba(143, 184, 255,'   : 'rgba(120, 115, 245,';
+    };
+    updateThemeColors();
+    new MutationObserver(updateThemeColors).observe(document.documentElement, {
+      attributes: true, attributeFilter: ['class'],
+    });
 
     const makeNode = (W, H) => ({
       x: Math.random() * W,
@@ -155,54 +219,33 @@
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const newW = rect.width;
-      const newH = rect.height;
-      // Skip if the canvas hasn't been laid out yet (avoids baking in 0-dim
-      // particles before the mobile viewport settles)
+      const newW = rect.width, newH = rect.height;
       if (newW < 4 || newH < 4) return;
-
       canvas.width = newW * dpr;
       canvas.height = newH * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      const targetCount = newW < 768 ? 28 : 64;
-
+      const targetCount = newW < 768 ? densityMobile : densityDesktop;
       if (nodes.length === 0) {
         for (let i = 0; i < targetCount; i++) nodes.push(makeNode(newW, newH));
       } else {
-        // Rescale existing particles into the new dimensions instead of
-        // regenerating (no visual jump when the mobile URL bar collapses)
         if (w > 0 && h > 0) {
-          const sx = newW / w;
-          const sy = newH / h;
+          const sx = newW / w, sy = newH / h;
           for (const n of nodes) { n.x *= sx; n.y *= sy; }
         }
-        // Adjust count if the mobile/desktop breakpoint crossed
         while (nodes.length < targetCount) nodes.push(makeNode(newW, newH));
         if (nodes.length > targetCount) nodes.length = targetCount;
       }
-
-      w = newW;
-      h = newH;
+      w = newW; h = newH;
     };
 
-    // Canvas stays hidden (opacity 0 via CSS) until a STABLE measurement
-    // — two consecutive frames at the same dimensions. Prevents mobile
-    // "zoomed-in / out of focus" first paint when the viewport hasn't
-    // settled (URL bar transition, font reflow, etc.).
     let ready = false;
     const markReady = () => {
       if (ready) return;
       ready = true;
       canvas.classList.add('is-ready');
     };
-    const remeasure = () => {
-      resize();
-      if (w > 4 && h > 4) markReady();
-    };
+    const remeasure = () => { resize(); if (w > 4 && h > 4) markReady(); };
 
-    // Wait for first STABLE size, then run resize + reveal canvas.
-    // Polls each frame; needs 2 consecutive identical (within 1px) frames.
     let lastW = 0, lastH = 0, stableFrames = 0, attempts = 0;
     const settle = () => {
       const rect = canvas.getBoundingClientRect();
@@ -210,37 +253,22 @@
       const sameH = Math.abs(rect.height - lastH) < 1;
       if (rect.width > 4 && rect.height > 4 && sameW && sameH) {
         stableFrames++;
-        if (stableFrames >= 2) {
-          remeasure();
-          return;
-        }
-      } else {
-        stableFrames = 0;
-      }
-      lastW = rect.width;
-      lastH = rect.height;
-      if (++attempts < 180) requestAnimationFrame(settle); // ~3s max poll
-      else remeasure(); // give up polling but still try to render
+        if (stableFrames >= 2) { remeasure(); return; }
+      } else { stableFrames = 0; }
+      lastW = rect.width; lastH = rect.height;
+      if (++attempts < 180) requestAnimationFrame(settle);
+      else remeasure();
     };
     requestAnimationFrame(settle);
 
-    // ResizeObserver: catches every later size change (URL bar collapse,
-    // orientation, font reflow). Re-measure but don't toggle visibility.
     if (typeof ResizeObserver !== 'undefined') {
-      const ro = new ResizeObserver(remeasure);
-      ro.observe(canvas);
+      new ResizeObserver(remeasure).observe(canvas);
     } else {
       window.addEventListener('resize', remeasure);
     }
-    // Catch font / asset load reflows after `load`
     window.addEventListener('load', remeasure);
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(remeasure);
-    }
-    // Visual viewport changes (mobile URL bar show/hide)
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', remeasure);
-    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', remeasure);
 
     canvas.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
@@ -248,79 +276,69 @@
       mouse.y = e.clientY - rect.top;
       mouse.active = true;
     });
-    canvas.addEventListener('mouseleave', () => { mouse.active = false; mouse.x = -9999; mouse.y = -9999; });
+    canvas.addEventListener('mouseleave', () => {
+      mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+    });
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
-
-      // Update positions
       for (const n of nodes) {
-        n.x += n.vx;
-        n.y += n.vy;
+        n.x += n.vx; n.y += n.vy;
         if (n.x < 0 || n.x > w) n.vx *= -1;
         if (n.y < 0 || n.y > h) n.vy *= -1;
-
-        // Mouse repulsion
         if (mouse.active) {
-          const dx = n.x - mouse.x;
-          const dy = n.y - mouse.y;
+          const dx = n.x - mouse.x, dy = n.y - mouse.y;
           const dist2 = dx * dx + dy * dy;
           if (dist2 < 14400) {
             const force = (14400 - dist2) / 14400 * 0.06;
-            n.x += dx * force;
-            n.y += dy * force;
+            n.x += dx * force; n.y += dy * force;
           }
         }
       }
-
-      // Connect lines
-      const maxDist = 130;
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i], b = nodes[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
+          const dx = a.x - b.x, dy = a.y - b.y;
           const d2 = dx * dx + dy * dy;
-          if (d2 < maxDist * maxDist) {
-            const alpha = (1 - Math.sqrt(d2) / maxDist) * 0.4;
+          if (d2 < linkDist * linkDist) {
+            const alpha = (1 - Math.sqrt(d2) / linkDist) * 0.4;
             ctx.strokeStyle = `${lineBase}${alpha.toFixed(3)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
+            ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
             ctx.stroke();
           }
         }
       }
-
-      // Draw nodes
       for (const n of nodes) {
-        // Mouse glow line
         if (mouse.active) {
-          const dx = n.x - mouse.x;
-          const dy = n.y - mouse.y;
+          const dx = n.x - mouse.x, dy = n.y - mouse.y;
           const d = Math.sqrt(dx * dx + dy * dy);
           if (d < 180) {
             const alpha = (1 - d / 180) * 0.55;
             ctx.strokeStyle = `${lineBase}${alpha.toFixed(3)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(mouse.x, mouse.y);
-            ctx.lineTo(n.x, n.y);
+            ctx.moveTo(mouse.x, mouse.y); ctx.lineTo(n.x, n.y);
             ctx.stroke();
           }
         }
-
         ctx.fillStyle = nodeFill;
         ctx.beginPath();
         ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
         ctx.fill();
       }
-
       requestAnimationFrame(draw);
     };
     requestAnimationFrame(draw);
-  }
+  };
+
+  // Hero — full network with mouse interaction
+  setupNetworkCanvas(document.getElementById('heroCanvas'));
+  // Contact (page closing bookend) — slightly less dense than hero
+  setupNetworkCanvas(document.getElementById('contactCanvas'), {
+    densityMobile: 22, densityDesktop: 50, linkDist: 140,
+  });
 
   /* ──────────── CustomerNode journey mockup: circle → stage detail → loop ──────────── */
   const journeyMockup = document.getElementById('cnJourneyMockup');
@@ -692,6 +710,55 @@
     renderNodes();
     if (agentLabel) agentLabel.textContent = agentScript[activeIdx][0];
     setNextAction(activeIdx, false);
+  }
+
+  /* ──────────── Journey tracker — sticky aside updates as cards scroll ──────────── */
+  const trackerText = document.getElementById('trackerText');
+  const trackerBar = document.getElementById('trackerBar');
+  const trackerCount = document.getElementById('trackerCount');
+  const journeyTimeline = document.getElementById('journeyTimeline');
+  if (trackerText && journeyTimeline) {
+    const items = Array.from(journeyTimeline.querySelectorAll('.timeline-item'));
+    const total = items.length;
+
+    // Build progress segments (one per timeline item)
+    if (trackerBar) {
+      trackerBar.innerHTML = items.map(() => '<span></span>').join('');
+    }
+    const segments = trackerBar ? Array.from(trackerBar.children) : [];
+
+    const setActiveIdx = (idx) => {
+      const item = items[idx];
+      if (!item) return;
+      // Focus current card; defocus the rest (CSS does the blur/opacity)
+      items.forEach((c, i) => c.classList.toggle('is-current', i === idx));
+      const label = item.dataset.tracker || '';
+      if (label && trackerText.textContent !== label) {
+        trackerText.classList.add('is-changing');
+        setTimeout(() => {
+          trackerText.textContent = label;
+          requestAnimationFrame(() => trackerText.classList.remove('is-changing'));
+        }, 220);
+      }
+      if (trackerCount) {
+        trackerCount.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+      }
+      segments.forEach((s, i) => s.classList.toggle('is-on', i <= idx));
+    };
+
+    // Trigger when the card crosses the middle of the viewport
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const idx = items.indexOf(entry.target);
+          if (idx >= 0) setActiveIdx(idx);
+        }
+      });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    items.forEach(item => io.observe(item));
+
+    // Initial paint
+    setActiveIdx(0);
   }
 
   /* ──────────── Smooth scroll for nav anchors ──────────── */
