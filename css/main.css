@@ -317,8 +317,13 @@ body::before {
   width: 100%;
   height: 100%;
   z-index: 0;
-  opacity: 0.55;
+  /* Hidden until JS confirms canvas has been measured at correct dimensions.
+     Prevents the "zoomed-in" first paint on mobile when the visual viewport
+     hasn't settled yet. */
+  opacity: 0;
+  transition: opacity 600ms ease;
 }
+.hero-canvas.is-ready { opacity: 0.55; }
 
 /* Hero gridlines — editorial paper feel */
 .hero-grid {

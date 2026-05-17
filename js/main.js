@@ -186,23 +186,60 @@
       h = newH;
     };
 
-    // Defer initial measure two frames so layout + first paint have committed
-    requestAnimationFrame(() => requestAnimationFrame(resize));
+    // Canvas stays hidden (opacity 0 via CSS) until a STABLE measurement
+    // — two consecutive frames at the same dimensions. Prevents mobile
+    // "zoomed-in / out of focus" first paint when the viewport hasn't
+    // settled (URL bar transition, font reflow, etc.).
+    let ready = false;
+    const markReady = () => {
+      if (ready) return;
+      ready = true;
+      canvas.classList.add('is-ready');
+    };
+    const remeasure = () => {
+      resize();
+      if (w > 4 && h > 4) markReady();
+    };
 
-    // ResizeObserver fires for any reason the canvas's box changes —
-    // mobile URL bar collapse, font load reflow, orientation change.
-    // Fallback to window resize if not supported.
+    // Wait for first STABLE size, then run resize + reveal canvas.
+    // Polls each frame; needs 2 consecutive identical (within 1px) frames.
+    let lastW = 0, lastH = 0, stableFrames = 0, attempts = 0;
+    const settle = () => {
+      const rect = canvas.getBoundingClientRect();
+      const sameW = Math.abs(rect.width - lastW) < 1;
+      const sameH = Math.abs(rect.height - lastH) < 1;
+      if (rect.width > 4 && rect.height > 4 && sameW && sameH) {
+        stableFrames++;
+        if (stableFrames >= 2) {
+          remeasure();
+          return;
+        }
+      } else {
+        stableFrames = 0;
+      }
+      lastW = rect.width;
+      lastH = rect.height;
+      if (++attempts < 180) requestAnimationFrame(settle); // ~3s max poll
+      else remeasure(); // give up polling but still try to render
+    };
+    requestAnimationFrame(settle);
+
+    // ResizeObserver: catches every later size change (URL bar collapse,
+    // orientation, font reflow). Re-measure but don't toggle visibility.
     if (typeof ResizeObserver !== 'undefined') {
-      const ro = new ResizeObserver(resize);
+      const ro = new ResizeObserver(remeasure);
       ro.observe(canvas);
     } else {
-      window.addEventListener('resize', resize);
+      window.addEventListener('resize', remeasure);
     }
-    // Catch font/asset load reflows that ResizeObserver may have missed
-    window.addEventListener('load', resize);
-    // Visual viewport for mobile (URL bar show/hide doesn't always fire resize)
+    // Catch font / asset load reflows after `load`
+    window.addEventListener('load', remeasure);
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(remeasure);
+    }
+    // Visual viewport changes (mobile URL bar show/hide)
     if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', resize);
+      window.visualViewport.addEventListener('resize', remeasure);
     }
 
     canvas.addEventListener('mousemove', (e) => {
