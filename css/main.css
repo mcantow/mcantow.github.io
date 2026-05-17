@@ -2975,6 +2975,9 @@ html.theme-dark body::before { display: none; }
   margin-top: 10px;
 }
 
+/* Mobile-only sticky tracker pill (shown via media query in mobile.css) */
+.journey-tracker-mobile { display: none; }
+
 .timeline {
   position: relative;
   margin-top: 80px;
