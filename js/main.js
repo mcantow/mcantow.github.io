@@ -67,11 +67,11 @@
   const onScroll = () => {
     const y = window.scrollY;
     if (!nav) return;
-    if (y > lastY && y > 200) {
-      nav.classList.add('hidden');
-    } else {
-      nav.classList.remove('hidden');
-    }
+    const hide = y > lastY && y > 200;
+    nav.classList.toggle('hidden', hide);
+    // Mirror state on <html> so things like the mobile sticky tracker
+    // can slide up to fill the space when the nav hides
+    document.documentElement.classList.toggle('nav-hidden', hide);
     lastY = y;
     ticking = false;
   };
