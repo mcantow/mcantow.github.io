@@ -735,10 +735,16 @@
       // Focus current card; defocus the rest (CSS does the blur/opacity/scale)
       items.forEach((c, i) => c.classList.toggle('is-current', i === idx));
       const label = item.dataset.tracker || '';
-      if (trackerText && label && trackerText.textContent !== label) {
+      const dateLabel = item.dataset.trackerDate || '';
+      // Render main label + a smaller, dimmer date suffix
+      const escape = s => s.replace(/[&<>]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[ch]));
+      const html = label
+        ? escape(label) + (dateLabel ? ` <span class="tracker-text-date">${escape(dateLabel)}</span>` : '')
+        : '';
+      if (trackerText && html && trackerText.innerHTML !== html) {
         trackerText.classList.add('is-changing');
         setTimeout(() => {
-          trackerText.textContent = label;
+          trackerText.innerHTML = html;
           requestAnimationFrame(() => trackerText.classList.remove('is-changing'));
         }, 220);
       }
