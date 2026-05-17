@@ -14,8 +14,10 @@
 @media (max-width: 768px) {
   :root { --gutter: 20px; }
 
-  /* ── Nav: strip the floating pill, anchor each button to an edge ── */
-  .nav {
+  /* ── Nav: strip the floating pill, anchor each button to an edge.
+       Selectors include .theme-dark to override the dark-theme pill bg too. ── */
+  .nav,
+  .theme-dark .nav {
     top: 14px;
     left: 16px;
     right: 16px;
@@ -60,7 +62,8 @@
   }
 
   /* Byline: drop pill, stack big avatar above text */
-  .hero-byline {
+  .hero-byline,
+  .theme-dark .hero-byline {
     flex-direction: column;
     background: transparent;
     border: none;
