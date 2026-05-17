@@ -145,28 +145,65 @@
     const lineBase = isDarkTheme ? 'rgba(143, 184, 255,' : 'rgba(120, 115, 245,';
     const lineLight = isDarkTheme ? 'rgba(255,255,255,' : 'rgba(10,10,11,';
 
+    const makeNode = (W, H) => ({
+      x: Math.random() * W,
+      y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.22,
+      vy: (Math.random() - 0.5) * 0.22,
+      r: 1.4 + Math.random() * 1.6,
+    });
+
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
-      canvas.width = w * dpr;
-      canvas.height = h * dpr;
+      const newW = rect.width;
+      const newH = rect.height;
+      // Skip if the canvas hasn't been laid out yet (avoids baking in 0-dim
+      // particles before the mobile viewport settles)
+      if (newW < 4 || newH < 4) return;
+
+      canvas.width = newW * dpr;
+      canvas.height = newH * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const isMobile = w < 768;
-      const targetCount = isMobile ? 28 : 64;
-      nodes = [];
-      for (let i = 0; i < targetCount; i++) {
-        nodes.push({
-          x: Math.random() * w,
-          y: Math.random() * h,
-          vx: (Math.random() - 0.5) * 0.22,
-          vy: (Math.random() - 0.5) * 0.22,
-          r: 1.4 + Math.random() * 1.6,
-        });
+
+      const targetCount = newW < 768 ? 28 : 64;
+
+      if (nodes.length === 0) {
+        for (let i = 0; i < targetCount; i++) nodes.push(makeNode(newW, newH));
+      } else {
+        // Rescale existing particles into the new dimensions instead of
+        // regenerating (no visual jump when the mobile URL bar collapses)
+        if (w > 0 && h > 0) {
+          const sx = newW / w;
+          const sy = newH / h;
+          for (const n of nodes) { n.x *= sx; n.y *= sy; }
+        }
+        // Adjust count if the mobile/desktop breakpoint crossed
+        while (nodes.length < targetCount) nodes.push(makeNode(newW, newH));
+        if (nodes.length > targetCount) nodes.length = targetCount;
       }
+
+      w = newW;
+      h = newH;
     };
-    resize();
-    window.addEventListener('resize', resize);
+
+    // Defer initial measure two frames so layout + first paint have committed
+    requestAnimationFrame(() => requestAnimationFrame(resize));
+
+    // ResizeObserver fires for any reason the canvas's box changes —
+    // mobile URL bar collapse, font load reflow, orientation change.
+    // Fallback to window resize if not supported.
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(resize);
+      ro.observe(canvas);
+    } else {
+      window.addEventListener('resize', resize);
+    }
+    // Catch font/asset load reflows that ResizeObserver may have missed
+    window.addEventListener('load', resize);
+    // Visual viewport for mobile (URL bar show/hide doesn't always fire resize)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', resize);
+    }
 
     canvas.addEventListener('mousemove', (e) => {
       const rect = canvas.getBoundingClientRect();
