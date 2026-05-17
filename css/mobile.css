@@ -154,7 +154,10 @@
   .cluster { padding: 24px; }
   .cluster h4 { font-size: 20px; margin-bottom: 18px; }
   .cluster li { padding: 12px 0; font-size: 15px; }
-  .cluster-arrow {
+  /* Vertical stack on mobile → point the arrow down.
+     Selector includes .is-visible so the reveal animation doesn't reset it. */
+  .cluster-arrow,
+  .cluster-arrow.is-visible {
     transform: rotate(90deg);
     height: 30px;
   }
