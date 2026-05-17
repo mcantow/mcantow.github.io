@@ -712,41 +712,41 @@
     setNextAction(activeIdx, false);
   }
 
-  /* ──────────── Journey tracker — sticky aside updates as cards scroll ──────────── */
+  /* ──────────── Journey tracker — updates as cards scroll past ────────────
+     Updates ALL .tracker-bar / .tracker-count instances (the aside one on
+     desktop AND the sticky mobile pill share state). */
   const trackerText = document.getElementById('trackerText');
-  const trackerBar = document.getElementById('trackerBar');
-  const trackerCount = document.getElementById('trackerCount');
+  const trackerBars = Array.from(document.querySelectorAll('.tracker-bar'));
+  const trackerCounts = Array.from(document.querySelectorAll('.tracker-count'));
   const journeyTimeline = document.getElementById('journeyTimeline');
-  if (trackerText && journeyTimeline) {
+  if (journeyTimeline && trackerBars.length) {
     const items = Array.from(journeyTimeline.querySelectorAll('.timeline-item'));
     const total = items.length;
 
-    // Build progress segments (one per timeline item)
-    if (trackerBar) {
-      trackerBar.innerHTML = items.map(() => '<span></span>').join('');
-    }
-    const segments = trackerBar ? Array.from(trackerBar.children) : [];
+    // Build progress segments in every tracker bar
+    const segmentsList = trackerBars.map(bar => {
+      bar.innerHTML = items.map(() => '<span></span>').join('');
+      return Array.from(bar.children);
+    });
 
     const setActiveIdx = (idx) => {
       const item = items[idx];
       if (!item) return;
-      // Focus current card; defocus the rest (CSS does the blur/opacity)
+      // Focus current card; defocus the rest (CSS does the blur/opacity/scale)
       items.forEach((c, i) => c.classList.toggle('is-current', i === idx));
       const label = item.dataset.tracker || '';
-      if (label && trackerText.textContent !== label) {
+      if (trackerText && label && trackerText.textContent !== label) {
         trackerText.classList.add('is-changing');
         setTimeout(() => {
           trackerText.textContent = label;
           requestAnimationFrame(() => trackerText.classList.remove('is-changing'));
         }, 220);
       }
-      if (trackerCount) {
-        trackerCount.textContent = `${String(idx + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
-      }
-      segments.forEach((s, i) => s.classList.toggle('is-on', i <= idx));
+      const countText = `${String(idx + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`;
+      trackerCounts.forEach(el => el.textContent = countText);
+      segmentsList.forEach(segs => segs.forEach((s, i) => s.classList.toggle('is-on', i <= idx)));
     };
 
-    // Trigger when the card crosses the middle of the viewport
     const io = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -757,7 +757,6 @@
     }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
     items.forEach(item => io.observe(item));
 
-    // Initial paint
     setActiveIdx(0);
   }
 

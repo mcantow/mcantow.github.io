@@ -246,7 +246,36 @@
     top: auto;
   }
   .journey-aside .section-title { font-size: clamp(38px, 10vw, 56px); }
-  .tracker-text { font-size: 20px; }
+
+  /* Hide the aside's "Now showing" details on mobile — too noisy.
+     Only the segmented bar + count survive, in the sticky pill below. */
+  .journey-aside .journey-tracker { display: none; }
+
+  /* Mobile sticky tracker pill — appears below the aside, sticks to top
+     of viewport (below nav) while scrolling through timeline cards */
+  .journey-tracker-mobile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 64px;
+    z-index: 5;
+    padding: 10px 16px;
+    background: rgba(248, 247, 244, 0.85);
+    backdrop-filter: blur(20px) saturate(1.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.4);
+    border: 1px solid var(--hair-strong);
+    border-radius: 999px;
+    margin: 0;
+    box-shadow: 0 6px 24px rgba(10, 10, 11, 0.06);
+  }
+  .theme-dark .journey-tracker-mobile {
+    background: rgba(11, 11, 20, 0.80);
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
+  }
+  .journey-tracker-mobile .tracker-bar { flex: 1; margin: 0; }
+  .journey-tracker-mobile .tracker-count { margin: 0; font-size: 10px; flex-shrink: 0; }
 
   /* Section opener — compact on mobile */
   .section-opener {
