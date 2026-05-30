@@ -53,7 +53,12 @@
 
 /* ───── Reset ───── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* scroll-behavior moved off `html` — global smooth-scroll animates the
+   browser's scroll-restoration on reload, which produces a visible
+   "page jumps down then back up" jolt. Nav anchor clicks still use
+   smooth scrolling via the explicit `scrollIntoView({behavior:'smooth'})`
+   call in main.js. */
+html { -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--font-body);
   background: var(--paper);
@@ -357,7 +362,7 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
      Prevents the "zoomed-in" first paint on mobile when the visual viewport
      hasn't settled yet. */
   opacity: 0;
-  transition: opacity 600ms ease;
+  transition: opacity 800ms ease;
 }
 .hero-canvas.is-ready { opacity: 0.55; }
 
@@ -392,38 +397,167 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   pointer-events: auto;
 }
 
-/* Byline (small mono "credit" above headline) */
-.hero-byline {
-  display: inline-flex;
+/* Identity card — real frosted glass. Genuinely translucent (the particle
+   field ghosts through), heavy frost blur, a specular rim that's bright at the
+   top edge and fades at the bottom (light catching the glass), inner highlights
+   faking the pane's thickness, and a cursor-follow glare. Color is incidental,
+   not the effect. Owns the hero's right rail on desktop; flexes to a borderless
+   centered profile-stack on mobile (mobile.css). */
+.hero-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--ink-2);
-  margin-bottom: clamp(20px, 2.4vw, 32px);
-  padding: 5px 14px 5px 5px;
-  border-radius: var(--r-pill);
-  background: rgba(10, 10, 11, 0.03);
-  border: 1px solid var(--hair);
+  text-align: center;
+  max-width: 312px;
+  margin-bottom: clamp(20px, 2.4vw, 32px); /* spacing when stacked (tablet/mobile) */
+  padding: clamp(38px, 3.2vw, 50px) clamp(28px, 2.4vw, 38px) clamp(34px, 2.8vw, 44px);
+  /* Specular rim: bright neutral light at the top edge fading down the pane. */
+  border: 1px solid transparent;
+  border-radius: var(--r-lg);
+  /* Translucent fill + light frost so the live particle field reads THROUGH
+     the glass as drifting, glowing nodes (the card is a lens, not a lid). */
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)) padding-box,
+    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.25) 30%, rgba(255, 255, 255, 0.08) 70%, rgba(255, 255, 255, 0.4)) border-box;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),    /* crisp lit top edge */
+    inset 0 -1px 1px rgba(255, 255, 255, 0.3),   /* faint lit bottom edge */
+    inset 0 8px 22px rgba(255, 255, 255, 0.08),  /* inner top bloom = glass thickness */
+    0 2px 8px rgba(10, 10, 20, 0.04),
+    0 30px 60px -24px rgba(10, 10, 30, 0.28);    /* soft grounding shadow */
+  /* A touch of blur so it reads as glass without veiling the field behind it. */
+  -webkit-backdrop-filter: blur(2px) saturate(1.6);
+  backdrop-filter: blur(2px) saturate(1.6);
+  overflow: hidden;
+  pointer-events: auto; /* hero-inner disables events; re-enable for hover/tilt */
+  transition:
+    transform 0.5s var(--ease-spring),
+    box-shadow 0.5s var(--ease-spring);
 }
-.byline-avatar {
-  width: 26px;
-  height: 26px;
+/* Diagonal sheen — a faint band of light raked across the glass surface. */
+.hero-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.18) 0%, transparent 32%, transparent 70%, rgba(255, 255, 255, 0.06) 100%);
+}
+/* Cursor-follow glare (uses --mx/--my set by data-tilt JS). */
+.hero-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, 0.3), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-reveal);
+}
+.hero-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.9),
+    inset 0 -1px 1px rgba(255, 255, 255, 0.3),
+    inset 0 8px 24px rgba(255, 255, 255, 0.25),
+    0 2px 8px rgba(10, 10, 20, 0.04),
+    0 44px 84px -24px rgba(10, 10, 30, 0.34);
+}
+.hero-card:hover::after { opacity: 1; }
+
+/* Frosted glass ring around the headshot (neutral, not gradient). */
+.hero-card-ring {
+  display: grid;
+  place-items: center;
+  padding: 3px;
+  border-radius: 50%;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.15));
+  margin-bottom: 22px;
+  box-shadow:
+    0 12px 28px -8px rgba(10, 10, 30, 0.4),
+    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+.hero-card-avatar {
+  display: block;
+  width: 84px;
+  height: 84px;
   border-radius: 50%;
   object-fit: cover;
-  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.7);
   background: var(--paper);
 }
-.byline-short { display: none; }
-.meta-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--purple);
-  box-shadow: 0 0 0 0 rgba(120, 115, 245, 0.6);
-  animation: dotPulse 2.2s ease-in-out infinite;
+.hero-card-name {
+  font-family: var(--font-display);
+  font-size: 23px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--ink);
 }
+.hero-card-role {
+  margin-top: 7px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.hero-card-divider {
+  width: 44px;
+  height: 1px;
+  margin: 18px 0 16px;
+  background: linear-gradient(90deg, transparent, var(--hair-strong), transparent);
+}
+.hero-card-tags {
+  display: flex;
+  gap: 8px;
+}
+.hero-card-credit { display: none; } /* mobile-only (see mobile.css) */
+.hero-card-tag {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  padding: 4px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+.theme-dark .hero-card-tag {
+  color: var(--ink-2);
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Dark theme — smoked glass: low-alpha dark fill, brighter specular rim so the
+   pane edge still catches light against the dark page. */
+.theme-dark .hero-card {
+  /* Smoked glass kept low-alpha so the network's bright nodes glow through. */
+  background:
+    linear-gradient(rgba(24, 26, 42, 0.34), rgba(24, 26, 42, 0.34)) padding-box,
+    linear-gradient(160deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.04) 70%, rgba(255, 255, 255, 0.16)) border-box;
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 0 8px 28px rgba(150, 170, 255, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 30px 64px -24px rgba(0, 0, 0, 0.6);
+}
+.theme-dark .hero-card::before {
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.12) 0%, transparent 32%, transparent 70%, rgba(255, 255, 255, 0.04) 100%);
+}
+.theme-dark .hero-card:hover {
+  box-shadow:
+    inset 0 1px 1px rgba(255, 255, 255, 0.18),
+    inset 0 8px 28px rgba(150, 170, 255, 0.06),
+    0 2px 8px rgba(0, 0, 0, 0.3),
+    0 44px 88px -24px rgba(0, 0, 0, 0.7);
+}
+.theme-dark .hero-card-ring {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
+}
+.theme-dark .hero-card-avatar { border-color: rgba(255, 255, 255, 0.18); }
 
 .hero-title {
   font-family: var(--font-display);
@@ -500,6 +634,31 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   transform: translateY(-95%) rotateX(45deg) skewX(8deg);
   transform-origin: 50% 0%;
   filter: blur(10px);
+}
+
+/* Desktop: two-column hero — copy on the left, identity card on the right.
+   Grid areas place the card (which is first in source for mobile stacking)
+   into the right rail, spanning both copy rows and vertically centered. */
+@media (min-width: 1024px) {
+  .hero-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "title card"
+      "cta   card";
+    align-items: center;
+    column-gap: clamp(40px, 5vw, 88px);
+  }
+  .hero-title { grid-area: title; max-width: min(100%, 760px); }
+  .hero-cta   { grid-area: cta; }
+  .hero-card  {
+    grid-area: card;
+    justify-self: end;
+    align-self: center;
+    margin-bottom: 0;
+    width: clamp(260px, 24vw, 312px);
+    max-width: none;
+  }
 }
 
 .hero-sub {
@@ -1066,6 +1225,11 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   align-items: center;
   position: relative;
 }
+
+/* CustomerNode hero panel is inlined into .cn-right and styled by the scoped
+   CN stylesheet (cn-hero/css/cnhero.*.css). No host-side sizing needed — the
+   panel sizes itself and its media queries read the real viewport. */
+.cn-right .cnhero { width: 100%; }
 .cn-mockup {
   position: relative;
   width: 100%;
@@ -2707,11 +2871,6 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   background: rgba(255, 255, 255, 0.06);
 }
 
-/* Hero byline pill — was low-alpha dark (invisible on dark page) */
-.theme-dark .hero-byline {
-  background: rgba(255, 255, 255, 0.04);
-  border-color: var(--hair-strong);
-}
 
 /* Grain texture overlay: invisible on dark anyway, hide it */
 .theme-dark body::before { display: none; }

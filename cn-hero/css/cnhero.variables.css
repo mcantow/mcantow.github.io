@@ -1,0 +1,149 @@
+/* ──────────────────────────────────────────────────────────────
+   cnhero.variables.css
+
+   The CustomerNode CSS variables, scoped to the .cnhero wrapper so the
+   inlined panel gets its palette without touching mc.com's own :root.
+   Source: customerNode_site/templates/style-variables.css (Django-templated
+   light/dark branches). Light lives on .cnhero; dark on .cnhero[data-theme="dark"].
+   main.js sets data-theme on the wrapper (opposite of the site theme, because
+   .cn-showcase is an inverted-theme zone).
+   ────────────────────────────────────────────────────────────── */
+
+/* ===== LIGHT (default) ===== */
+.cnhero{
+    --font-main: 'Satoshi', sans-serif;
+    --brand-font: 'Space Grotesk', var(--font-main);
+    --transparent-main-bg-color:rgba(248,249,250,.85);
+    --transparent-main-bg-color-light:rgba(248,249,250,.2);
+    --transparent-main-bg-color-heavy:rgba(248,249,250,.95);
+    --loading-bg-color:rgba(254,254,254,.6);
+    --grey-accent-color:#E5EFF5;
+    --inv-bg-color:var(--black);
+    --inv-grey-accent-color:#233D50;
+    --secondary-grey-color:#D6E6F6;
+    --main-bg-color:var(--white);
+    --off-bg-color:#FAFBFE;
+    --off-bg-color-half:#FAFCFE;
+    --white:#FEFEFF;
+    --scrollbarMainColor:rgba(32,47,57,.12);
+    --transparent-off-bg-color:rgba(244,248,249,.8);
+    --engageTableBorderColor:#EDF2F7;
+    --black:#202F39;
+    --main-title-color:var(--darkblue);
+    --accent-title-color:var(--black);
+    --secondary-title-color:var(--darkblue);
+    --accent-title-color-secondary:var(--secondary-grey-color);
+    --tertiary-title-color:var(--darkblue);
+    --section-color:#E6F4FA;
+    --selectModeColor:var(--secondary-grey-color);
+    --invert-calendar-picker:0;
+    --countColor:var(--darkblue);
+    --grey-table-th:var(--darkblue);
+    --toggleButtonColor:var(--darkblue);
+    --ganttColor1:#1E8AB5;
+    --ganttColor2:#ACD2E2;
+    --ganttArrowColor:#D3E2F3;
+    --cardShadow:0 0 4px rgba(0,0,0,.4);
+    --cardShadowInset:inset 0 0 4px rgba(0,0,0,.2);
+    --headerShadowColor:rgba(0,0,0,.06);
+    --headerShadow:0 1px 3px 0 var(--headerShadowColor), 0 4px 16px 0 rgba(0,0,0,.03);
+    --red:#E53935;
+    --alert-red-start:#ef4444;
+    --alert-red-end:#dc2626;
+    --lightred:#FFB3B3;
+    --action-delete-bg:rgba(229, 57, 53, 0.08);
+    --constructionOrange:#FF6D00;
+    --yellow:#FFD600;
+    --green:#00C853;
+    --lightgreen:#B9F6CA;
+    --lightestgreen:#E6FFED;
+    --lightblue:#45BDF0;
+    --lighterblue:#A2E2F6;
+    --lightestblue:#ECF8FC;
+    --logoActiveBrightness_text:2.9;
+    --logoActiveHueRotate_text:23deg;
+    --logoActiveBrightness_logo:2.9;
+    --logoActiveHueRotate_logo:40deg;
+    --logoActiveTranslatey:0;
+    --indexSpecial1:#E9E6E4;
+    --darkblue:#08517e;
+    --iconDropShadow:0 0 3px rgba(0,0,0,.1);
+    --everyOtherRowColor:var(--off-bg-color-half);
+    --landing-gradient-opacity:0;
+    --kicker-icon-brightness:1;
+    --kicker-gradient:linear-gradient(160deg, rgba(79,70,229,1) 0%, rgba(99,102,241,1) 50%, rgba(196,160,255,1) 100%);
+
+    /* shared */
+    --middleBlue:#1E89B5;
+    --purple:#7873F5;
+    --pink:#D490FF;
+    --blurple:rgb(86,154,241);
+    --blurpleblue:#4EACF1;
+    --text-font-size:20px;
+    --subtitle-font-size:30px;
+    --larger-text-font-size:24px;
+}
+
+/* ===== DARK ===== */
+.cnhero[data-theme="dark"]{
+    color-scheme: dark;
+    --off-bg-color:#000000;
+    --off-bg-color-half:#050509;
+    --main-bg-color:#000000;
+    --transparent-main-bg-color:rgba(0,0,0,.8);
+    --transparent-main-bg-color-light:rgba(0,0,0,.2);
+    --transparent-main-bg-color-heavy:rgba(0,0,0,.95);
+    --loading-bg-color:rgba(0,0,0,.8);
+    --grey-accent-color:#0f172a;
+    --inv-bg-color:var(--white);
+    --inv-grey-accent-color:#94a3b8;
+    --secondary-grey-color:#1e293b;
+    --transparent-off-bg-color:rgba(0,0,0,.8);
+    --engageTableBorderColor:#1e293b;
+    --white:#f1f5f9;
+    --black:#000000;
+    --scrollbarMainColor:rgba(255,255,255,.12);
+    --main-title-color:var(--grey-table-th);
+    --accent-title-color:#f8fafc;
+    --secondary-title-color:var(--white);
+    --tertiary-title-color:var(--white);
+    --accent-title-color-secondary:var(--white);
+    --invert-calendar-picker:1;
+    --countColor:var(--white);
+    --grey-table-th:var(--white);
+    --toggleButtonColor:var(--darkblue);
+    --section-color:#1e293b;
+    --selectModeColor:var(--secondary-grey-color);
+    --cardShadow:0 0 7px 2px rgba(0,0,0,.4);
+    --cardShadowInset:inset 0 0 7px rgba(0,0,0,.4);
+    --headerShadowColor:rgba(148,163,184,.15);
+    --headerShadow:0 4px 24px 0 var(--headerShadowColor);
+    --ganttColor1:#818cf8;
+    --ganttColor2:#475569;
+    --ganttArrowColor:#1e293b;
+    --constructionOrange:#FF6700;
+    --red:#FF4141;
+    --alert-red-start:#ef4444;
+    --alert-red-end:#dc2626;
+    --lightred:#A84444;
+    --action-delete-bg:rgba(255, 65, 65, 0.12);
+    --green:#22c55e;
+    --lightgreen:#166534;
+    --lightestgreen:#14532d;
+    --yellow:#FFBA31;
+    --lightblue:#60a5fa;
+    --lighterblue:#3b82f6;
+    --lightestblue:#1e3a5f;
+    --logoActiveBrightness_text:1.9;
+    --logoActiveHueRotate_text:-5deg;
+    --logoActiveBrightness_logo:1.2;
+    --logoActiveHueRotate_logo:0deg;
+    --logoActiveTranslatey:-999px;
+    --indexSpecial1:#0f172a;
+    --darkblue:#818cf8;
+    --iconDropShadow:0 0 3px rgba(255,255,255,.1);
+    --everyOtherRowColor:var(--off-bg-color-half);
+    --landing-gradient-opacity:1;
+    --kicker-icon-brightness:1.8;
+    --kicker-gradient:linear-gradient(160deg, rgba(129,140,248,1) 0%, rgba(165,160,255,1) 50%, rgba(196,160,255,1) 100%);
+}

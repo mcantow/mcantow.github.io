@@ -5,7 +5,11 @@
 @media (max-width: 920px) {
   .cn-content {
     grid-template-columns: 1fr;
-    gap: 56px;
+    /* Larger row gap so the CustomerNode hero panel's controls bar — which is
+       absolutely positioned just below the panel and now wraps to two rows on
+       mobile — clears the "CustomerNode / Turn complex deals…" text below it.
+       (Was 56px, which the taller stacked controls overhung into.) */
+    gap: 184px;
   }
   .cn-right { order: -1; }
   .cn-mockup { max-width: 380px; }
@@ -61,29 +65,51 @@
     align-items: center;
   }
 
-  /* Byline: drop pill, stack big avatar above text */
-  .hero-byline,
-  .theme-dark .hero-byline {
-    flex-direction: column;
-    background: transparent;
+  /* Mobile: collapse the whole glass card back to the ORIGINAL byline — a plain
+     round avatar above a single mono credit line. Drop the card chrome, gradient
+     ring, name, role, divider, and tags entirely.
+     (Selectors include .theme-dark to beat the dark-theme card override.) */
+  .hero-card,
+  .theme-dark .hero-card {
     border: none;
+    background: transparent;
+    box-shadow: none;
+    -webkit-backdrop-filter: none; /* else the blur leaves a frosted panel */
+    backdrop-filter: none;
+    border-radius: 0;
     padding: 0;
-    gap: 14px;
     margin-bottom: clamp(20px, 4vh, 36px);
-    align-items: center;
-    text-align: center;
     max-width: 100%;
   }
-  .byline-avatar {
+  .hero-card:hover { transform: none; }       /* no lift on touch */
+  .hero-card::before,
+  .hero-card::after { display: none; }         /* drop the glow/glare on bare bg */
+  .hero-card-name,
+  .hero-card-role,
+  .hero-card-divider,
+  .hero-card-tags { display: none; }
+  /* Ring → plain avatar wrapper (no gradient) */
+  .hero-card-ring,
+  .theme-dark .hero-card-ring {
+    background: none;
+    padding: 0;
+    box-shadow: none;
+    margin-bottom: 14px;
+  }
+  .hero-card-avatar,
+  .theme-dark .hero-card-avatar {
     width: 58px;
     height: 58px;
+    border: none;
     box-shadow: 0 8px 24px rgba(10, 10, 11, 0.12);
   }
-  .byline-full { display: none; }
-  .byline-short {
+  .hero-card-credit {
     display: inline;
+    font-family: var(--font-mono);
     font-size: 10.5px;
+    font-weight: 500;
     letter-spacing: 0.12em;
+    text-transform: uppercase;
     color: var(--ink-3);
   }
 
@@ -335,14 +361,13 @@
   .hero { padding: 78px 20px 32px; }
   .hero-title { font-size: 52px; letter-spacing: -0.035em; }
   .hero-title .line-sub { font-size: 19px; }
-  .byline-avatar { width: 52px; height: 52px; }
-  .byline-short { font-size: 10px; letter-spacing: 0.1em; }
+  .hero-card-avatar { width: 52px; height: 52px; }
   .section-title { font-size: 36px; }
 }
 
 @media (max-width: 360px) {
   .hero-title { font-size: 46px; }
   .hero-title .line-sub { font-size: 18px; }
-  .byline-avatar { width: 48px; height: 48px; }
+  .hero-card-avatar { width: 48px; height: 48px; }
   .hero-cta .btn { font-size: 13px; padding: 14px 16px; }
 }
