@@ -134,7 +134,13 @@
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const delay = parseInt(entry.target.dataset.revealDelay || '0', 10);
+          // Mobile can reorder hero elements (the card moves to the top of the
+          // column), so honor a per-element data-reveal-delay-mobile override
+          // below 1024px to keep the cascade in visual top-to-bottom order.
+          const useMobile = window.innerWidth < 1024
+            && entry.target.dataset.revealDelayMobile != null;
+          const delay = parseInt(
+            (useMobile ? entry.target.dataset.revealDelayMobile : entry.target.dataset.revealDelay) || '0', 10);
           const isHero = entry.target.closest('.hero') !== null;
           const totalDelay = (isHero ? HERO_INTRO_DELAY : 0) + delay;
           if (totalDelay) {
