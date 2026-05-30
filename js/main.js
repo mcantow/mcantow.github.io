@@ -2,12 +2,21 @@
    Michael Cantow · main.js
    Motion: cursor, reveals, magnetics, canvas node network, marquee
    ═══════════════════════════════════════════════════════════════ */
-
 (function () {
   'use strict';
 
+  // Prevent the browser from auto-restoring the previous scroll position
+  // on reload — that, combined with smooth-scrolling, causes a visible
+  // "scroll down then back up" jolt on refresh.
+  if ('scrollRestoration' in history) {
+    try {
+      history.scrollRestoration = 'manual';
+    } catch (e) {}
+  }
+
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
 
   /* ──────────── Footer year ──────────── */
   const yearEl = document.getElementById('year');
@@ -16,33 +25,53 @@
   /* ──────────── Theme toggle (persists in localStorage) ──────────── */
   const THEME_KEY = 'mc-theme';
   const root = document.documentElement;
+
   // Apply stored theme on load (overrides whatever class HTML shipped with)
   try {
     const stored = localStorage.getItem(THEME_KEY);
     if (stored === 'dark') root.classList.add('theme-dark');
     else if (stored === 'light') root.classList.remove('theme-dark');
-  } catch (e) { /* localStorage may be unavailable */ }
+  } catch (e) {
+    /* localStorage may be unavailable */
+  }
 
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
     themeToggle.addEventListener('click', () => {
       const isDark = root.classList.toggle('theme-dark');
-      try { localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light'); } catch (e) {}
+      try {
+        localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+      } catch (e) {}
     });
+  }
+
+  /* ──────────── CustomerNode hero panel theme ────────────
+     The CN product demo is inlined into .cn-right (.cnhero wrapper) and
+     styled by the scoped CN stylesheet. The .cn-showcase section is an
+     inverted-theme zone — it uses the OPPOSITE palette from the rest of the
+     site — so the panel runs in the opposite theme to blend in. We set
+     data-theme on the wrapper to drive the CN palette and keep it in sync
+     with the site's theme toggle. The panel sizes itself; nothing else to do. */
+  const cnHeroRoot = document.getElementById('cnHeroRoot');
+  if (cnHeroRoot) {
+    const syncCnTheme = () => {
+      const dark = !root.classList.contains('theme-dark'); // opposite of site
+      if (dark) cnHeroRoot.setAttribute('data-theme', 'dark');
+      else cnHeroRoot.removeAttribute('data-theme');
+    };
+    syncCnTheme();
+    if (themeToggle) themeToggle.addEventListener('click', syncCnTheme);
   }
 
   /* ──────────── Role odometer (whole-word cinematic transition) ──────────── */
   document.querySelectorAll('.role-flip').forEach(el => {
     const roles = (el.dataset.roles || '').split(',').map(s => s.trim()).filter(Boolean);
     if (!roles.length) return;
-
     el.innerHTML = roles
       .map((r, i) => `<span class="${i === 0 ? 'is-active' : ''}">${r}</span>`)
       .join('');
-
-    if (prefersReducedMotion) return;
-
     const items = el.querySelectorAll(':scope > span');
+    if (prefersReducedMotion) return;
     let idx = 0;
     const cycle = () => {
       const next = (idx + 1) % items.length;
@@ -55,15 +84,14 @@
     };
     setTimeout(() => {
       cycle();
-      setInterval(cycle, 2600);
-    }, 2200);
+      setInterval(cycle, 2800);
+    }, 2400);
   });
 
   /* ──────────── Nav hide on scroll down, show on scroll up ──────────── */
   const nav = document.getElementById('nav');
   let lastY = window.scrollY;
   let ticking = false;
-
   const onScroll = () => {
     const y = window.scrollY;
     if (!nav) return;
@@ -75,7 +103,6 @@
     lastY = y;
     ticking = false;
   };
-
   window.addEventListener('scroll', () => {
     if (!ticking) {
       requestAnimationFrame(onScroll);
@@ -84,6 +111,7 @@
   }, { passive: true });
 
   /* ──────────── Reveal on scroll (premium variants + auto-stagger) ──────────── */
+
   // Auto-assign --i to children of .reveal-stagger parents so their CSS
   // transition-delay cascades naturally (no manual numbering needed).
   document.querySelectorAll('.reveal-stagger').forEach(parent => {
@@ -97,13 +125,20 @@
 
   const revealSelectors = '.reveal, .reveal-card, .reveal-left, .reveal-right, .reveal-shimmer, .journey-bridge';
   const reveals = document.querySelectorAll(revealSelectors);
+
+  // Hero reveals appear immediately on load (no blank-page wait); the small
+  // per-element data-reveal-delay values still give a gentle cascade.
+  const HERO_INTRO_DELAY = 0;
+
   if ('IntersectionObserver' in window) {
     const io = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const delay = parseInt(entry.target.dataset.revealDelay || '0', 10);
-          if (delay) {
-            setTimeout(() => entry.target.classList.add('is-visible'), delay);
+          const isHero = entry.target.closest('.hero') !== null;
+          const totalDelay = (isHero ? HERO_INTRO_DELAY : 0) + delay;
+          if (totalDelay) {
+            setTimeout(() => entry.target.classList.add('is-visible'), totalDelay);
           } else {
             entry.target.classList.add('is-visible');
           }
@@ -139,18 +174,15 @@
     tiltEls.forEach(container => {
       const card = container.querySelector('.cn-journey-card');
       if (!card) return;
-
       let rafId = null;
       let targetRX = 0, targetRY = 0;
       let curRX = 0, curRY = 0;
       let active = false;
-
       const animate = () => {
         // Easing toward target (spring-ish lerp)
         curRX += (targetRX - curRX) * 0.12;
         curRY += (targetRY - curRY) * 0.12;
-        card.style.transform =
-          `rotateY(${curRY.toFixed(2)}deg) rotateX(${curRX.toFixed(2)}deg) translateY(${active ? -2 : 0}px)`;
+        card.style.transform = `rotateY(${curRY.toFixed(2)}deg) rotateX(${curRX.toFixed(2)}deg) translateY(${active ? -2 : 0}px)`;
         if (active || Math.abs(targetRX - curRX) > 0.05 || Math.abs(targetRY - curRY) > 0.05) {
           rafId = requestAnimationFrame(animate);
         } else {
@@ -160,7 +192,6 @@
           rafId = null;
         }
       };
-
       container.addEventListener('mouseenter', () => {
         active = true;
         card.style.animation = 'none'; // pause ambient float
@@ -168,10 +199,10 @@
       });
       container.addEventListener('mousemove', (e) => {
         const rect = container.getBoundingClientRect();
-        const x = (e.clientX - rect.left) / rect.width - 0.5;   // -0.5 .. 0.5
+        const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 .. 0.5
         const y = (e.clientY - rect.top) / rect.height - 0.5;
-        targetRY = -x * 14;  // horizontal cursor → rotateY (±7°)
-        targetRX =  y * 10;  // vertical cursor → rotateX (±5°)
+        targetRY = -x * 14; // horizontal cursor → rotateY (±7°)
+        targetRX =  y * 10; // vertical cursor → rotateX (±5°)
         if (!rafId) rafId = requestAnimationFrame(animate);
       });
       container.addEventListener('mouseleave', () => {
@@ -197,8 +228,8 @@
     let w = 0, h = 0;
     let nodes = [];
     let mouse = { x: -9999, y: -9999, active: false };
-
     let nodeFill, lineBase;
+
     const updateThemeColors = () => {
       const isDark = document.documentElement.classList.contains('theme-dark');
       nodeFill = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(10,10,11,0.5)';
@@ -206,7 +237,8 @@
     };
     updateThemeColors();
     new MutationObserver(updateThemeColors).observe(document.documentElement, {
-      attributes: true, attributeFilter: ['class'],
+      attributes: true,
+      attributeFilter: ['class'],
     });
 
     const makeNode = (W, H) => ({
@@ -230,12 +262,16 @@
       } else {
         if (w > 0 && h > 0) {
           const sx = newW / w, sy = newH / h;
-          for (const n of nodes) { n.x *= sx; n.y *= sy; }
+          for (const n of nodes) {
+            n.x *= sx;
+            n.y *= sy;
+          }
         }
         while (nodes.length < targetCount) nodes.push(makeNode(newW, newH));
         if (nodes.length > targetCount) nodes.length = targetCount;
       }
-      w = newW; h = newH;
+      w = newW;
+      h = newH;
     };
 
     let ready = false;
@@ -244,7 +280,10 @@
       ready = true;
       canvas.classList.add('is-ready');
     };
-    const remeasure = () => { resize(); if (w > 4 && h > 4) markReady(); };
+    const remeasure = () => {
+      resize();
+      if (w > 4 && h > 4) markReady();
+    };
 
     let lastW = 0, lastH = 0, stableFrames = 0, attempts = 0;
     const settle = () => {
@@ -253,9 +292,15 @@
       const sameH = Math.abs(rect.height - lastH) < 1;
       if (rect.width > 4 && rect.height > 4 && sameW && sameH) {
         stableFrames++;
-        if (stableFrames >= 2) { remeasure(); return; }
-      } else { stableFrames = 0; }
-      lastW = rect.width; lastH = rect.height;
+        if (stableFrames >= 2) {
+          remeasure();
+          return;
+        }
+      } else {
+        stableFrames = 0;
+      }
+      lastW = rect.width;
+      lastH = rect.height;
       if (++attempts < 180) requestAnimationFrame(settle);
       else remeasure();
     };
@@ -277,13 +322,16 @@
       mouse.active = true;
     });
     canvas.addEventListener('mouseleave', () => {
-      mouse.active = false; mouse.x = -9999; mouse.y = -9999;
+      mouse.active = false;
+      mouse.x = -9999;
+      mouse.y = -9999;
     });
 
     const draw = () => {
       ctx.clearRect(0, 0, w, h);
       for (const n of nodes) {
-        n.x += n.vx; n.y += n.vy;
+        n.x += n.vx;
+        n.y += n.vy;
         if (n.x < 0 || n.x > w) n.vx *= -1;
         if (n.y < 0 || n.y > h) n.vy *= -1;
         if (mouse.active) {
@@ -291,7 +339,8 @@
           const dist2 = dx * dx + dy * dy;
           if (dist2 < 14400) {
             const force = (14400 - dist2) / 14400 * 0.06;
-            n.x += dx * force; n.y += dy * force;
+            n.x += dx * force;
+            n.y += dy * force;
           }
         }
       }
@@ -305,7 +354,8 @@
             ctx.strokeStyle = `${lineBase}${alpha.toFixed(3)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
             ctx.stroke();
           }
         }
@@ -319,7 +369,8 @@
             ctx.strokeStyle = `${lineBase}${alpha.toFixed(3)})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(mouse.x, mouse.y); ctx.lineTo(n.x, n.y);
+            ctx.moveTo(mouse.x, mouse.y);
+            ctx.lineTo(n.x, n.y);
             ctx.stroke();
           }
         }
@@ -335,9 +386,12 @@
 
   // Hero — full network with mouse interaction
   setupNetworkCanvas(document.getElementById('heroCanvas'));
+
   // Contact (page closing bookend) — slightly less dense than hero
   setupNetworkCanvas(document.getElementById('contactCanvas'), {
-    densityMobile: 22, densityDesktop: 50, linkDist: 140,
+    densityMobile: 22,
+    densityDesktop: 50,
+    linkDist: 140,
   });
 
   /* ──────────── CustomerNode journey mockup: circle → stage detail → loop ──────────── */
@@ -358,9 +412,9 @@
     const nextActionEl = document.getElementById('cnNextAction');
     const calloutAction = journeyMockup.querySelector('.cn-callout-action');
     const calloutLabel = calloutAction ? calloutAction.querySelector('.callout-label') : null;
+
     const total = ovNodes.length;
     const minActive = 2;
-
     const stageNames = ['Discovery', 'Experience', 'Scope', 'Commit', 'Deploy', 'Success'];
     const stageDetailHeaders = [
       'DISCOVERY · questionnaire',
@@ -370,6 +424,7 @@
       'DEPLOY · launch tickets',
       'SUCCESS · health & outcomes',
     ];
+
     // Agent narration: 2 lines per stage (working, then complete)
     const agentScript = [
       ['Agent is filling answers from your last call',     'Agent finalized the questionnaire — review ready'],
@@ -402,8 +457,15 @@
     let pending = [];
     let visible = false;
 
-    const clearPending = () => { pending.forEach(id => clearTimeout(id)); pending = []; };
-    const wait = (ms, fn) => { const id = setTimeout(fn, ms); pending.push(id); return id; };
+    const clearPending = () => {
+      pending.forEach(id => clearTimeout(id));
+      pending = [];
+    };
+    const wait = (ms, fn) => {
+      const id = setTimeout(fn, ms);
+      pending.push(id);
+      return id;
+    };
 
     // Smoothly swap text on an element: fade-out → set → fade-in
     const swapText = (el, text) => {
@@ -584,7 +646,6 @@
         const nowLine = panel.querySelector('.gantt-now');
         const sampleRow = panel.querySelector('.gantt-row');
         if (!gantt || !nowLine || !sampleRow) return;
-
         const trackWidth = sampleRow.getBoundingClientRect().width;
         const meta = bars.map(b => ({
           el: b,
@@ -592,10 +653,8 @@
           width: parseFloat(b.dataset.width || '0'),
           fill: b.querySelector('.gantt-fill'),
         }));
-
         // Reveal the now line (was hidden during the off-stage reset)
         wait(150, () => nowLine.classList.add('is-active'));
-
         const duration = 3200;
         const start = performance.now();
         const step = (t) => {
@@ -604,19 +663,24 @@
           const nowPct = eased * 100;
           // Position the line in pixels (relative to track width)
           nowLine.style.setProperty('--now', String((nowPct / 100) * trackWidth));
-
           meta.forEach(m => {
             const end = m.start + m.width;
             let fillPct;
             let cls = '';
-            if (nowPct >= end) { fillPct = 100; cls = 'is-done'; }
-            else if (nowPct <= m.start) { fillPct = 0; cls = ''; }
-            else { fillPct = ((nowPct - m.start) / m.width) * 100; cls = 'is-running'; }
+            if (nowPct >= end) {
+              fillPct = 100;
+              cls = 'is-done';
+            } else if (nowPct <= m.start) {
+              fillPct = 0;
+              cls = '';
+            } else {
+              fillPct = ((nowPct - m.start) / m.width) * 100;
+              cls = 'is-running';
+            }
             if (m.fill) m.fill.style.width = `${fillPct}%`;
             m.el.classList.remove('is-running', 'is-done');
             if (cls) m.el.classList.add(cls);
           });
-
           if (progress < 1) requestAnimationFrame(step);
         };
         requestAnimationFrame(step);
@@ -650,7 +714,6 @@
       renderNodes();
       // Kick off the per-stage animation sequence (work happening!)
       playStage(activeIdx);
-
       if (!prefersReducedMotion && visible) {
         // Sometimes First Party AI steps in mid-cycle and takes over the next action
         const aiSteps = cycleCount % 2 === 0;
@@ -737,7 +800,7 @@
       const label = item.dataset.tracker || '';
       const dateLabel = item.dataset.trackerDate || '';
       // Render main label + a smaller, dimmer date suffix
-      const escape = s => s.replace(/[&<>]/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;' }[ch]));
+      const escape = s => s.replace(/[&<>]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[ch]));
       const html = label
         ? escape(label) + (dateLabel ? ` <span class="tracker-text-date">${escape(dateLabel)}</span>` : '')
         : '';
@@ -762,7 +825,6 @@
       });
     }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
     items.forEach(item => io.observe(item));
-
     setActiveIdx(0);
   }
 
@@ -793,5 +855,4 @@
       });
     });
   }
-
 })();

@@ -1,0 +1,71 @@
+/* ──────────────────────────────────────────────────────────────
+   fonts.css  (de-Djangoified for the standalone CN hero embed)
+
+   Source: customerNode_site/templates/orbitron_font.css (Orbitron,
+   Sora, Space Grotesk, Satoshi 500/700). Satoshi 400 + the Satoshi
+   variable face are added here so body/UI copy renders at the right
+   weights. {% static %} tags rewritten to local ../fonts/ paths.
+   ────────────────────────────────────────────────────────────── */
+
+@font-face {
+    font-family: "Orbitron";
+    font-style: normal;
+    font-weight: 400 !important;
+    font-display: swap;
+    src: url("../fonts/orbitron400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Orbitron";
+    font-style: normal;
+    font-weight: 700 !important;
+    font-display: swap;
+    src: url("../fonts/orbitron700.woff2") format("woff2");
+}
+
+/* Sora — premium geometric sans for brand wordmark */
+@font-face {
+    font-family: "Sora";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../fonts/sora400.woff2") format("woff2");
+}
+
+/* Space Grotesk — ultra-premium PLG SaaS brand font */
+@font-face {
+    font-family: "Space Grotesk";
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url("../fonts/spacegrotesk.woff2") format("woff2");
+}
+
+/* Satoshi — brand body font (Fontshare) */
+@font-face {
+    font-family: "Satoshi";
+    font-style: normal;
+    font-weight: 300 900;
+    font-display: swap;
+    src: url("../fonts/satoshi-variable.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Satoshi";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("../fonts/satoshi400.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Satoshi";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("../fonts/satoshi500.woff2") format("woff2");
+}
+@font-face {
+    font-family: "Satoshi";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url("../fonts/satoshi700.woff2") format("woff2");
+}

@@ -1,0 +1,135 @@
+/* ──────────────────────────────────────────────────────────────
+   cnhero.overrides.css
+
+   Loaded AFTER cnhero.scoped.css so these win on source order. They adapt
+   the CustomerNode hero — which was authored to be a full-screen page hero —
+   to sit as a self-contained panel inside mc.com's .cn-showcase column.
+   Everything is scoped under .cnhero, so nothing here can affect the rest of
+   the site. The panel's own internals are untouched.
+   ────────────────────────────────────────────────────────────── */
+
+/* The wrapper is just a positioning context — fully transparent so the
+   host section's gradient shows through around the panel. */
+.cnhero {
+    display: block;
+    background: transparent !important;
+    color: var(--inv-bg-color);
+    font-family: var(--font-main, 'Satoshi', sans-serif);
+}
+
+/* Neutralise the full-screen page-hero layout: no 100vh, no page background,
+   no two-column grid — just center the panel in the column. */
+.cnhero,
+.cnhero .hero,
+.cnhero .hero-wrapper {
+    /* Shrink the whole chain to the panel's natural height. Something in the
+       CN cascade was stretching .hero to the full grid-row height (~100vh),
+       which pushed the panel to the TOP of the column while mc.com's grid
+       centers both columns — so the panel's center sat far above the left
+       column's center. Forcing height:auto collapses the column to the panel
+       (~490px); the grid then centers the panel against the left content. */
+    height: auto !important;
+    min-height: 0 !important;
+}
+.cnhero .hero {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    position: relative;
+    /* The CN hero is `overflow: hidden`, which clipped the panel-controls bar
+       (‹ 1 of 8 › · CHOOSE YOUR STARTING SURFACE) — it's position:absolute at
+       top:590px, i.e. just BELOW the panel, so it sat outside the hero box and
+       got cut off (most visibly on mobile). Letting the hero overflow show
+       reveals the controls and the elevation shadow; the bar overhangs into
+       the space below the panel without disturbing the centered layout. */
+    overflow: visible !important;
+}
+.cnhero .hero::before,
+.cnhero .hero::after { display: none !important; }
+
+.cnhero .hero-wrapper {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    grid-template-columns: none !important;
+    gap: 0 !important;
+}
+.cnhero .v6-panel-stack { width: 100%; margin: 0 auto; }
+
+/* The decorative glow sits behind the panel at a negative inset and bleeds a
+   blurred purple/blue radial past the panel edges. On the busy CN hero it
+   reads as ambiance; on mc.com's flat section it leaks colored smudges into
+   the corners. Hide just that halo. */
+.cnhero .v6-mockup-glow { display: none !important; }
+
+/* The panel's own box-shadow was a near-white glow with a 140px spread that
+   spilled an off-palette halo across the section. Replace it with a clean,
+   neutral dark elevation shadow so the panel lifts off the gradient with no
+   light bleed. Drawn outside the panel box — nothing inside the panel changes.
+   Matches the source's `.hero .v6-mockup-panel` (now `.cnhero .hero …`). */
+.cnhero .hero .v6-mockup-panel {
+    box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.06) inset,
+        0 24px 60px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Intro logo swaps with the wrapper theme (replaces the Django {% if dark %}
+   branch). Light theme shows the dark-ink logo; dark theme shows the white
+   logo. */
+.cnhero .cn-logo-dark { display: none !important; }
+.cnhero[data-theme="dark"] .cn-logo-light { display: none !important; }
+.cnhero[data-theme="dark"] .cn-logo-dark  { display: block !important; }
+
+/* ── Mobile: give the stage header room ──
+   On mobile the agent panel overlay slides in at a fixed top offset that sat
+   ~5px over the stage header's subhead ("Learn about customer needs"),
+   cramping it. Nudging the agent panel down a touch lets the header breathe
+   and the agent card still clears the bottom of the panel (no spill). Scoped
+   to .cnhero + the same 720px breakpoint the CN mobile layout uses. */
+@media (max-width: 720px) {
+    .cnhero .hero .v6-mockup-panel .v6-agent-panel {
+        top: 124px !important;
+    }
+
+    /* ── Mobile: stack the panel-controls bar into two rows ──
+       The controls (‹ · counter · › · current-stage label) are a single
+       no-wrap row ~380px wide — wider than the panel (~354px), so it
+       overflowed the panel width on phones. Let it wrap and cap its width to
+       the panel; the ‹ counter › nav stays on row 1 and the wider stage
+       label drops to its own centered row below. */
+    .cnhero .hero .v6-panel-controls {
+        flex-wrap: wrap !important;
+        max-width: 300px !important;
+        row-gap: 9px !important;
+        column-gap: 8px !important;
+    }
+    .cnhero .hero .v6-panel-controls .navigator-ring-micro-label {
+        order: 3 !important;          /* force it below the nav row */
+        flex-basis: 100% !important;  /* take the full second row */
+        width: auto !important;       /* override the base 220px fixed width */
+        max-width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+/* ── Active ring node: white label/icon on the gradient ──
+   Verbatim port of the CustomerNode fix (uncommitted in the CN repo at copy
+   time). The current ring node sits on the blurple→purple gradient
+   (.v6-is-active::before at opacity 1). Its NAME label (::after) was blurple
+   and its icon was tinted, which read as low-contrast/unreadable on that
+   gradient. Force the label + icon WHITE whenever the gradient is showing
+   (.v6-is-active). Scoped to .v6-is-active ONLY — NOT .is-active (the hero's
+   light persistent state where white would be invisible). The extra
+   .v6-mockup-panel in the selector beats the blurple `!important` on
+   .stage-node.v6-is-active::after via higher specificity + later source. */
+.cnhero .hero .v6-mockup-panel .stage-node.v6-is-active::after {
+    color: #fff !important;
+}
+.cnhero .hero .v6-mockup-panel .stage-node.v6-is-active .stage-node-face,
+.cnhero .hero .v6-mockup-panel .stage-node.v6-is-active .stage-node-face * {
+    color: #fff !important;
+}
+
