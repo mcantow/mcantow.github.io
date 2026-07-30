@@ -90,23 +90,7 @@ button { font: inherit; cursor: pointer; }
   border: 0;
 }
 
-/* Paper grain texture — ambient grid pattern across the page */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.025;
-  background-image:
-    radial-gradient(circle at 1px 1px, var(--ink) 1px, transparent 0);
-  background-size: 3px 3px;
-  mix-blend-mode: multiply;
-}
-.theme-dark body::before {
-  mix-blend-mode: screen;
-  opacity: 0.04;
-}
+/* Paper-grain dot texture removed — no page-wide grid. */
 
 
 /* ═══════════ NAV ═══════════ */
@@ -119,13 +103,8 @@ body::before {
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 8px 10px 8px 18px;
-  background: rgba(248, 247, 244, 0.78);
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
-  border: 1px solid var(--hair);
-  border-radius: var(--r-pill);
-  box-shadow: var(--shadow-sm);
+  padding: 8px 4px;
+  background: transparent;
   transition: transform var(--dur) var(--ease-spring), opacity var(--dur);
   max-width: calc(100vw - 24px);
 }
@@ -163,8 +142,20 @@ body::before {
   align-items: center;
   color: var(--ink);
 }
+/* Nav monogram — lightweight wordmark, not a filled favicon tile */
+.nav-mark .mc-tile {
+  width: auto;
+  height: auto;
+  background: transparent;
+  color: var(--ink);
+  border-radius: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: color var(--dur-fast);
+}
 .nav-mark:hover .mc-tile {
-  transform: rotate(-4deg);
+  color: var(--ink-3);
 }
 
 .nav-links {
@@ -187,18 +178,22 @@ body::before {
 .nav-cta {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: var(--r-pill);
+  gap: 5px;
+  padding: 8px 4px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--paper);
-  background: var(--ink);
-  transition: transform var(--dur-fast) var(--ease-spring), background var(--dur-fast);
+  color: var(--ink-2);
+  background: transparent;
+  transition: color var(--dur-fast);
+}
+.nav-cta svg {
+  transition: transform var(--dur-fast) var(--ease-spring);
 }
 .nav-cta:hover {
-  transform: translateY(-1px);
-  background: var(--purple);
+  color: var(--ink);
+}
+.nav-cta:hover svg {
+  transform: translate(2px, -2px);
 }
 
 .nav.hidden { transform: translateX(-50%) translateY(-160%); opacity: 0; }
@@ -212,18 +207,16 @@ body::before {
   height: 30px;
   border-radius: 50%;
   background: transparent;
-  border: 1px solid var(--hair-strong);
+  border: none;
   color: var(--ink-2);
   cursor: pointer;
   flex-shrink: 0;
   transition:
     transform var(--dur-fast) var(--ease-spring),
-    border-color var(--dur-fast),
     color var(--dur-fast),
     background var(--dur-fast);
 }
 .theme-toggle:hover {
-  border-color: var(--ink);
   color: var(--ink);
   transform: rotate(-12deg);
 }
@@ -364,22 +357,84 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   opacity: 0;
   transition: opacity 800ms ease;
 }
-.hero-canvas.is-ready { opacity: 0.55; }
+.hero-canvas.is-ready { opacity: 0.5; }
 
-/* Hero gridlines — editorial paper feel */
+/* Hero background — layered atmosphere in the site's own blurple/purple accents.
+   Reads front-to-back as: a lit upper region (two hue blooms), a grounding floor
+   glow the content sits in, and a deep edge vignette so the scene recedes into
+   the corners. Together these give the flat panel real depth. Light/dark aware. */
 .hero-grid {
   position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(var(--hair) 1px, transparent 1px),
-    linear-gradient(90deg, var(--hair) 1px, transparent 1px);
-  background-size: 80px 80px;
-  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
-  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  /* oversized so pointer-parallax translation never exposes a hard edge */
+  inset: -40px;
+  background:
+    /* one confident, off-center light source (upper-right, opposite the headline) */
+    radial-gradient(ellipse 52% 42% at 80% -8%, color-mix(in srgb, var(--blurple) 14%, transparent) 0%, transparent 60%),
+    /* a whisper of the second hue for asymmetric balance — barely there */
+    radial-gradient(ellipse 44% 34% at 12% -4%, color-mix(in srgb, var(--purple)  7%, transparent) 0%, transparent 64%),
+    /* grounding floor glow blooming up from below — gives the content a plane to
+       rest on instead of floating on a uniform field */
+    radial-gradient(ellipse 92% 56% at 50% 116%, color-mix(in srgb, var(--blurple) 6%, transparent) 0%, transparent 60%),
+    /* lit-center vignette: clean middle, edges fall away steeply into shadow */
+    radial-gradient(125% 125% at 50% 20%, transparent 44%, rgba(10, 10, 20, 0.06) 80%, rgba(10, 10, 20, 0.13) 100%);
   z-index: 0;
   pointer-events: none;
 }
+/* Dark theme — the same stack, but the blooms glow brighter and the vignette
+   sinks the edges toward black, which is where depth reads strongest. */
+.theme-dark .hero-grid {
+  background:
+    radial-gradient(ellipse 52% 42% at 80% -8%, color-mix(in srgb, var(--blurple) 22%, transparent) 0%, transparent 60%),
+    radial-gradient(ellipse 44% 34% at 12% -4%, color-mix(in srgb, var(--purple)  16%, transparent) 0%, transparent 64%),
+    radial-gradient(ellipse 92% 56% at 50% 118%, color-mix(in srgb, var(--purple) 14%, transparent) 0%, transparent 60%),
+    radial-gradient(125% 125% at 50% 18%, transparent 38%, rgba(0, 0, 0, 0.34) 86%, rgba(0, 0, 0, 0.55) 100%);
+}
 .hero-canvas { pointer-events: auto; }
+
+/* ── Far-back depth plane ──────────────────────────────────────────────
+   Two big, heavily-blurred colour orbs sitting BEHIND the particle canvas.
+   They're the deepest layer in the scene: soft, out-of-focus, and (via the
+   parallax block below) they drift the least as the cursor moves — the classic
+   depth-of-field + slow-far-layer cue that makes the hero read as 3D space. */
+.hero-depth {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+.hero-depth .orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.32;
+}
+.hero-depth .orb-1 {
+  width: 48vw; height: 48vw; left: -10vw; top: -16vw;
+  background: radial-gradient(circle, color-mix(in srgb, var(--purple) 55%, transparent), transparent 70%);
+}
+.hero-depth .orb-2 {
+  width: 42vw; height: 42vw; right: -8vw; bottom: -18vw;
+  background: radial-gradient(circle, color-mix(in srgb, var(--blurple) 52%, transparent), transparent 70%);
+}
+.theme-dark .hero-depth .orb { opacity: 0.5; }
+
+/* ── Background life ────────────────────────────────────────────────────
+   Nothing follows the cursor. The only pointer reaction lives inside the
+   particle canvas, where orbs near the pointer brighten a touch (see
+   setupNetworkCanvas in main.js) — the cursor subtly disturbs the field it's
+   over, nothing travels with it. Here we just keep the field breathing. */
+.hero-depth .orb-1 { animation: heroOrbDrift 26s ease-in-out infinite; }
+.hero-depth .orb-2 { animation: heroOrbDrift 32s ease-in-out infinite reverse; }
+@keyframes heroOrbDrift {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(4%, -5%, 0) scale(1.07); }
+  66%      { transform: translate3d(-4%, 4%, 0) scale(0.96); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-depth .orb-1, .hero-depth .orb-2 { animation: none; }
+}
 
 .hero-inner {
   position: relative;
@@ -412,20 +467,15 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   max-width: 312px;
   margin-bottom: clamp(20px, 2.4vw, 32px); /* spacing when stacked (tablet/mobile) */
   padding: clamp(38px, 3.2vw, 50px) clamp(28px, 2.4vw, 38px) clamp(34px, 2.8vw, 44px);
-  /* Specular rim: bright neutral light at the top edge fading down the pane. */
-  border: 1px solid transparent;
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--r-lg);
-  /* Translucent fill + light frost so the live particle field reads THROUGH
-     the glass as drifting, glowing nodes (the card is a lens, not a lid). */
-  background:
-    linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05)) padding-box,
-    linear-gradient(160deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.25) 30%, rgba(255, 255, 255, 0.08) 70%, rgba(255, 255, 255, 0.4)) border-box;
+  /* Simple translucent frost — the particle field still reads through, but the
+     pane is a calm sheet of glass, not a specular showpiece. */
+  background: rgba(255, 255, 255, 0.2);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),    /* crisp lit top edge */
-    inset 0 -1px 1px rgba(255, 255, 255, 0.3),   /* faint lit bottom edge */
-    inset 0 8px 22px rgba(255, 255, 255, 0.08),  /* inner top bloom = glass thickness */
-    0 2px 8px rgba(10, 10, 20, 0.04),
-    0 30px 60px -24px rgba(10, 10, 30, 0.28);    /* soft grounding shadow */
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    0 6px 16px -8px rgba(10, 10, 30, 0.18),
+    0 34px 64px -20px rgba(10, 10, 30, 0.4);
   /* A touch of blur so it reads as glass without veiling the field behind it. */
   -webkit-backdrop-filter: blur(2px) saturate(1.6);
   backdrop-filter: blur(2px) saturate(1.6);
@@ -442,69 +492,133 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.18) 0%, transparent 32%, transparent 70%, rgba(255, 255, 255, 0.06) 100%);
-}
-/* Cursor-follow glare (uses --mx/--my set by data-tilt JS). */
-.hero-card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  pointer-events: none;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 0%), rgba(255, 255, 255, 0.3), transparent 45%);
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-reveal);
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
 }
 .hero-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-3px);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.9),
-    inset 0 -1px 1px rgba(255, 255, 255, 0.3),
-    inset 0 8px 24px rgba(255, 255, 255, 0.25),
-    0 2px 8px rgba(10, 10, 20, 0.04),
-    0 44px 84px -24px rgba(10, 10, 30, 0.34);
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    0 8px 20px -8px rgba(10, 10, 30, 0.2),
+    0 44px 80px -20px rgba(10, 10, 30, 0.46);
 }
-.hero-card:hover::after { opacity: 1; }
 
 /* Frosted glass ring around the headshot (neutral, not gradient). */
 .hero-card-ring {
+  position: relative;
   display: grid;
   place-items: center;
-  padding: 3px;
+  padding: 2px;
   border-radius: 50%;
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.15));
+  /* Machined bezel: a specular arc raked across a dark rim (light catches the
+     upper-left, falls to shadow) so the frame reads as polished metal/glass
+     rather than a flat disc. */
+  background: conic-gradient(from 212deg,
+    rgba(255, 255, 255, 0.55) 0deg,
+    rgba(255, 255, 255, 0.07) 62deg,
+    #101014 150deg,
+    #050506 248deg,
+    rgba(255, 255, 255, 0.28) 318deg,
+    rgba(255, 255, 255, 0.55) 360deg);
   margin-bottom: 22px;
   box-shadow:
-    0 12px 28px -8px rgba(10, 10, 30, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.8);
+    0 0 0 1px rgba(0, 0, 0, 0.55),                                    /* crisp containment */
+    0 12px 28px -10px rgba(10, 10, 30, 0.5),                          /* grounded cast */
+    0 0 24px -6px color-mix(in srgb, var(--purple) 50%, transparent), /* brand halo — lifts the portrait */
+    inset 0 1px 1px rgba(255, 255, 255, 0.35);                        /* lit inner top */
+  transition: box-shadow 0.5s var(--ease-spring);
+}
+/* Slow glint sweeping the rim — a single bright highlight travels around the
+   bezel, catching light like a real polished frame. Sits in the 2px ring gap;
+   the avatar covers the centre. */
+.hero-card-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 0;
+  pointer-events: none;
+  background: conic-gradient(from 0deg,
+    transparent 0deg,
+    rgba(255, 255, 255, 0.85) 22deg,
+    transparent 64deg,
+    transparent 360deg);
+  mix-blend-mode: screen;
+  animation: ringSheen 7s linear infinite;
+}
+@keyframes ringSheen { to { transform: rotate(1turn); } }
+/* Warm the halo on hover — the portrait lifts with the card. */
+.hero-card:hover .hero-card-ring {
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.55),
+    0 16px 34px -10px rgba(10, 10, 30, 0.55),
+    0 0 34px -4px color-mix(in srgb, var(--purple) 68%, transparent),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 .hero-card-avatar {
+  position: relative;
+  z-index: 1; /* above the rotating rim glint */
   display: block;
   width: 84px;
   height: 84px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(255, 255, 255, 0.7);
+  border: none;
   background: var(--paper);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06); /* faint seat between portrait and bezel */
+  transition: transform 0.5s var(--ease-spring);
+}
+/* Hover choreography: the portrait lifts with the card, not in isolation. */
+.hero-card:hover .hero-card-avatar { transform: scale(1.02); }
+@media (prefers-reduced-motion: reduce) {
+  .hero-card-ring::before { animation: none; }
 }
 .hero-card-name {
   font-family: var(--font-display);
   font-size: 23px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   color: var(--ink);
 }
 .hero-card-role {
-  margin-top: 7px;
-  font-size: 14px;
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.35;
   color: var(--ink-2);
 }
+/* Two-line role: brand line, then a refined caption beneath it. The caption is
+   held to a single line (no mid-arrow wrap) with a hair of tracking so it reads
+   as a deliberate positioning statement, not runover body text. */
+.hero-card-role .role-line { display: block; }
+.hero-card-role .role-tag  {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  letter-spacing: 0.015em;
+  line-height: 1.3;
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+/* Each line is typographically uniform within itself: the brand name and the
+   arrow inherit the exact weight/colour/size of their own line — no in-line
+   shifts in weight or colour. */
+.hero-card-brand { color: inherit; font-weight: inherit; }
+.hero-card-role .role-arrow {
+  color: inherit;
+  font-weight: inherit;
+  padding: 0 2px;
+  display: inline-block; /* enable transform */
+  transition: transform var(--dur) var(--ease-spring);
+}
+/* The arrow eases toward "Executable Journeys" as the card is engaged — the
+   positioning statement completes on hover. */
+.hero-card:hover .role-arrow { transform: translateX(3px); }
+/* Full-width hairline — intentional structure, not an orphaned dash. */
 .hero-card-divider {
-  width: 44px;
+  width: 100%;
   height: 1px;
-  margin: 18px 0 16px;
-  background: linear-gradient(90deg, transparent, var(--hair-strong), transparent);
+  margin: 20px 0 18px;
+  background: linear-gradient(90deg, transparent, var(--hair-strong) 22%, var(--hair-strong) 78%, transparent);
 }
 .hero-card-tags {
   display: flex;
@@ -519,10 +633,21 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   text-transform: uppercase;
   color: var(--ink-2);
   padding: 4px 11px;
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  border: 1px solid var(--hair);
   border-radius: var(--r-pill);
-  background: rgba(255, 255, 255, 0.28);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 1px 2px rgba(10, 10, 30, 0.04);
+  transition:
+    transform var(--dur-fast) var(--ease-spring),
+    color var(--dur-fast) var(--ease-reveal),
+    border-color var(--dur-fast) var(--ease-reveal);
+}
+.hero-card-tag:hover {
+  transform: translateY(-1px);
+  color: var(--ink);
+  border-color: var(--hair-strong);
 }
 .theme-dark .hero-card-tag {
   color: var(--ink-2);
@@ -535,27 +660,31 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
    pane edge still catches light against the dark page. */
 .theme-dark .hero-card {
   /* Smoked glass kept low-alpha so the network's bright nodes glow through. */
-  background:
-    linear-gradient(rgba(24, 26, 42, 0.34), rgba(24, 26, 42, 0.34)) padding-box,
-    linear-gradient(160deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1) 30%, rgba(255, 255, 255, 0.04) 70%, rgba(255, 255, 255, 0.16)) border-box;
+  background: rgba(24, 26, 42, 0.44);
+  border-color: rgba(255, 255, 255, 0.14);
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.18),
-    inset 0 8px 28px rgba(150, 170, 255, 0.06),
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    0 30px 64px -24px rgba(0, 0, 0, 0.6);
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    0 6px 16px -8px rgba(0, 0, 0, 0.5),
+    0 36px 70px -20px rgba(0, 0, 0, 0.72);
 }
 .theme-dark .hero-card::before {
-  background: linear-gradient(125deg, rgba(255, 255, 255, 0.12) 0%, transparent 32%, transparent 70%, rgba(255, 255, 255, 0.04) 100%);
+  background: linear-gradient(125deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%);
 }
 .theme-dark .hero-card:hover {
   box-shadow:
-    inset 0 1px 1px rgba(255, 255, 255, 0.18),
-    inset 0 8px 28px rgba(150, 170, 255, 0.06),
-    0 2px 8px rgba(0, 0, 0, 0.3),
-    0 44px 88px -24px rgba(0, 0, 0, 0.7);
+    inset 0 1px 1px rgba(255, 255, 255, 0.12),
+    0 8px 20px -8px rgba(0, 0, 0, 0.52),
+    0 46px 86px -20px rgba(0, 0, 0, 0.78);
 }
 .theme-dark .hero-card-ring {
-  background: linear-gradient(160deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
+  /* Same machined bezel, a touch brighter so the rim reads against the dark card. */
+  background: conic-gradient(from 212deg,
+    rgba(255, 255, 255, 0.62) 0deg,
+    rgba(255, 255, 255, 0.1) 62deg,
+    #17171d 150deg,
+    #050506 248deg,
+    rgba(255, 255, 255, 0.32) 318deg,
+    rgba(255, 255, 255, 0.62) 360deg);
 }
 .theme-dark .hero-card-avatar { border-color: rgba(255, 255, 255, 0.18); }
 
@@ -567,6 +696,9 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   letter-spacing: -0.045em;
   margin-bottom: clamp(28px, 3.4vw, 44px);
   max-width: none;
+  /* Soft same-as-page halo behind the glyphs — lifts the headline off the live
+     particle field so it reads as a nearer plane rather than painted on. */
+  text-shadow: 0 1px 34px color-mix(in srgb, var(--paper) 62%, transparent);
 }
 .hero-title .line {
   display: block;
@@ -671,8 +803,38 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
 
 .hero-cta {
   display: flex;
-  gap: 10px;
+  align-items: center;
+  gap: 22px;
   flex-wrap: wrap;
+}
+
+/* PLG-minimal secondary: a quiet text link, not a button */
+.hero-cta-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  transition: color var(--dur-fast);
+}
+.hero-cta-link svg {
+  transition: transform var(--dur-fast) var(--ease-spring);
+}
+.hero-cta-link:hover {
+  color: var(--ink);
+}
+.hero-cta-link:hover svg {
+  transform: translateX(3px);
+}
+/* Lead action — full ink weight, still no surface */
+.hero-cta-link-strong {
+  color: var(--ink);
+}
+.hero-cta-link-strong:hover {
+  color: var(--purple);
 }
 
 .hero-scroll {
@@ -2845,6 +3007,12 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   color: var(--ink);
   border: 1px solid var(--hair-strong);
 }
+/* Nav monogram stays a surfaceless wordmark in dark theme */
+.theme-dark .nav-mark .mc-tile {
+  background: transparent;
+  border: none;
+  color: var(--ink);
+}
 .theme-dark .foot-dead { filter: grayscale(1) invert(1); opacity: 0.4; }
 .theme-dark .foot-dead:hover {
   filter: grayscale(0) invert(0)
@@ -2862,10 +3030,9 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   background: var(--ink-3);
 }
 
-/* Nav pill — hardcoded light cream, override for dark */
+/* Nav — surfaceless, just the buttons floating over the hero */
 .theme-dark .nav {
-  background: rgba(11, 11, 20, 0.7);
-  border-color: rgba(255, 255, 255, 0.10);
+  background: transparent;
 }
 .theme-dark .nav-links a:hover {
   background: rgba(255, 255, 255, 0.06);
@@ -3236,6 +3403,28 @@ html.theme-dark body::before { display: none; }
     opacity: 1;
   }
 }
+/* Left accent bar — ported from the CustomerNode "Experience Your Journey"
+   cards (.tgc-accent). Quiet brand-gradient sliver at rest that lights up and
+   thickens on hover, giving each card a signature edge that reacts to the pointer. */
+.timeline-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+  background: var(--grad-cn);
+  opacity: 0.3;
+  transition:
+    opacity 280ms var(--ease-reveal),
+    width 280ms var(--ease-spring);
+  pointer-events: none;
+}
+.timeline-card:hover::before {
+  opacity: 1;
+  width: 4px;
+}
 .timeline-card:hover {
   border-color: var(--hair-strong);
   transform: translate(6px, -3px);
@@ -3243,7 +3432,8 @@ html.theme-dark body::before { display: none; }
     0 1px 0 rgba(255, 255, 255, 0.8) inset,
     0 4px 8px rgba(10, 10, 11, 0.06),
     0 16px 40px rgba(10, 10, 11, 0.10),
-    0 40px 80px rgba(10, 10, 11, 0.06);
+    0 40px 80px rgba(10, 10, 11, 0.06),
+    0 24px 60px rgba(120, 115, 245, 0.10); /* CN accent-tinted glow */
 }
 .tl-head {
   display: flex;
@@ -3648,4 +3838,43 @@ html.theme-dark body::before { display: none; }
     transition-duration: 0.01ms !important;
   }
   .marquee-track { animation: none; }
+}
+
+
+/* ═══════════ SECTIONED SCROLL PROGRESSION (feature/scroll-journey) ═══════════
+   Makes the page advance section-by-section instead of a flat free-scroll: as you
+   scroll, each section's top gently snaps into place. Sections keep their full
+   content and are still freely scrollable (proximity snap never traps tall
+   sections). Desktop + motion-allowed only — pure CSS, no layout change, so it
+   cannot cut content or reflow anything. This is the safe, honest progression
+   change; the full CustomerNode "cover" theater needs viewport-fit sections (see
+   note to Michael). */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-snap-type: y proximity;
+    scroll-padding-top: 0;
+  }
+  main > .hero,
+  main > section,
+  main > .footer {
+    scroll-snap-align: start;
+    scroll-snap-stop: normal;
+  }
+}
+
+/* Chapter spotlight: the active section is fully lit; passed/upcoming sections
+   recede (dim). Whole-site, filter-only (no transform/clip) so it can't cut or
+   shift any content — safe with tall sections. JS adds body.chapters + toggles
+   .is-chapter-active. Pairs with the snap above for a deliberate, theatrical
+   chapter-by-chapter progression. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  body.chapters main > .hero,
+  body.chapters main > section:not(.footer) {
+    transition: filter 600ms var(--ease-reveal), opacity 600ms var(--ease-reveal);
+  }
+  body.chapters main > .hero:not(.is-chapter-active),
+  body.chapters main > section:not(.footer):not(.is-chapter-active) {
+    filter: brightness(0.64) saturate(0.9);
+    opacity: 0.82;
+  }
 }
