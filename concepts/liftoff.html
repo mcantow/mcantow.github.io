@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>LIFTOFF — earth to space (concept)</title>
+<meta name="description" content="A hyperreal scroll: hazy blue horizon → the curve of the Earth → deep space." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --ink:#F4F4ED;--muted:rgba(244,244,237,.6);--faint:rgba(244,244,237,.34);
+    --gold:#4EACF1;--cyan:#7873F5;--bg:#03040a;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  html{scroll-behavior:auto}
+  body{background:var(--bg);color:var(--ink);font-family:"Space Grotesk",system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;cursor:default}
+
+  #stage{position:fixed;inset:0;z-index:0;background:#000}
+  #stage canvas{display:block;width:100%;height:100%}
+  #runway{position:relative;z-index:2;height:820vh;pointer-events:none}
+  #film{position:fixed;inset:0;z-index:3;pointer-events:none;background:radial-gradient(140% 130% at 50% 46%,transparent 55%,rgba(1,1,4,.55) 100%)}
+
+  .ui{position:fixed;inset:0;z-index:4;pointer-events:none}
+  .topbar{position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:clamp(20px,3.5vw,42px) clamp(22px,4vw,60px);font-weight:400;letter-spacing:.34em;font-size:11px;text-transform:uppercase;color:var(--muted)}
+  .topbar .mark{color:var(--ink);letter-spacing:.5em;font-weight:500}
+  .topbar .mark b{color:var(--gold);font-weight:500}
+  .topbar .right{display:flex;gap:26px}
+  .topbar .right span{position:relative}
+  .topbar .right span::before{content:"";position:absolute;left:-13px;top:50%;width:3px;height:3px;border-radius:50%;background:var(--gold);transform:translateY(-50%);opacity:.5}
+  .topbar .right span:first-child::before{display:none}
+
+  .prog{position:absolute;left:clamp(22px,4vw,60px);right:clamp(22px,4vw,60px);bottom:34px;height:1px;background:rgba(243,239,230,.12)}
+  .prog i{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--gold),var(--cyan));box-shadow:0 0 14px var(--gold)}
+  .prog em{position:absolute;right:0;bottom:10px;font-style:normal;font-size:10px;letter-spacing:.3em;color:var(--faint)}
+
+  .captions{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 24px}
+  .cap{position:absolute;left:50%;top:50%;transform:translate(-50%,-44%);width:min(1040px,92vw);opacity:0;filter:blur(9px);transition:opacity .55s ease,transform .85s cubic-bezier(.2,.7,.2,1),filter .55s ease;will-change:opacity,transform,filter}
+  .cap.on{opacity:1;transform:translate(-50%,-50%);filter:blur(0)}
+  .cap .kicker{font-size:11px;letter-spacing:.52em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;opacity:0;transform:translateY(14px);transition:.9s .1s}
+  .cap .kicker span{display:inline-block;padding-left:.52em}
+  .cap h1{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(46px,9vw,138px);line-height:.98;letter-spacing:-.01em;text-wrap:balance;text-shadow:0 2px 70px rgba(2,3,10,.85),0 1px 10px rgba(2,3,10,.7)}
+  .cap h1 em{font-style:italic;color:var(--gold)}
+  .cap h2{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(34px,6.4vw,92px);line-height:1.02;letter-spacing:-.005em;text-shadow:0 2px 70px rgba(2,3,10,.85),0 1px 10px rgba(2,3,10,.7)}
+  .cap h2 em{font-style:italic;color:var(--cyan)}
+  .cap p{margin:28px auto 0;max-width:56ch;color:var(--muted);font-size:clamp(14px,1.5vw,17px);line-height:1.7;font-weight:300;text-shadow:0 1px 24px rgba(2,3,10,.8)}
+  .cap.on .kicker{opacity:1;transform:none}
+
+  .cue{position:absolute;left:50%;bottom:70px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--faint);font-size:10px;letter-spacing:.4em;text-transform:uppercase;transition:opacity .6s}
+  .cue .rail{width:1px;height:52px;background:linear-gradient(var(--gold),transparent);position:relative;overflow:hidden}
+  .cue .rail::after{content:"";position:absolute;left:0;top:-40%;width:100%;height:40%;background:var(--gold);animation:drop 2.4s cubic-bezier(.7,0,.3,1) infinite}
+  @keyframes drop{0%{top:-45%}100%{top:100%}}
+
+  .meta{position:absolute;bottom:30px;left:clamp(22px,4vw,60px);font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--faint);max-width:230px;line-height:2.1}
+  .meta b{color:var(--muted);font-weight:400}
+
+  #loader{position:fixed;inset:0;z-index:9;background:#03040a;display:grid;place-items:center;transition:opacity 1.2s ease}
+  #loader.gone{opacity:0;pointer-events:none}
+  #loader .ld{display:flex;flex-direction:column;align-items:center;gap:26px}
+  #loader .ring{width:44px;height:44px;border-radius:50%;border:1px solid rgba(243,239,230,.14);border-top-color:var(--gold);animation:spin 1s linear infinite}
+  #loader .lt{font-size:10px;letter-spacing:.6em;text-transform:uppercase;color:var(--faint)}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  #nowebgl{position:fixed;inset:0;z-index:20;display:none;place-items:center;background:#03040a;text-align:center;padding:40px}
+  #nowebgl p{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:26px;color:var(--muted)}
+
+  body.reveal .topbar,body.reveal .prog,body.reveal .meta{animation:fadeUp 1.2s .2s both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @media (max-width:720px){ .topbar .right{display:none} .meta{display:none} .cap .kicker{letter-spacing:.4em} }
+</style>
+</head>
+<body>
+  <div id="stage"></div>
+  <div id="runway"></div>
+  <div id="film"></div>
+
+  <div class="ui">
+    <div class="topbar">
+      <div class="mark">M · <b>CANTOW</b></div>
+      <div class="right"><span>Liftoff</span><span>Concept 002</span><span>2026</span></div>
+    </div>
+
+    <div class="captions">
+      <div class="cap" data-cap="0">
+        <div class="kicker">Ground level<span>·</span> 002</div>
+        <h1>Michael <em>Cantow</em></h1>
+        <p>Founder of CustomerNode. MIT-trained engineer. Scroll to leave the ground.</p>
+      </div>
+      <div class="cap" data-cap="1">
+        <div class="kicker">Ascent<span>·</span> Atmosphere</div>
+        <h2>Building the next generation<br/>of <em>platforms</em>.</h2>
+      </div>
+      <div class="cap" data-cap="2">
+        <div class="kicker">The curvature</div>
+        <h2>From record<br/>to <em>action</em>.</h2>
+        <p>CustomerNode — the execution layer for the multi-stage B2B deals a CRM only watches.</p>
+      </div>
+      <div class="cap" data-cap="3">
+        <div class="kicker">Deep space</div>
+        <h2>ML researcher —<br/><em>TESS</em> &amp; NICER.</h2>
+      </div>
+      <div class="cap" data-cap="4">
+        <div class="kicker">Arrival</div>
+        <h1>Let's <em>talk</em>.</h1>
+        <p>michaelcantow@customernode.com · LinkedIn</p>
+      </div>
+    </div>
+
+    <div class="cue"><span>Scroll</span><div class="rail"></div></div>
+    <div class="meta">Real-time <b>WebGL</b><br/>NASA imagery · scattering<br/>Concept — Liftoff</div>
+    <div class="prog"><i></i><em>002 — LIFTOFF</em></div>
+  </div>
+
+  <div id="loader"><div class="ld"><div class="ring"></div><div class="lt">Fueling</div></div></div>
+  <div id="nowebgl"><p>This concept needs WebGL — try a desktop browser.</p></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stageEl = document.getElementById('stage');
+
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:'high-performance' }); } catch(e){}
+if(!renderer || !renderer.getContext()){ document.getElementById('nowebgl').style.display='grid'; document.getElementById('loader').classList.add('gone'); throw new Error('no webgl'); }
+
+const DPR = Math.min(devicePixelRatio||1, 2);
+renderer.setPixelRatio(DPR);
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.82;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+stageEl.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 1, 60000);
+
+const R = 100;                                    // earth radius (scene units)
+const SUN = new THREE.Vector3(-1.0, 0.28, 0.42).normalize();
+const SUNCOL = new THREE.Color(1.0, 0.96, 0.86);
+
+/* fixed spot on the globe we ascend straight up from (dawn side) */
+const P0 = new THREE.Vector3(0.28, 0.42, 1.0).normalize();
+const UP = P0.clone();                            // local up == radial
+const EAST = new THREE.Vector3().crossVectors(UP, new THREE.Vector3(0,1,0)).normalize(); // a horizon tangent
+
+/* ── textures ── */
+const TXROOT = 'https://threejs.org/examples/textures/planets/';
+const mgr = new THREE.LoadingManager();
+const tl = new THREE.TextureLoader(mgr);
+const load = (f, srgb)=>{ const t=tl.load(TXROOT+f); t.anisotropy=8; if(srgb) t.colorSpace=THREE.SRGBColorSpace; return t; };
+const dayMap   = load('earth_atmos_2048.jpg', true);
+const nightMap = load('earth_lights_2048.png', true);
+const specMap  = load('earth_specular_2048.jpg', false);
+const normMap  = load('earth_normal_2048.jpg', false);
+const cloudMap = load('earth_clouds_1024.png', false);
+
+/* ── EARTH ── */
+const earthUniforms = {
+  dayMap:{value:dayMap}, nightMap:{value:nightMap}, specMap:{value:specMap}, normMap:{value:normMap},
+  uSun:{value:SUN}, uCam:{value:new THREE.Vector3()}
+};
+const earth = new THREE.Mesh(
+  new THREE.SphereGeometry(R, 160, 100),
+  new THREE.ShaderMaterial({
+    uniforms: earthUniforms,
+    vertexShader:`
+      varying vec2 vUv; varying vec3 vWN; varying vec3 vWP; varying vec3 vT;
+      void main(){
+        vUv=uv;
+        vWN=normalize(mat3(modelMatrix)*normal);
+        vWP=(modelMatrix*vec4(position,1.0)).xyz;
+        vT=normalize(mat3(modelMatrix)*vec3(-sin(uv.x*6.2831),0.0,cos(uv.x*6.2831)));
+        gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+      }`,
+    fragmentShader:`
+      precision highp float;
+      uniform sampler2D dayMap,nightMap,specMap,normMap; uniform vec3 uSun,uCam;
+      varying vec2 vUv; varying vec3 vWN; varying vec3 vWP; varying vec3 vT;
+      void main(){
+        vec3 N=normalize(vWN);
+        // perturb normal a touch with the normal map for relief on the terminator
+        vec3 nm=texture2D(normMap,vUv).xyz*2.0-1.0;
+        vec3 T=normalize(vT-N*dot(vT,N)); vec3 B=cross(N,T);
+        N=normalize(N + (T*nm.x + B*nm.y)*0.35);
+        vec3 L=normalize(uSun);
+        float lam=dot(N,L);
+        float day=smoothstep(-0.05,0.25,lam);
+        vec3 dayC=texture2D(dayMap,vUv).rgb;
+        vec3 nightC=texture2D(nightMap,vUv).rgb;
+        float ocean=texture2D(specMap,vUv).r;
+        vec3 V=normalize(uCam-vWP);
+        vec3 H=normalize(L+V);
+        float spec=pow(max(dot(N,H),0.0),55.0)*ocean*day;
+        vec3 col=dayC*(0.03+0.80*day);
+        col+=vec3(1.0,0.95,0.85)*spec*0.5;               // ocean sun-glint
+        col+=nightC*(1.0-day)*1.8;                        // city lights
+        // aerial blue as the limb turns away (thin air scatter on the surface)
+        float rim=pow(1.0-max(dot(N,V),0.0),3.0);
+        col+=vec3(0.12,0.28,0.7)*rim*day*0.6;
+        col=mix(vec3(dot(col,vec3(0.299,0.587,0.114))),col,1.15);   // gentle saturation
+        gl_FragColor=vec4(col,1.0);
+      }`
+  })
+);
+scene.add(earth);
+
+/* ── CLOUDS ── */
+const cloudUniforms = { cloudMap:{value:cloudMap}, uSun:{value:SUN} };
+const clouds = new THREE.Mesh(
+  new THREE.SphereGeometry(R*1.006, 128, 80),
+  new THREE.ShaderMaterial({
+    uniforms: cloudUniforms, transparent:true, depthWrite:false,
+    vertexShader:`varying vec2 vUv; varying vec3 vWN;
+      void main(){ vUv=uv; vWN=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+    fragmentShader:`precision highp float; uniform sampler2D cloudMap; uniform vec3 uSun; varying vec2 vUv; varying vec3 vWN;
+      void main(){ float c=texture2D(cloudMap,vUv).r; float day=smoothstep(-0.05,0.28,dot(normalize(vWN),normalize(uSun)));
+        vec3 col=vec3(1.0)*(0.15+0.9*day); gl_FragColor=vec4(col, c*(0.15+0.85*day)); }`
+  })
+);
+scene.add(clouds);
+
+/* ── ATMOSPHERE (from space): scatter-blue limb, bright on the sunlit side ── */
+const atmoUniforms = { uSun:{value:SUN}, uCam:{value:new THREE.Vector3()}, uSpace:{value:0} };
+const atmo = new THREE.Mesh(
+  new THREE.SphereGeometry(R*1.035, 128, 80),
+  new THREE.ShaderMaterial({
+    uniforms:atmoUniforms, side:THREE.BackSide, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    vertexShader:`varying vec3 vWN; varying vec3 vWP;
+      void main(){ vWN=normalize(mat3(modelMatrix)*normal); vWP=(modelMatrix*vec4(position,1.0)).xyz; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+    fragmentShader:`precision highp float; uniform vec3 uSun,uCam; uniform float uSpace; varying vec3 vWN; varying vec3 vWP;
+      void main(){
+        vec3 N=normalize(vWN); vec3 V=normalize(uCam-vWP); vec3 L=normalize(uSun);
+        float fres=pow(1.0-max(dot(N,V),0.0),2.4);
+        float sun=max(dot(N,L),0.0);
+        float mie=pow(max(dot(V,-L),0.0),7.0);           // forward glow toward the sun
+        vec3 rayleigh=vec3(0.22,0.46,1.0);
+        vec3 col=rayleigh*fres*(0.28+1.05*sun) + vec3(1.0,0.86,0.7)*mie*fres*0.8;
+        gl_FragColor=vec4(col, 1.0)*(0.3+0.7*uSpace);     // strengthen the space-rim as we climb
+      }`
+  })
+);
+scene.add(atmo);
+
+/* ── GROUND SKY DOME (blue daytime sky; fades out into space) ── */
+const skyUniforms = { uSun:{value:SUN}, uUp:{value:UP.clone()}, uSunCol:{value:new THREE.Color(1.0,0.9,0.78)}, uSpace:{value:0} };
+const sky = new THREE.Mesh(
+  new THREE.SphereGeometry(40000, 32, 24),
+  new THREE.ShaderMaterial({
+    uniforms:skyUniforms, side:THREE.BackSide, depthTest:false, depthWrite:false, transparent:true,
+    vertexShader:`varying vec3 vDir; void main(){ vDir=normalize((modelMatrix*vec4(position,1.0)).xyz - cameraPosition); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+    fragmentShader:`precision highp float; uniform vec3 uSun,uUp,uSunCol; uniform float uSpace; varying vec3 vDir;
+      void main(){
+        vec3 d=normalize(vDir); float elev=dot(d,normalize(uUp));
+        float h=clamp(elev,0.0,1.0);
+        vec3 zenith=vec3(0.06,0.19,0.52), horizon=vec3(0.34,0.50,0.76);
+        vec3 c=mix(horizon,zenith,pow(h,0.62))*0.82;
+        c=mix(c,vec3(0.05,0.07,0.11),smoothstep(0.0,-0.16,elev));   // below horizon
+        float sd=max(dot(d,normalize(uSun)),0.0);
+        c+=uSunCol*(pow(sd,12.0)*0.28 + pow(sd,650.0)*2.5);         // tight sun halo + disk
+        gl_FragColor=vec4(c, 1.0-uSpace);                           // dissolve into space
+      }`
+  })
+);
+sky.renderOrder=-2; scene.add(sky);
+
+/* ── STARS (deep space) ── */
+const STAR=9000, SHELL=20000;
+const sPos=new Float32Array(STAR*3),sCol=new Float32Array(STAR*3),sSize=new Float32Array(STAR),sPh=new Float32Array(STAR);
+const seed=(()=>{let a=0x9e3779b9;return()=>{a|=0;a=a+0x6d2b79f5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};})();
+const RND=()=>seed();
+const pal=[[0.85,0.9,1.0],[1,1,1],[0.7,0.78,1.0],[1.0,0.9,0.8],[0.9,0.85,1.0]];
+for(let i=0;i<STAR;i++){
+  const u=RND()*2-1, th=RND()*6.2831, r=Math.sqrt(1-u*u);
+  sPos[i*3]=Math.cos(th)*r*SHELL; sPos[i*3+1]=u*SHELL; sPos[i*3+2]=Math.sin(th)*r*SHELL;
+  const c=pal[(RND()*pal.length)|0], b=0.55+RND()*0.45;
+  sCol[i*3]=c[0]*b; sCol[i*3+1]=c[1]*b; sCol[i*3+2]=c[2]*b;
+  sSize[i]= RND()>0.99 ? 60+RND()*70 : 12+RND()*30;
+  sPh[i]=RND();
+}
+const starGeo=new THREE.BufferGeometry();
+starGeo.setAttribute('position',new THREE.BufferAttribute(sPos,3));
+starGeo.setAttribute('aColor',new THREE.BufferAttribute(sCol,3));
+starGeo.setAttribute('aSize',new THREE.BufferAttribute(sSize,1));
+starGeo.setAttribute('aPhase',new THREE.BufferAttribute(sPh,1));
+const starTex=(()=>{const s=64,c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');const g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);g.addColorStop(0,'#fff');g.addColorStop(0.25,'rgba(255,255,255,0.85)');g.addColorStop(1,'rgba(255,255,255,0)');x.fillStyle=g;x.fillRect(0,0,s,s);const t=new THREE.CanvasTexture(c);return t;})();
+const starMat=new THREE.ShaderMaterial({
+  transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+  uniforms:{ uTime:{value:0}, uPix:{value:DPR}, uMap:{value:starTex}, uSpace:{value:0} },
+  vertexShader:`attribute vec3 aColor; attribute float aSize; attribute float aPhase; uniform float uTime,uPix; varying vec3 vCol; varying float vTw;
+    void main(){ vec4 mv=modelViewMatrix*vec4(position,1.0); float tw=0.6+0.4*sin(uTime*1.4+aPhase*6.2831); vTw=tw; vCol=aColor;
+      gl_PointSize=aSize*uPix*(1200.0/max(-mv.z,1.0))*(0.6+0.4*tw); gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`uniform sampler2D uMap; uniform float uSpace; varying vec3 vCol; varying float vTw;
+    void main(){ vec4 t=texture2D(uMap,gl_PointCoord); gl_FragColor=vec4(vCol*(0.7+0.6*vTw),1.0)*t*uSpace; }`
+});
+const stars=new THREE.Points(starGeo,starMat); stars.frustumCulled=false; scene.add(stars);
+
+/* ── SUN sprite (blooms) ── */
+const sunTex=(()=>{const s=128,c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');const g=x.createRadialGradient(s/2,s/2,0,s/2,s/2,s/2);g.addColorStop(0,'rgba(255,255,255,1)');g.addColorStop(0.12,'rgba(255,247,230,0.95)');g.addColorStop(0.4,'rgba(255,220,170,0.35)');g.addColorStop(1,'rgba(255,200,140,0)');x.fillStyle=g;x.fillRect(0,0,s,s);const t=new THREE.CanvasTexture(c);return t;})();
+const sun=new THREE.Sprite(new THREE.SpriteMaterial({map:sunTex,color:0xffffff,transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending}));
+sun.scale.set(4200,4200,1);
+sun.position.copy(SUN.clone().multiplyScalar(24000));
+scene.add(sun);
+
+/* ── post ── */
+const composer=new EffectComposer(renderer);
+composer.setPixelRatio(DPR); composer.setSize(innerWidth,innerHeight);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.5,0.6,0.9);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+const Final={uniforms:{tDiffuse:{value:null},uTime:{value:0},uVig:{value:1}},
+  vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0);} `,
+  fragmentShader:`precision highp float; varying vec2 vUv; uniform sampler2D tDiffuse; uniform float uTime,uVig;
+    float hash(vec2 p){ return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453); }
+    void main(){ vec2 uv=vUv; vec2 dd=uv-0.5; float r2=dot(dd,dd); vec3 col=texture2D(tDiffuse,uv).rgb;
+      float vig=smoothstep(0.95,0.28,r2*1.9); col*=mix(1.0,vig,0.45*uVig);
+      col+=(hash(uv*vec2(1920.0,1080.0)+uTime)-0.5)*0.022; gl_FragColor=vec4(col,1.0);} `};
+const finalPass=new ShaderPass(Final); composer.addPass(finalPass);
+
+/* ── scroll + pointer ── */
+let scrollP=0,targetP=0;
+function readScroll(){ const m=document.documentElement.scrollHeight-innerHeight; targetP=m>0?Math.min(1,Math.max(0,scrollY/m)):0; }
+addEventListener('scroll',readScroll,{passive:true}); readScroll();
+const ptr={x:0,y:0,tx:0,ty:0};
+addEventListener('pointermove',e=>{ptr.tx=(e.clientX/innerWidth-0.5);ptr.ty=(e.clientY/innerHeight-0.5);},{passive:true});
+
+const caps=[...document.querySelectorAll('.cap')];
+const cue=document.querySelector('.cue'), progFill=document.querySelector('.prog i');
+function phaseIndex(p){ if(p<0.15)return 0; if(p<0.38)return 1; if(p<0.63)return 2; if(p<0.86)return 3; return 4; }
+function setPhase(p){ const i=phaseIndex(p); caps.forEach(c=>c.classList.toggle('on',+c.dataset.cap===i)); cue.style.opacity=p>0.04?'0':'0.7'; progFill.style.width=(p*100).toFixed(1)+'%'; }
+
+/* ── camera choreography ── */
+const smooth=v=>v*v*(3-2*v);
+const tmpTarget=new THREE.Vector3(), tmpUp=new THREE.Vector3();
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now; const t=now*0.001;
+  scrollP+=(targetP-scrollP)*0.055; setPhase(scrollP);
+  const a=scrollP;
+
+  // altitude above the surface — slow, front-loaded reveal then a long pull-back
+  const H = R*(0.06 + 12.0*Math.pow(a,1.5));
+  const dist = R + H;
+  ptr.x+=(ptr.tx-ptr.x)*0.04; ptr.y+=(ptr.ty-ptr.y)*0.04;
+
+  // rise straight up from P0, with a gentle drift so it breathes
+  const driftA = Math.sin(t*0.05)*0.02;
+  const dir = P0.clone().addScaledVector(EAST, driftA + ptr.x*0.05).normalize();
+  const camPos = dir.multiplyScalar(dist);
+  camera.position.copy(camPos);
+
+  // look from the horizon (ground) toward Earth's center (space)
+  const toSpace = smooth(Math.min(1,Math.max(0,(a-0.02)/0.42)));
+  const horizonTarget = camPos.clone().addScaledVector(EAST, R*4).addScaledVector(UP, -R*0.35);
+  const centerTarget = new THREE.Vector3(0, dist*0.40, 0);       // constant downward framing → Earth sits low, text reads over clean sky
+  tmpTarget.copy(horizonTarget).lerp(centerTarget, toSpace);
+  tmpUp.copy(UP).lerp(new THREE.Vector3(0,1,0), toSpace*0.6);
+  camera.up.copy(tmpUp);
+  camera.lookAt(tmpTarget);
+  camera.rotation.z += (ptr.x*0.015 - camera.rotation.z)*0.08;
+
+  // atmosphere / sky state
+  const space = Math.min(1,Math.max(0, (H/R - 0.05)/0.9));       // 0 on ground → 1 in space
+  earthUniforms.uCam.value.copy(camPos);
+  atmoUniforms.uCam.value.copy(camPos); atmoUniforms.uSpace.value=space;
+  skyUniforms.uSpace.value=Math.min(1, space*1.15);
+  skyUniforms.uUp.value.copy(dir);                              // sky "up" tracks our position
+  starMat.uniforms.uSpace.value=space;
+  starMat.uniforms.uTime.value=REDUCE?0:t;
+  stars.position.copy(camPos);                                  // star dome follows camera
+  sky.position.copy(camPos);
+
+  if(!REDUCE) clouds.rotation.y += dt*0.004;                    // clouds drift
+  finalPass.uniforms.uTime.value=REDUCE?0:t;
+
+  composer.render();
+  requestAnimationFrame(loop);
+}
+
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight); bloom.setSize(innerWidth,innerHeight);
+},{passive:true});
+
+requestAnimationFrame(loop);
+
+let done=false;
+function start(){ if(done)return; done=true; document.getElementById('loader').classList.add('gone'); document.body.classList.add('reveal'); caps[0].classList.add('on'); }
+mgr.onLoad=start;
+setTimeout(start, 4500); // fallback if a texture stalls
+</script>
+</body>
+</html>

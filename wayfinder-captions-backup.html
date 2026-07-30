@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Michael Cantow — Founder, CustomerNode</title>
+<meta name="description" content="Michael Cantow, founder of CustomerNode — the execution layer for multi-stage B2B deals. An MIT-trained engineer, told as a night-sea wayfinding crossing." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --ink:#e7ebfb;
+    --muted:rgba(231,235,251,.56);
+    --faint:rgba(231,235,251,.32);
+    --cyan:#4eacf1;        /* thread start (brand) */
+    --indigo:#818cf8;      /* thread glow */
+    --deep:#4f46e5;        /* thread end */
+    --line:rgba(129,140,248,.30);
+    --bg:#070b12;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    background:var(--bg);color:var(--ink);
+    font-family:"Space Grotesk",system-ui,sans-serif;
+    overflow:hidden;overscroll-behavior:none;touch-action:none;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;cursor:default;
+  }
+  #stage{position:fixed;inset:0;z-index:0;background:var(--bg)}
+  #stage canvas{display:block;width:100%;height:100%}
+  #runway{position:relative;z-index:2;height:620vh;pointer-events:none}
+
+  /* film: gentle vignette + a soft top-sky darkening for legibility */
+  #film{
+    position:fixed;inset:0;z-index:3;pointer-events:none;
+    background:
+      radial-gradient(72% 60% at 50% 46%, rgba(7,11,18,.28) 0%, transparent 44%),
+      radial-gradient(130% 120% at 50% 40%, transparent 52%, rgba(3,5,10,.5) 100%);
+  }
+
+  .ui{position:fixed;inset:0;z-index:4;pointer-events:none}
+  .topbar{
+    position:absolute;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;
+    padding:clamp(20px,3.5vw,42px) clamp(22px,4vw,60px);
+    font-weight:400;letter-spacing:.34em;font-size:11px;text-transform:uppercase;color:var(--muted);
+  }
+  .topbar .mark{color:var(--ink);font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:clamp(15px,1.5vw,19px);letter-spacing:.05em;text-transform:none}
+  .topbar .mark b{color:var(--cyan);font-weight:500}
+  .topbar .nav-cta{
+    display:inline-flex;align-items:center;gap:6px;pointer-events:auto;text-decoration:none;
+    font-family:"Space Grotesk",sans-serif;font-size:11px;font-weight:500;letter-spacing:.24em;
+    text-transform:uppercase;color:var(--muted);transition:color .3s ease;
+  }
+  .topbar .nav-cta svg{transition:transform .3s cubic-bezier(.2,.7,.2,1)}
+  .topbar .nav-cta:hover{color:var(--ink)}
+  .topbar .nav-cta:hover svg{transform:translate(2px,-2px);stroke:var(--cyan)}
+  .topbar .right{display:flex;gap:26px}
+  .topbar .right span{position:relative}
+  .topbar .right span::before{content:"";position:absolute;left:-13px;top:50%;width:3px;height:3px;border-radius:50%;background:var(--indigo);transform:translateY(-50%);opacity:.6}
+  .topbar .right span:first-child::before{display:none}
+
+  .prog{position:absolute;left:clamp(22px,4vw,60px);right:clamp(22px,4vw,60px);bottom:34px;height:1px;background:rgba(231,235,251,.12);pointer-events:auto;cursor:pointer;transition:height .2s ease,background .2s ease}
+  /* fat, invisible hit area so the 1px line is easy to grab (events bubble to .prog) */
+  .prog::before{content:"";position:absolute;left:0;right:0;top:-16px;bottom:-16px}
+  .prog:hover,.prog.live{height:2px;background:rgba(231,235,251,.22)}
+  .prog i{position:absolute;left:0;top:0;bottom:0;width:0%;background:linear-gradient(90deg,var(--cyan),var(--indigo),var(--deep));box-shadow:0 0 14px var(--indigo)}
+  .prog em{position:absolute;right:0;bottom:12px;font-style:normal;font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);transition:color .3s}
+  .prog em b{color:var(--cyan);font-weight:500;font-style:normal;margin-right:.7em;letter-spacing:.2em}
+  .prog:hover em,.prog.live em{color:var(--muted)}
+  /* scene tick marks along the track */
+  .prog .tick{position:absolute;top:50%;width:1px;height:7px;margin-top:-3.5px;background:rgba(231,235,251,.28);pointer-events:none;transition:background .2s,height .2s}
+  .prog:hover .tick,.prog.live .tick{background:rgba(231,235,251,.42);height:9px;margin-top:-4.5px}
+  /* draggable knob */
+  .prog .knob{position:absolute;top:50%;left:0;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;
+    background:var(--ink);box-shadow:0 0 14px var(--indigo),0 0 4px var(--cyan);
+    opacity:0;transform:scale(.5);transition:opacity .3s ease,transform .3s ease;pointer-events:none}
+  .prog:hover .knob,.prog.live .knob{opacity:1;transform:scale(1)}
+  /* hover/drag tooltip surfacing the scene name at that point */
+  .prog .tip{position:absolute;bottom:15px;left:0;transform:translateX(-50%);white-space:nowrap;
+    font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--ink);
+    padding:6px 11px;border-radius:5px;background:rgba(9,14,26,.86);border:1px solid var(--line);
+    box-shadow:0 6px 26px rgba(3,5,12,.5);opacity:0;transition:opacity .22s ease;pointer-events:none;-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+  .prog .tip b{color:var(--cyan);font-weight:500;margin-right:.7em;letter-spacing:.2em}
+  .prog:hover .tip,.prog.live .tip{opacity:1}
+
+  .captions{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:0 24px}
+  .cap{
+    position:absolute;left:50%;top:50%;transform:translate(-50%,-44%);
+    width:min(1060px,92vw);opacity:0;filter:blur(9px);
+    transition:opacity .7s ease, transform 1s cubic-bezier(.2,.7,.2,1), filter .7s ease;will-change:opacity,transform,filter;
+  }
+  .cap.on{opacity:1;transform:translate(-50%,-50%);filter:blur(0)}
+  .cap .kicker{font-size:11px;letter-spacing:.52em;text-transform:uppercase;color:var(--cyan);margin-bottom:22px;opacity:.92}
+  .cap .kicker span{display:inline-block;padding:0 .5em;opacity:.5}
+  .cap h1{
+    font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(46px,9vw,132px);line-height:.99;letter-spacing:-.01em;text-wrap:balance;
+    text-shadow:0 2px 70px rgba(4,7,16,.8),0 1px 8px rgba(4,7,16,.6);
+  }
+  .cap h1 em{font-style:italic;color:var(--cyan)}
+  .cap h2{
+    font-family:"Cormorant Garamond",serif;font-weight:300;font-size:clamp(32px,6vw,86px);line-height:1.05;letter-spacing:-.005em;
+    text-shadow:0 2px 70px rgba(4,7,16,.8),0 1px 8px rgba(4,7,16,.6);
+  }
+  .cap h2 em{font-style:italic;color:var(--indigo)}
+  .cap p{margin:28px auto 0;max-width:58ch;color:var(--muted);font-size:clamp(14px,1.5vw,17px);line-height:1.75;font-weight:300}
+  .cap-links{margin:34px auto 0;display:flex;flex-wrap:wrap;gap:12px 14px;justify-content:center}
+  .cap.on .cap-links{pointer-events:auto}
+  .cap-links a{
+    display:inline-flex;align-items:center;gap:.5em;text-decoration:none;
+    font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);
+    padding:11px 18px;border-radius:8px;border:1px solid var(--line);
+    background:rgba(9,14,26,.5);-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px);
+    transition:border-color .3s ease,background .3s ease,color .3s ease,transform .3s ease;
+  }
+  .cap-links a::after{content:"↗";color:var(--cyan);font-size:12px;letter-spacing:0}
+  .cap-links a:hover{border-color:var(--cyan);background:rgba(20,32,58,.62);transform:translateY(-2px)}
+
+  /* ── verbatim-content helpers (thesis axes / clusters, CN steps, journey legs) ── */
+  .cap .tm{font-size:.5em;vertical-align:super;color:var(--muted)}
+  .cap .org{margin-top:10px;font-style:italic;color:var(--indigo);font-family:"Cormorant Garamond",serif;font-size:clamp(16px,2.1vw,24px);line-height:1.2}
+  .cap.leg h2{font-size:clamp(26px,4vw,54px);line-height:1.07}
+  .cap.leg p{font-size:clamp(12.5px,1.35vw,16px);max-width:70ch;margin-top:16px;line-height:1.68}
+  .cap-tags{margin:22px auto 0;display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center}
+  .cap-tags span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px}
+  .cap .foot-link{margin:20px auto 0;pointer-events:none;display:flex;justify-content:center}
+  .cap.on .foot-link{pointer-events:auto}
+  .cap .foot-link a{color:var(--cyan);font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--line);padding-bottom:3px;transition:border-color .3s}
+  .cap .foot-link a:hover{border-color:var(--cyan)}
+  .cap-axes{margin:30px auto 0;max-width:780px;display:flex;flex-direction:column;gap:0;text-align:left}
+  .cap-axis{display:flex;align-items:baseline;gap:16px;padding:13px 2px;border-bottom:1px solid rgba(129,140,248,.16)}
+  .cap-axis .n{color:var(--cyan);font-size:12px;letter-spacing:.2em;min-width:22px}
+  .cap-axis .nm{flex:1;color:var(--ink);font-size:clamp(14px,1.7vw,19px);font-weight:400}
+  .cap-axis .nm i{display:block;font-style:normal;color:var(--faint);font-size:11px;letter-spacing:.02em;margin-top:2px}
+  .cap-axis .sh{color:var(--muted);font-size:clamp(12px,1.3vw,15px);text-align:right}
+  .cap-axis .sh b{color:var(--indigo);font-weight:400}
+  .cap-clusters{margin:30px auto 0;max-width:900px;display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
+  .cap-cluster{border:1px solid var(--line);border-radius:14px;padding:20px 22px;background:rgba(9,14,26,.42);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .cap-cluster .lbl{font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--cyan)}
+  .cap-cluster.red .lbl{color:#f0928a}
+  .cap-cluster h4{font-family:"Space Grotesk",sans-serif;font-size:clamp(14px,1.5vw,18px);font-weight:500;margin:6px 0 12px;color:var(--ink)}
+  .cap-cluster ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin:0 0 12px}
+  .cap-cluster li{color:var(--muted);font-size:clamp(12px,1.3vw,15px);padding-left:16px;position:relative}
+  .cap-cluster li::before{content:"—";position:absolute;left:0;color:var(--faint)}
+  .cap-cluster .cfoot{color:var(--faint);font-size:clamp(11px,1.2vw,13px);line-height:1.6;font-style:italic}
+  .cap-steps{margin:28px auto 0;max-width:740px;display:flex;flex-direction:column;gap:14px;text-align:left}
+  .cap-step{display:flex;gap:16px;align-items:baseline}
+  .cap-step .sn{color:var(--cyan);font-size:12px;letter-spacing:.12em;white-space:nowrap;min-width:66px}
+  .cap-step .sb b{color:var(--ink);font-weight:500;font-size:clamp(15px,1.7vw,20px)}
+  .cap-step .sb span{display:block;color:var(--muted);font-size:clamp(12px,1.3vw,15px);margin-top:2px}
+  @media (max-width:720px){ .cap-clusters{grid-template-columns:1fr} .cap-axis{flex-wrap:wrap;gap:4px 12px} .cap-axis .sh{text-align:left} }
+
+  .cue{position:absolute;left:50%;bottom:70px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--faint);font-size:10px;letter-spacing:.4em;text-transform:uppercase;transition:opacity .6s}
+  .cue .rail{width:1px;height:52px;background:linear-gradient(var(--cyan),transparent);position:relative;overflow:hidden}
+  .cue .rail::after{content:"";position:absolute;left:0;top:-40%;width:100%;height:40%;background:var(--cyan);animation:drop 3s cubic-bezier(.7,0,.3,1) infinite}
+  @keyframes drop{0%{top:-45%}100%{top:100%}}
+
+  .meta{position:absolute;bottom:30px;left:clamp(22px,4vw,60px);font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--faint);max-width:240px;line-height:2.1}
+  .meta b{color:var(--muted);font-weight:400}
+
+  /* branded splash gate (conformed from the CustomerNode SPA splash) */
+  #veil{position:fixed;inset:0;z-index:9;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;transition:opacity 1.1s cubic-bezier(.4,0,.2,1);
+    background:
+      radial-gradient(135% 100% at 50% 24%, rgba(129,140,248,.16), transparent 48%),
+      radial-gradient(110% 85% at 50% 112%, rgba(79,70,229,.20), transparent 56%),
+      radial-gradient(80% 65% at 12% 6%, rgba(78,172,241,.10), transparent 50%),
+      linear-gradient(180deg, #0b1224 0%, #070b12 52%, #05070d 100%);}
+  #veil.gone{opacity:0}
+  /* slow breathing halo behind the wordmark — premium, alive */
+  #veil::before{content:"";position:absolute;left:50%;top:46%;width:min(760px,90vw);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;
+    background:radial-gradient(closest-side, rgba(129,140,248,.22), rgba(78,172,241,.09) 46%, transparent 72%);
+    animation:sGlow 7s ease-in-out infinite}
+  @keyframes sGlow{0%,100%{opacity:.55;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.12)}}
+  #veil .sbrand,#veil .strack{position:relative;z-index:1}
+  #veil .sbrand{font-family:"Space Grotesk",sans-serif;font-weight:500;font-size:clamp(23px,3.3vw,38px);letter-spacing:.05em;color:var(--ink);opacity:0;user-select:none;animation:sText 1.2s cubic-bezier(.22,1,.36,1) .1s forwards}
+  #veil .strack{width:172px;height:3px;margin-top:26px;background:rgba(231,235,251,.14);border-radius:2px;overflow:hidden;opacity:0;animation:sFade .5s ease .45s forwards}
+  #veil .sbar{width:0;height:100%;border-radius:2px;background:linear-gradient(90deg,var(--deep),var(--indigo),var(--cyan));background-size:200% 100%;animation:sFill 8s forwards,sShimmer 2.2s cubic-bezier(.22,1,.36,1) infinite;animation-delay:.4s,0s}
+  #veil.ready .sbar{width:100%;transition:width .9s cubic-bezier(.22,1,.36,1);animation:sShimmer 2.2s cubic-bezier(.22,1,.36,1) infinite}
+  @keyframes sText{from{opacity:0;letter-spacing:.2em;filter:blur(7px)}to{opacity:1;letter-spacing:.05em;filter:blur(0)}}
+  @keyframes sFade{to{opacity:1}}
+  @keyframes sFill{0%{width:0}5%{width:20%}10%{width:35%}18%{width:48%}28%{width:58%}40%{width:66%}55%{width:73%}70%{width:79%}82%{width:84%}92%{width:87%}100%{width:89%}}
+  @keyframes sShimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+  @media (prefers-reduced-motion:reduce){#veil .sbrand{animation:none;opacity:1}#veil .strack{animation:none;opacity:1}#veil .sbar{animation:none;width:89%}}
+
+  #nowebgl{position:fixed;inset:0;z-index:20;display:none;place-items:center;background:var(--bg);text-align:center;padding:40px}
+  #nowebgl p{font-family:"Cormorant Garamond",serif;font-style:italic;font-size:26px;color:var(--muted)}
+
+  body.reveal .topbar,body.reveal .prog,body.reveal .meta{animation:fadeUp 1.3s .2s both}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @media (max-width:720px){ .topbar .right{display:none} .meta{display:none} }
+</style>
+</head>
+<body>
+
+  <div id="stage"></div>
+  <div id="film"></div>
+  <div id="runway"></div>
+
+  <div class="ui">
+    <div class="topbar">
+      <div class="mark">Michael Cantow</div>
+      <a class="nav-cta" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">
+        <span>Follow</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+
+    <div class="captions">
+      <div class="cap" data-cap="0">
+        <div class="kicker">Michael Cantow<span>·</span>Founder, CustomerNode</div>
+        <h1>Moving B2B software from <em>record</em> to <em>action</em>.</h1>
+        <p>I'm a founder, an engineer, a designer, a sales rep, a marketer, a recruiter, a support rep, a sysadmin, a janitor.</p>
+        <div class="cap-tags"><span>MIT</span><span>NJ</span><span>NYC</span></div>
+      </div>
+
+      <div class="cap" data-cap="1">
+        <div class="kicker">01<span>·</span>The Thesis</div>
+        <h2>The next generation of platforms<br/>wins on <em>three axes</em>.</h2>
+        <div class="cap-axes">
+          <div class="cap-axis"><span class="n">01</span><span class="nm">Stack position<i>Where in the stack you sit</i></span><span class="sh">System of Record → <b>System of Action</b></span></div>
+          <div class="cap-axis"><span class="n">02</span><span class="nm">Architecture<i>What the software does</i></span><span class="sh">State-centric → <b>Process-centric</b></span></div>
+          <div class="cap-axis"><span class="n">03</span><span class="nm">Strategic data asset<i>What compounds at scale</i></span><span class="sh">Enterprise records → <b>Interaction &amp; workflow data</b></span></div>
+        </div>
+      </div>
+
+      <div class="cap" data-cap="2">
+        <div class="kicker">01<span>·</span>Red Ocean → Blue Ocean</div>
+        <div class="cap-clusters">
+          <div class="cap-cluster red">
+            <span class="lbl">Red Ocean</span>
+            <h4>What's saturated.</h4>
+            <ul><li>System of Record</li><li>State-centric architecture</li><li>Enterprise records</li></ul>
+            <p class="cfoot">Distribution, trust, switching costs still matter. The position doesn't.</p>
+          </div>
+          <div class="cap-cluster blue">
+            <span class="lbl">Blue Ocean</span>
+            <h4>Where the next platforms get built.</h4>
+            <ul><li>System of Action</li><li>Process-centric architecture</li><li>Interaction &amp; workflow data</li></ul>
+            <p class="cfoot">Data compounds. Process becomes the moat. Outcome is the deliverable.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cap" data-cap="3">
+        <div class="kicker">01<span>·</span>The Thesis</div>
+        <h2>From systems that record to <em>systems that act</em>.</h2>
+        <p>Sears owned the record. Amazon owned the process. B2B software is about to learn the same lesson.</p>
+        <div class="foot-link"><a href="https://www.linkedin.com/pulse/platform-playbook-built-b2b-software-now-red-ocean-customernode-o71ge/" target="_blank" rel="noopener">Read it on LinkedIn ↗</a></div>
+      </div>
+
+      <div class="cap" data-cap="4">
+        <div class="kicker">02<span>·</span>What I'm building</div>
+        <h2>CustomerNode<span class="tm">™</span></h2>
+        <p>Turn complex deals into executable journeys.</p>
+        <div class="cap-steps">
+          <div class="cap-step"><span class="sn">01 ⟶</span><span class="sb"><b>Create</b><span>Your best practices, made repeatable.</span></span></div>
+          <div class="cap-step"><span class="sn">02 ⟶</span><span class="sb"><b>Share</b><span>One workflow, both teams. No handoffs.</span></span></div>
+          <div class="cap-step"><span class="sn">03 ⟶</span><span class="sb"><b>Navigate</b><span>Predictable execution, at any scale.</span></span></div>
+        </div>
+        <div class="cap-links">
+          <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">Follow CustomerNode</a>
+          <a href="https://customernode.com" target="_blank" rel="noopener">customernode.com</a>
+        </div>
+      </div>
+
+      <div class="cap leg" data-cap="5">
+        <div class="kicker">03 · My Journey<span>·</span>Sep 2014 – Jun 2018 · Mahwah, NJ</div>
+        <h2>Hometown</h2>
+        <div class="org">Mahwah, NJ · Mahwah High School</div>
+        <p>Played football and baseball. Earned a spot on the Academic Wall of Fame, and became the first Mahwah student admitted to MIT in over 30 years.</p>
+        <div class="cap-tags"><span>Football</span><span>Baseball</span><span>Academic Wall of Fame</span><span>MIT-bound</span></div>
+      </div>
+
+      <div class="cap leg" data-cap="6">
+        <div class="kicker">03 · My Journey<span>·</span>Sep 2018 – Jun 2023 · Cambridge</div>
+        <h2>MEng in AI · BSc EECS · Student-Athlete</h2>
+        <div class="org">Massachusetts Institute of Technology</div>
+        <p>Earned a BSc in EECS and an MEng in AI while playing varsity football and joining Delta Kappa Epsilon. Learned to balance practice, travel, and labs, and how to perform when both the playbook and the problem set are due Saturday (and yes, sometimes literally at the same time).</p>
+        <div class="cap-tags"><span>Football</span><span>Computer Science</span><span>MIT Athletics</span><span>Delta Kappa Epsilon</span></div>
+      </div>
+
+      <div class="cap leg" data-cap="7">
+        <div class="kicker">03 · My Journey<span>·</span>Feb 2020 – Jan 2021 · Cambridge</div>
+        <h2>ML Researcher — TESS &amp; NICER</h2>
+        <div class="org">MIT Kavli Institute for Astrophysics</div>
+        <p>Led astrophysics and space research at the Kavli Institute, with one researcher reporting to me. Built an image-classification pipeline that now analyzes TESS satellite images daily, hunting for supernovae and tidal-disruption events. Also designed an anomaly-detection model for NICER spacecraft health, replacing rigid rule-based monitoring with a scalable ML approach.</p>
+        <div class="cap-tags"><span>Astrophysics</span><span>Space Research</span><span>Computer Vision</span><span>Anomaly Detection</span></div>
+      </div>
+
+      <div class="cap leg" data-cap="8">
+        <div class="kicker">03 · My Journey<span>·</span>Jun 2021 – Aug 2021 · Greenwich, CT</div>
+        <h2>Associate</h2>
+        <div class="org">Teamworthy Ventures</div>
+        <p>Sourced and evaluated early- and growth-stage investments, then worked directly with portfolio companies (SeatGeek, HuntClub) on technical projects, shipping work alongside the investing.</p>
+        <div class="cap-tags"><span>Venture</span><span>Sourcing</span><span>Portfolio Ops</span></div>
+      </div>
+
+      <div class="cap leg" data-cap="9">
+        <div class="kicker">03 · My Journey<span>·</span>Aug 2022 – Jun 2023 · Cambridge</div>
+        <h2>Teaching Assistant — 6.390: Intro to ML</h2>
+        <div class="org">Massachusetts Institute of Technology</div>
+        <p>Helped shape the learning experience for students across linear / logistic regression, neural networks, reinforcement learning, and attention-based methods. Created content, ran labs, and held office hours.</p>
+        <div class="cap-tags"><span>Teaching</span><span>Python</span><span>Machine Learning</span></div>
+      </div>
+
+      <div class="cap leg" data-cap="10">
+        <div class="kicker">03 · My Journey<span>·</span>Sep 2022 – Jun 2023 · Cambridge</div>
+        <h2>ThoughtLine — Lead Researcher</h2>
+        <div class="org">MIT Media Lab</div>
+        <p>My first system of action. Led a team of undergraduate researchers building ThoughtLine, a multi-sided platform for audiotherapy research. Participants got a Spotify-like listening experience inside medical studies. Clinicians got a research backend: design studies, recruit real patients, track listening data, and administer questionnaires over time. NLP analyzed the responses, all in service of formally testing the efficacy of audiotherapy for mental wellness. Also designed DockMed, a flexible containerized architecture supporting quantitative research at scale.</p>
+        <div class="foot-link"><a href="https://dspace.mit.edu/handle/1721.1/151277" target="_blank" rel="noopener">Read the MIT thesis ↗</a></div>
+        <div class="cap-tags"><span>System of Action</span><span>Audiotherapy</span><span>Multi-sided Platform</span><span>NLP</span><span>Mental Wellness</span><span>Containers</span></div>
+      </div>
+
+      <div class="cap leg" data-cap="11">
+        <div class="kicker">03 · My Journey<span>·</span>Jun 2023 – Present · NYC</div>
+        <h2>Founder</h2>
+        <div class="org">CustomerNode</div>
+        <p>My second system of action. Shipping CustomerNode, the execution layer for multi-stage B2B deals. The CRM watches; CustomerNode moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.</p>
+        <div class="cap-tags"><span>System of Action</span><span>Enterprise SaaS</span><span>B2B</span><span>Buyer Enablement</span><span>Founder</span></div>
+      </div>
+
+      <div class="cap" data-cap="12">
+        <div class="kicker">04 · Let's connect</div>
+        <h2>If you sell a solution with a multi-stage buying process, <em>let's talk</em>.</h2>
+        <p>The fastest way to keep up is the CustomerNode page, where the thought leadership and announcements live.</p>
+        <div class="cap-links">
+          <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">CustomerNode · /company/customernode</a>
+          <a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="me noopener">Personal LinkedIn · /in/mcantow</a>
+          <a href="https://customernode.com" target="_blank" rel="noopener">Product · customernode.com</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="cue"><span>Scroll — up or down</span><div class="rail"></div></div>
+
+
+    <div class="prog" role="slider" aria-label="Crossing — drag or click to choose your place" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><i></i><span class="knob"></span><span class="tip"></span><em><b>01</b>Record → Action</em></div>
+  </div>
+
+  <div id="veil">
+    <div class="sbrand">Michael Cantow</div>
+    <div class="strack"><div class="sbar"></div></div>
+  </div>
+  <div id="nowebgl"><p>This crossing needs WebGL — try a desktop browser.</p></div>
+
+<script type="importmap">
+{ "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const REDUCE = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ antialias:true, powerPreference:'high-performance' }); } catch(e){}
+if (!renderer || !renderer.getContext()){
+  document.getElementById('nowebgl').style.display='grid';
+  document.getElementById('veil').classList.add('gone');
+  throw new Error('no webgl');
+}
+const DPR = Math.min(devicePixelRatio||1, 2);
+renderer.setPixelRatio(DPR);
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.9;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+document.getElementById('stage').appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.Fog(new THREE.Color('#070e1c'), 560, 1520);
+
+const START_Z = 2;
+const camera = new THREE.PerspectiveCamera(52, innerWidth/innerHeight, 0.5, 3200);
+camera.position.set(0, 9, START_Z);
+
+/* ── deterministic RNG ───────────────────────────────────────── */
+const seed=(()=>{let a=0x8a2e1b39;return()=>{a|=0;a=a+0x6d2b79f5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};})();
+const R=()=>seed();
+
+/* ── soft textures ───────────────────────────────────────────── */
+function radialTex(size,stops){
+  const c=document.createElement('canvas');c.width=c.height=size;const x=c.getContext('2d');
+  const g=x.createRadialGradient(size/2,size/2,0,size/2,size/2,size/2);
+  stops.forEach(s=>g.addColorStop(s[0],s[1]));x.fillStyle=g;x.fillRect(0,0,size,size);
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+const starTex=radialTex(64,[[0,'rgba(255,255,255,1)'],[0.2,'rgba(230,238,255,0.85)'],[0.5,'rgba(180,200,255,0.2)'],[1,'rgba(255,255,255,0)']]);
+const glowTex=radialTex(128,[[0,'rgba(255,255,255,1)'],[0.12,'rgba(210,224,255,0.8)'],[0.4,'rgba(129,140,248,0.28)'],[1,'rgba(79,70,229,0)']]);
+function ringTex(){
+  const s=128,c=document.createElement('canvas');c.width=c.height=s;const x=c.getContext('2d');
+  x.strokeStyle='rgba(180,196,255,0.9)';x.lineWidth=2.2;x.beginPath();x.arc(s/2,s/2,s/2-8,0,Math.PI*2);x.stroke();
+  const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;return t;
+}
+
+/* ── night sky dome ──────────────────────────────────────────── */
+const dome=new THREE.Mesh(
+  new THREE.SphereGeometry(1900,48,32),
+  new THREE.ShaderMaterial({ side:THREE.BackSide, depthWrite:false, fog:false,
+    uniforms:{ uTime:{value:0} },
+    vertexShader:`varying vec3 vDir; void main(){ vDir=normalize(position); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+    fragmentShader:`
+      precision highp float; varying vec3 vDir; uniform float uTime;
+      void main(){
+        vec3 d=normalize(vDir);
+        float t=clamp(d.y,0.0,1.0);
+        // deep indigo night: darker overhead, warmer indigo toward horizon
+        vec3 top  = vec3(0.008,0.016,0.036);
+        vec3 mid  = vec3(0.026,0.044,0.082);
+        vec3 horiz= vec3(0.044,0.064,0.118);
+        vec3 col=mix(horiz,mid,smoothstep(0.0,0.28,t));
+        col=mix(col,top,smoothstep(0.28,0.9,t));
+        // soft glow low on the horizon toward the guiding star (−z)
+        float toStar=pow(max(-d.z,0.0),4.0)*smoothstep(0.14,-0.02,d.y);
+        col+=vec3(0.09,0.14,0.30)*toStar*0.42;
+        gl_FragColor=vec4(col,1.0);
+      }`
+  })
+);
+scene.add(dome);
+
+/* ── starfield (calm twinkle) ────────────────────────────────── */
+const SN=16000;
+const STAR_DEPTH=2600, STAR_SPREAD=1400;     // a deep, wide 3D field we travel through
+const sp=new Float32Array(SN*3), sc=new Float32Array(SN*3), ss=new Float32Array(SN), sph=new Float32Array(SN);
+const spal=[[0.86,0.90,1.0],[1,1,1],[0.72,0.80,1.0],[0.82,0.86,1.0]];
+for(let i=0;i<SN;i++){
+  // three depth strata → real layering: tiny/faint far, then mid, then a few big/bright near
+  const r=R(); let z, size, bmul;
+  if(r<0.60){                                 // deep field: barely parallaxes, fades into haze
+    z = 1350 + R()*(STAR_DEPTH-1350); size = 1.8 + R()*2.8; bmul = 0.60;
+  } else if(r<0.90){                          // mid field
+    z = 600 + R()*750;                        size = 4.5 + R()*6.0; bmul = 0.85;
+  } else {                                    // near field: big, bright, sweeps past fast
+    z = 190 + R()*410;                        size = (R()>0.9?16+R()*16:9+R()*8); bmul = 1.0;
+  }
+  sp[i*3]   = (R()*2-1)*STAR_SPREAD;
+  sp[i*3+1] = 150 + Math.pow(R(),0.72)*1180;  // lift off the horizon, arch high overhead → vast sky
+  sp[i*3+2] = START_Z - z;
+  const c=spal[(R()*spal.length)|0], b=(0.30+Math.pow(R(),1.7)*0.70)*bmul;
+  sc[i*3]=c[0]*b; sc[i*3+1]=c[1]*b; sc[i*3+2]=c[2]*b;
+  ss[i]= size;
+  sph[i]=R();
+}
+const sg=new THREE.BufferGeometry();
+sg.setAttribute('position',new THREE.BufferAttribute(sp,3));
+sg.setAttribute('aColor',new THREE.BufferAttribute(sc,3));
+sg.setAttribute('aSize',new THREE.BufferAttribute(ss,1));
+sg.setAttribute('aPhase',new THREE.BufferAttribute(sph,1));
+const starMat=new THREE.ShaderMaterial({ transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+  uniforms:{ uTime:{value:0}, uPix:{value:DPR}, uMap:{value:starTex}, uNear:{value:150}, uFar:{value:STAR_DEPTH+260} },
+  vertexShader:`attribute vec3 aColor;attribute float aSize;attribute float aPhase;uniform float uTime,uPix,uNear,uFar;varying vec3 vC;varying float vT,vFade;
+    void main(){ vec4 mv=modelViewMatrix*vec4(position,1.0); float tw=0.6+0.4*sin(uTime*0.9+aPhase*6.2831); vT=tw;vC=aColor;
+      float depth=max(-mv.z,1.0);
+      float f=clamp((uFar-depth)/(uFar-uNear),0.0,1.0);   // 1 near → 0 far
+      vFade=0.16+0.84*f*f;                                 // far stars sink into haze, near stars pop
+      gl_PointSize=aSize*uPix*(300.0/depth)*(0.7+0.3*tw); gl_Position=projectionMatrix*mv; }`,
+  fragmentShader:`uniform sampler2D uMap;varying vec3 vC;varying float vT,vFade;
+    void main(){ vec4 t=texture2D(uMap,gl_PointCoord); gl_FragColor=vec4(vC*(0.75+0.5*vT)*vFade,1.0)*t; }`
+});
+const stars=new THREE.Points(sg,starMat); stars.frustumCulled=false; scene.add(stars);
+
+/* ── wayfinding star-compass (brand callback) ────────────────── */
+function buildCompass(){
+  const g=new THREE.Group();
+  const N={apex:[0,64,0],L:[-74,-6,0],Rr:[98,-12,0],bMid:[16,-16,0],mid:[10,30,0]};
+  const segs=[['apex','L'],['apex','Rr'],['L','Rr'],['apex','bMid']];
+  const pts=[]; segs.forEach(s=>{pts.push(...N[s[0]],...N[s[1]]);});
+  const lg=new THREE.BufferGeometry(); lg.setAttribute('position',new THREE.Float32BufferAttribute(pts,3));
+  g.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0x9aa8ea,transparent:true,opacity:0.30,blending:THREE.AdditiveBlending,depthWrite:false})));
+  const ring=new THREE.Mesh(new THREE.RingGeometry(108,109.6,72,1,Math.PI*0.05,Math.PI*1.08),
+    new THREE.MeshBasicMaterial({color:0x7f8cd9,transparent:true,opacity:0.20,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,depthWrite:false}));
+  ring.position.set(12,22,0); g.add(ring);
+  Object.values(N).forEach(p=>{ const s=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:0xe0e8ff,transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.85}));
+    s.scale.set(15,15,1); s.position.set(p[0],p[1],p[2]); g.add(s); });
+  return g;
+}
+/* constellation star-compass removed */
+
+/* ── the moonlit sea (analytic swells + sparkle) ─────────────── */
+const WAVES=[  // dir(x,z), amp, freq, speed
+  [1.0,0.25, 0.60,0.060,0.42],
+  [0.3,1.00, 0.42,0.090,0.30],
+  [0.8,-0.55,0.26,0.150,0.60],
+  [-0.4,0.85,0.16,0.220,0.78]
+];
+function waveH(x,z,fx,fz,t){
+  const cx=x+fx, cz=z+fz; let h=0;
+  for(const w of WAVES){ const L=Math.hypot(w[0],w[1]); const nx=w[0]/L, ny=w[1]/L; h+=w[2]*Math.sin((nx*cx+ny*cz)*w[3]+t*w[4]); }
+  return h;
+}
+const sea=new THREE.Mesh(
+  new THREE.PlaneGeometry(3000,3000,260,260).rotateX(-Math.PI/2),
+  new THREE.ShaderMaterial({ fog:true,
+    uniforms:Object.assign({ uTime:{value:0}, uFlow:{value:new THREE.Vector2()} }, THREE.UniformsLib.fog),
+    vertexShader:`
+      uniform float uTime; uniform vec2 uFlow;
+      varying vec3 vW; varying vec3 vN; varying vec2 vL; varying float vFog;
+      #define WV(dx,dy,a,f,s) { vec2 dd=normalize(vec2(dx,dy)); float ph=dot(dd,c)*f+uTime*s; h+=a*sin(ph); g+=a*f*dd*cos(ph); }
+      void main(){
+        vec3 p=position; vec2 c=p.xz+uFlow;
+        float h=0.0; vec2 g=vec2(0.0);
+        WV(1.0,0.25,0.60,0.060,0.42) WV(0.3,1.0,0.42,0.090,0.30)
+        WV(0.8,-0.55,0.26,0.150,0.60) WV(-0.4,0.85,0.16,0.220,0.78)
+        p.y+=h; vN=normalize(vec3(-g.x,1.0,-g.y)); vL=position.xz;
+        vec4 wp=modelMatrix*vec4(p,1.0); vW=wp.xyz;
+        vec4 mv=viewMatrix*wp; vFog=-mv.z;
+        gl_Position=projectionMatrix*mv;
+      }`,
+    fragmentShader:`
+      precision highp float;
+      uniform vec3 fogColor; uniform float fogNear, fogFar;
+      varying vec3 vW; varying vec3 vN; varying vec2 vL; varying float vFog;
+      void main(){
+        vec3 N=normalize(vN);
+        vec3 V=normalize(cameraPosition-vW);
+        float fres=pow(1.0-max(dot(N,V),0.0),3.0);
+        vec3 deep=vec3(0.006,0.013,0.030);
+        vec3 face=vec3(0.020,0.042,0.086);
+        vec3 col=mix(deep,face,fres);
+        col+=vec3(0.05,0.09,0.19)*fres*0.6;             // faint sky reflection tint
+        // visible rolling swell: crest faces catch a little light, troughs stay dark
+        float slope=length(vec2(N.x,N.z));
+        col+=vec3(0.035,0.065,0.130)*slope*1.15;
+        // moon/guiding-star specular — a tight sparkling road, not a wash
+        vec3 L=normalize(vec3(0.0,0.42,-1.0));
+        vec3 H=normalize(L+V);
+        float spec=pow(max(dot(N,H),0.0),320.0);
+        col+=vec3(0.55,0.68,1.0)*spec*0.5;
+        float glint=pow(max(dot(N,H),0.0),46.0);
+        col+=vec3(0.16,0.26,0.58)*glint*0.09;
+        // glowing reflection column of the guiding star, down the centre
+        float col_m=exp(-abs(vL.x)*0.10);
+        col_m*=smoothstep(-1080.0,-30.0,vL.y);          // vL.y is world z here (fade far)
+        col+=vec3(0.14,0.26,0.72)*col_m*(0.10+glint*0.85);
+        // fog into the horizon haze
+        float f=smoothstep(fogNear,fogFar,vFog);
+        col=mix(col,fogColor,f);
+        gl_FragColor=vec4(col,1.0);
+      }`
+  })
+);
+sea.position.set(0,0,0);
+scene.add(sea);
+
+/* ── guiding star on the horizon (the destination) ───────────── */
+const STARZ=-1080;
+const guide=new THREE.Group(); scene.add(guide);
+const gGlow=new THREE.Sprite(new THREE.SpriteMaterial({map:glowTex,color:new THREE.Color('#cfe0ff'),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.55}));
+gGlow.scale.set(62,62,1); guide.add(gGlow);
+const gCore=new THREE.Sprite(new THREE.SpriteMaterial({map:starTex,color:new THREE.Color('#ffffff'),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:1}));
+gCore.scale.set(26,26,1); guide.add(gCore);
+const gRing=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex(),color:new THREE.Color('#9fb0ee'),transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,opacity:0.5}));
+gRing.scale.set(52,52,1); guide.add(gRing);
+guide.position.set(0,27,STARZ);
+
+/* ── the glowing wayfinding thread (the voyage) ──────────────── */
+const pathPts=[
+  [2.2,1.0,-6],[-1.6,1.0,-42],[2.6,1.0,-92],[-2.0,1.1,-176],
+  [1.6,1.1,-304],[-1.0,1.2,-508],[0.7,1.2,-760],[0.15,1.5,-1010],[0.0,20,STARZ]
+].map(p=>new THREE.Vector3(p[0],p[1],p[2]));
+const curve=new THREE.CatmullRomCurve3(pathPts,false,'catmullrom',0.5);
+const tube=new THREE.Mesh(
+  new THREE.TubeGeometry(curve,300,1.05,10,false),
+  new THREE.ShaderMaterial({ transparent:true, depthWrite:false, blending:THREE.AdditiveBlending,
+    uniforms:{ uTime:{value:0} },
+    vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);} `,
+    fragmentShader:`
+      precision highp float; varying vec2 vUv; uniform float uTime;
+      void main(){
+        vec3 cyan=vec3(0.306,0.675,0.945);   // #4eacf1
+        vec3 indi=vec3(0.506,0.549,0.972);   // #818cf8
+        vec3 deep=vec3(0.310,0.275,0.898);   // #4f46e5
+        float u=vUv.x;
+        vec3 c = u<0.5 ? mix(cyan,indi,u*2.0) : mix(indi,deep,(u-0.5)*2.0);
+        // brighter core across the tube, soft edges
+        float core=smoothstep(0.0,0.4,vUv.y)*smoothstep(1.0,0.6,vUv.y);
+        float pulse=0.82+0.18*sin(uTime*1.2 - u*22.0); // slow travelling shimmer
+        float a=(0.30+0.70*core)*pulse*(0.95-0.4*u);   // fade slightly toward the star
+        gl_FragColor=vec4(c*(0.95+0.55*core), a);
+      }`
+  })
+);
+scene.add(tube);
+// a soft haze underlay so the thread reads as glowing on the water
+const tubeHaze=new THREE.Mesh(new THREE.TubeGeometry(curve,240,2.2,8,false),
+  new THREE.MeshBasicMaterial({color:0x4a6cf0,transparent:true,opacity:0.05,depthWrite:false,blending:THREE.AdditiveBlending}));
+scene.add(tubeHaze);
+
+/* ── the outrigger canoe — you sit IN it (cockpit POV) ────────── */
+// sleek lofted hull: a U-channel that tapers to sharp points at bow & stern
+function makeHull(len, beam, dep){
+  const NL=32, NR=12, pos=[], idx=[], top=[];
+  for(let i=0;i<=NL;i++){
+    const u=i/NL, z=(u-0.5)*len;
+    const t=Math.sin(Math.PI*u);                 // 0 at the tips, 1 amidships
+    const w=beam*0.5*Math.pow(t,0.58);           // sharp entry/exit
+    const d=dep*Math.pow(t,0.5);
+    const sheer=(Math.pow(2*u-1,2))*dep*0.14;    // gentle sheer — gunwales stay low, no towering bow
+    for(let j=0;j<=NR;j++){
+      const ang=Math.PI*(j/NR);                  // left gunwale → keel → right gunwale
+      const x=-Math.cos(ang)*w;
+      const y=-Math.sin(ang)*d + sheer;
+      pos.push(x,y,z);
+      if(j===0) top.push([x,y,z]);               // port gunwale line
+    }
+    top.push([Math.cos(0)*w, sheer, z]);         // (unused placeholder)
+  }
+  for(let i=0;i<NL;i++)for(let j=0;j<NR;j++){
+    const a=i*(NR+1)+j,b=a+1,c=a+(NR+1),dd=c+1; idx.push(a,c,b,b,c,dd);
+  }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setIndex(idx); g.computeVertexNormals();
+  return g;
+}
+// a slim outrigger float (ama) — smooth pointed spindle
+function makeFloat(len, rad){
+  const pts=[]; for(let i=0;i<=12;i++){ const u=i/12; pts.push(new THREE.Vector2(Math.max(0.002,rad*Math.pow(Math.sin(Math.PI*u),0.7)), (u-0.5)*len)); }
+  return new THREE.LatheGeometry(pts,14).rotateX(Math.PI/2);
+}
+// the cockpit sole (floorboard): a decked floor with ROCKER — deep amidships (where
+// you sit → depth) and rising toward the bow & stern to close off the hull exactly
+// where the swell diverges above a flat deck. Kept above the waterline at every
+// station so the sea never laps through the cockpit as the boat bobs.
+function makeSole(len, beam, yBase, endLift){
+  const NL=32, pos=[], idx=[];
+  for(let i=0;i<=NL;i++){ const u=i/NL, z=(u-0.5)*len, t=Math.sin(Math.PI*u);
+    const w=beam*0.5*Math.pow(t,0.58)*0.9;
+    const y=yBase + endLift*Math.pow(2*u-1,2);   // rocker: 0 amidships → endLift at tips
+    pos.push(-w,y,z, w,y,z); }
+  for(let i=0;i<NL;i++){ const a=i*2,b=a+1,c=a+2,d=a+3; idx.push(a,c,b,b,c,d); }
+  const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));
+  g.setIndex(idx); g.computeVertexNormals(); return g;
+}
+
+const vessel=new THREE.Group(); scene.add(vessel);
+
+const HULL_L=12.0, HULL_B=2.6, HULL_D=1.3;
+const hullMat=new THREE.MeshStandardMaterial({color:0x0c1322,roughness:0.42,metalness:0.4,emissive:0x0a1834,emissiveIntensity:0.3, side:THREE.DoubleSide});
+// OPEN hull you sit inside: a U-channel with visible interior walls & floor that
+// rise on either side and sweep forward to the bow point — read from the cockpit.
+const hull=new THREE.Mesh(makeHull(HULL_L,HULL_B,HULL_D),hullMat);
+hull.position.y=0.02;
+vessel.add(hull);
+
+// solid deck/sole capping the hull above the waterline — no sea shows inside the boat
+const soleMat=new THREE.MeshStandardMaterial({color:0x0e1626,roughness:0.6,metalness:0.3,emissive:0x0a1428,emissiveIntensity:0.28, side:THREE.DoubleSide});
+const sole=new THREE.Mesh(makeSole(HULL_L,HULL_B,-0.28,0.35),soleMat);
+sole.position.y=hull.position.y; vessel.add(sole);
+
+// solid gunwale rim (dark, catches moonlight — NOT a glowing line) that caps the
+// hull walls, giving the cockpit a defined edge and the hull real depth.
+const rimMat=new THREE.MeshStandardMaterial({color:0x141c30,roughness:0.5,metalness:0.35,emissive:0x0b1226,emissiveIntensity:0.25});
+function rimRail(sideSign){
+  const pts=[]; const NL=40;
+  for(let i=0;i<=NL;i++){ const u=i/NL, z=(u-0.5)*HULL_L; const t=Math.sin(Math.PI*u);
+    const w=HULL_B*0.5*Math.pow(t,0.58); const sheer=Math.pow(2*u-1,2)*HULL_D*0.14;
+    pts.push(new THREE.Vector3(sideSign*w, sheer+0.02, z)); }
+  const curve=new THREE.CatmullRomCurve3(pts);
+  const g=new THREE.TubeGeometry(curve, 90, 0.055, 8, false);
+  const m=new THREE.Mesh(g, rimMat); m.position.y=hull.position.y; return m;
+}
+vessel.add(rimRail(-1)); vessel.add(rimRail(1));
+
+// outrigger float on the port side, joined by two booms (akas)
+const ama=new THREE.Mesh(makeFloat(HULL_L*0.62,0.24),new THREE.MeshStandardMaterial({color:0x0e1626,roughness:0.45,metalness:0.35,emissive:0x0a1730,emissiveIntensity:0.35}));
+// dropped 0.25 to match the raised freeboard so the float still rides the waterline
+ama.position.set(-2.75,-0.37,0.3); vessel.add(ama);
+const akaMat=new THREE.MeshStandardMaterial({color:0x1a2136,roughness:0.6,metalness:0.2,emissive:0x0c1428,emissiveIntensity:0.3});
+[-1.9,1.7].forEach(z=>{ const a=new THREE.Mesh(new THREE.CylinderGeometry(0.06,0.06,2.95,8).rotateZ(Math.PI/2), akaMat); a.position.set(-1.4,-0.17,z); vessel.add(a); });
+
+
+// mount the camera DOWN IN the cockpit — seated low so the hull walls rise on either
+// side and the open interior sweeps forward to the bow, over the gunwale.
+vessel.add(camera);
+camera.position.set(0.0, 0.80, 3.15);
+camera.rotation.set(-0.2, 0, 0);
+
+/* ── moonlight ───────────────────────────────────────────────── */
+scene.add(new THREE.HemisphereLight(0x2a3f6e,0x070b12,0.55));
+const moon=new THREE.DirectionalLight(0xb9c6ee,1.1); moon.position.set(-3,7,-6); scene.add(moon);
+
+/* ── post: soft bloom + calm grade ───────────────────────────── */
+const composer=new EffectComposer(renderer);
+composer.setPixelRatio(DPR); composer.setSize(innerWidth,innerHeight);
+composer.addPass(new RenderPass(scene,camera));
+const bloom=new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.52,0.72,0.62);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+const FinalShader={
+  uniforms:{ tDiffuse:{value:null}, uTime:{value:0} },
+  vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0);} `,
+  fragmentShader:`
+    precision highp float; varying vec2 vUv; uniform sampler2D tDiffuse; uniform float uTime;
+    float hash(vec2 p){ return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453); }
+    void main(){
+      vec2 uv=vUv; vec2 d=uv-0.5; float r2=dot(d,d);
+      vec2 off=d*r2*0.0010;                       // faint, dreamy chromatic edge
+      vec3 col=vec3(texture2D(tDiffuse,uv+off).r,texture2D(tDiffuse,uv).g,texture2D(tDiffuse,uv-off).b);
+      col*=mix(1.0,smoothstep(0.98,0.22,r2*1.9),0.62);  // gentle vignette
+      col+=(hash(uv*vec2(1920.0,1080.0)+uTime)-0.5)*0.018; // subtle grain
+      gl_FragColor=vec4(col,1.0);
+    }`
+};
+const finalPass=new ShaderPass(FinalShader); composer.addPass(finalPass);
+
+/* ── progress as a virtual scrubber (state machine, not native scroll) ──
+   The journey is driven by an abstract position `pos` ∈ [0,1]. It is fully
+   navigable BOTH ways — scroll down to sail on, scroll up to retrace — so
+   you can freely explore the crossing (you are never lost). The direction
+   you scrolled sets which BRANCH the boat leans into; it eases back to the
+   guiding star either way. It never loops past either end. */
+let scrollP=0, pos=0, vel=0;         // vel = drift velocity (pos units/sec) → momentum
+let lean=0, leanTarget=0;            // the branch you took (−1 … +1) — always reconverges
+const START_EPS = 0.004;
+let fwdSign = 0;                      // the scroll direction YOU chose as forward (+1/−1); 0 = at root, unchosen
+let lastInputT = -1e9;               // timestamp of the last scroll/touch/key gesture
+// Feel: a scroll doesn't jump the boat — it nudges its DRIFT. The boat then glides and
+// coasts to rest with water-like friction. Soothing, continuous, never a hard step.
+const WHEEL_GAIN = 2.4;              // how strongly a gesture pushes the drift
+const FRICTION   = 0.05;             // velocity kept after 1s (heavy glide → long, calm coast)
+const MAX_VEL    = 0.85;             // ceiling on drift speed (a slow, deliberate crossing)
+function advance(d){
+  lastInputT = performance.now();
+  if (Math.abs(d) < 1e-5) return;
+  // The first move from the root picks your forward. That choice STICKS for the whole
+  // crossing: your direction is always "sail on", the opposite is always "retrace".
+  if (fwdSign === 0) fwdSign = d < 0 ? -1 : 1;
+  if (Math.abs(d) > 0.0002) leanTarget = d < 0 ? -1 : 1; // boat leans toward the side you push
+  vel += d * fwdSign * WHEEL_GAIN;                       // chosen direction → forward drift
+  vel = Math.max(-MAX_VEL, Math.min(MAX_VEL, vel));
+}
+addEventListener('wheel', e=>{ e.preventDefault(); advance(e.deltaY * 0.00075); }, {passive:false});
+addEventListener('keydown', e=>{
+  const k=e.key;
+  if (k==='ArrowDown'||k==='PageDown'||k===' '){ e.preventDefault(); advance(0.06); }
+  else if (k==='ArrowUp'||k==='PageUp'){ e.preventDefault(); advance(-0.06); }
+  else if (k==='Home'){ pos=0; vel=0; fwdSign=0; } else if (k==='End'){ pos=1; vel=0; }
+});
+let touchY=null;
+addEventListener('touchstart', e=>{ touchY=e.touches[0].clientY; }, {passive:true});
+addEventListener('touchmove', e=>{ if(touchY==null) return; const y=e.touches[0].clientY; const dy=touchY-y; touchY=y; e.preventDefault(); advance(dy*0.0016); }, {passive:false});
+addEventListener('touchend', ()=>{ touchY=null; }, {passive:true});
+// debug/verification hook
+window.__way = { get pos(){return pos;}, set p(v){ pos=Math.min(1,Math.max(0,v)); vel=0; fwdSign=0; }, get camz(){return camera.position.z;}, get travel(){return travel;}, get fwd(){return fwdSign;}, get vel(){return vel;}, get sinceInput(){return performance.now()-lastInputT;} };
+
+const ptr={x:0,y:0,tx:0,ty:0};
+addEventListener('pointermove',e=>{ ptr.tx=(e.clientX/innerWidth-0.5); ptr.ty=(e.clientY/innerHeight-0.5); },{passive:true});
+
+const caps=[...document.querySelectorAll('.cap')];
+const cue=document.querySelector('.cue');
+const progFill=document.querySelector('.prog i');
+
+/* ── the named legs of the crossing (single source for phases + labels) ── */
+const SCENES=[
+  {t:0.00, name:'Record → Action'},
+  {t:0.07, name:'The Thesis · three axes'},
+  {t:0.14, name:'Red → Blue Ocean'},
+  {t:0.21, name:'Record → Act'},
+  {t:0.28, name:'CustomerNode'},
+  {t:0.36, name:'Hometown · Mahwah'},
+  {t:0.43, name:'MIT · EECS & AI'},
+  {t:0.50, name:'Kavli · TESS & NICER'},
+  {t:0.57, name:'Teamworthy Ventures'},
+  {t:0.64, name:'Teaching 6.390'},
+  {t:0.71, name:'ThoughtLine'},
+  {t:0.79, name:'CustomerNode · Founder'},
+  {t:0.87, name:"Let's connect"},
+];
+const sceneIndexAt=p=>{ let i=0; for(let k=0;k<SCENES.length;k++){ if(p>=SCENES[k].t) i=k; } return i; };
+const label=i=>'<b>'+String(i+1).padStart(2,'0')+'</b>'+SCENES[i].name;
+
+/* ── make the progress bar a scrubber: click / drag to choose your place ── */
+const prog=document.querySelector('.prog');
+const knob=prog.querySelector('.knob');
+const tip=prog.querySelector('.tip');
+const progEm=prog.querySelector('em');
+// scene tick marks along the track
+SCENES.forEach((s,i)=>{ if(i===0) return; const d=document.createElement('span'); d.className='tick'; d.style.left=(s.t*100)+'%'; prog.appendChild(d); });
+
+const posFromEvent=e=>{ const r=prog.getBoundingClientRect(); return Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)); };
+function showTip(previewP, pointerClientX){
+  const r=prog.getBoundingClientRect();
+  tip.innerHTML=label(sceneIndexAt(previewP));
+  const x = pointerClientX!=null ? (pointerClientX-r.left) : previewP*r.width;
+  tip.style.left=Math.min(r.width-6,Math.max(6,x))+'px';
+}
+let dragging=false;
+prog.addEventListener('pointerdown',e=>{
+  dragging=true; prog.classList.add('live');
+  try{ prog.setPointerCapture(e.pointerId); }catch(_){}
+  const p=posFromEvent(e); pos=p; scrollP=p; vel=0; showTip(p,e.clientX); e.preventDefault();
+});
+prog.addEventListener('pointermove',e=>{
+  const p=posFromEvent(e);
+  if(dragging){ pos=p; scrollP=p; vel=0; }
+  showTip(dragging?p:p, e.clientX);
+});
+function endDrag(e){ if(!dragging) return; dragging=false; prog.classList.remove('live'); try{ prog.releasePointerCapture(e.pointerId); }catch(_){} }
+prog.addEventListener('pointerup',endDrag);
+prog.addEventListener('pointercancel',endDrag);
+
+function setPhase(p){
+  const idx = sceneIndexAt(p);
+  caps.forEach(c=>c.classList.toggle('on',+c.dataset.cap===idx));
+  cue.style.opacity = p>0.05?'0':'0.7';
+  progFill.style.width=(p*100).toFixed(1)+'%';
+  knob.style.left=(p*100)+'%';
+  progEm.innerHTML=label(idx);
+  prog.setAttribute('aria-valuenow',(p*100).toFixed(0));
+  prog.setAttribute('aria-valuetext',SCENES[idx].name);
+}
+
+/* ── main loop ───────────────────────────────────────────────── */
+let travel=0;                          // distance sailed (world units)
+const BASE_SPEED = REDUCE ? 0 : 8.0;   // gentle constant headway
+let last=performance.now();
+const splashStart=performance.now();
+const SPLASH_MIN=1600;                   // minimum time the branded splash is seen
+let revealed=false, splashDone=false;
+function finishSplash(){                  // complete the bar, then dissolve to the scene
+  if(splashDone) return; splashDone=true;
+  const veil=document.getElementById('veil');
+  veil.classList.add('ready');           // bar shoots to 100% + shimmer
+  setTimeout(()=>{
+    veil.classList.add('gone');
+    document.body.classList.add('reveal');
+    caps[0].classList.add('on');
+  }, 520);                               // let the completed bar register before the fade
+}
+
+function loop(now){
+  const dt=Math.min(0.05,(now-last)/1000); last=now;
+  const t=now*0.001;
+
+  // MOMENTUM: the drift glides the position forward and coasts to rest with friction,
+  // so motion through the water is continuous and calm — never a per-notch lurch.
+  if (vel !== 0){
+    pos += vel * dt;
+    if (pos <= 0){ pos = 0; vel = 0; }
+    else if (pos >= 1){ pos = 1; vel = 0; }
+    else vel *= Math.pow(FRICTION, dt);              // framerate-independent glide
+    if (Math.abs(vel) < 6e-4) vel = 0;               // settle cleanly
+  }
+
+  // Settled at the root with the scroll stopped → forget the chosen direction so the next
+  // move (either way) can pick forward again. We wait for the gesture to actually stop
+  // (160ms of quiet) so it HOLDS at the root first instead of bouncing straight back out.
+  if (fwdSign !== 0 && pos <= START_EPS && vel === 0 && (now - lastInputT) > 160){
+    pos = 0; scrollP = 0; lean = 0; leanTarget = 0; fwdSign = 0;
+  }
+
+  // the drift already produced a smooth position → the display value tracks it directly
+  scrollP = pos;
+  setPhase(scrollP);
+
+  // scroll DRIVES the crossing: pos → scrollP → travel. Position on the water is
+  // the scrubber itself, so you can sail forward down the branch AND retrace it.
+  const TRAVEL_MAX = 1180;                      // full throw from the start to the island
+  travel = scrollP*TRAVEL_MAX;                  // fully reversible — no auto-drift to fight
+  const cz = START_Z - travel;                 // the camera glides into −z
+
+  // the branch you chose eases in, then always reconverges toward the star
+  lean += (leanTarget - lean)*0.05;
+  leanTarget *= 0.965;                          // the heading self-corrects back to true north
+  const branch = lean*(1-scrollP*0.55);         // veer softens as the island nears
+
+  // the vessel (and you inside it) heads forward; mouse + branch steer the hull
+  ptr.x+=(ptr.tx-ptr.x)*0.03; ptr.y+=(ptr.ty-ptr.y)*0.03;
+  const VX = ptr.x*2.0 + branch*2.6;
+
+  // the swell the hull sits on → bob + tilt, felt from the cockpit
+  const h0=waveH(VX,cz,0,0,t);
+  const hX=waveH(VX+2.4,cz,0,0,t), hZ=waveH(VX,cz+2.4,0,0,t);
+  vessel.position.set(VX, 0.60+h0, cz);   // higher freeboard → deck clears the swell crests
+  const roll  = (hX-h0)*0.14 + Math.sin(t*0.45)*0.020 - branch*0.12;   // heels into the branch it took
+  const pitch = (hZ-h0)*0.14 + Math.sin(t*0.32+1.0)*0.015;
+  const yaw   = Math.sin(t*0.20)*0.012 - branch*0.16;
+  vessel.rotation.set(pitch, yaw, roll);
+  // a subtle head-look layered on the fixed forward gaze
+  camera.rotation.set(-0.05 - ptr.y*0.05, ptr.x*0.06, 0);
+
+  // sea: world-anchored swells flow past while the plane stays under us
+  sea.material.uniforms.uTime.value = t;
+  sea.material.uniforms.uFlow.value.set(VX, cz);
+  sea.position.set(VX, 0, cz);
+
+  // sky + far markers ride with us so the horizon holds
+  dome.position.set(VX, 2, cz);
+  guide.position.set(VX, 27, cz + STARZ);
+  tube.position.set(VX, 0, cz); tubeHaze.position.copy(tube.position);
+
+  // STARS: parallax past + recycle any that fall behind → real sense of motion
+  starMat.uniforms.uTime.value = REDUCE?0:t;
+  const behindZ = cz + 60; let sdirty=false;
+  for(let i=0;i<SN;i++){
+    if(sp[i*3+2] > behindZ){ sp[i*3+2]-=STAR_DEPTH; sp[i*3]=VX+(R()*2-1)*STAR_SPREAD; sp[i*3+1]=150+Math.pow(R(),0.72)*1180; sdirty=true; }
+  }
+  if(sdirty) sg.attributes.position.needsUpdate=true;
+
+  tube.material.uniforms.uTime.value = t;
+
+  // guiding star: soft pulse + faint grow as you approach
+  const gp = 0.85+0.15*Math.sin(t*0.8);
+  gGlow.material.opacity = gp*(0.9+scrollP*0.5);
+  gRing.material.rotation += dt*0.05;
+  guide.scale.setScalar(1+scrollP*0.35);
+
+  finalPass.uniforms.uTime.value = REDUCE?0:t;
+  composer.render();
+  if(!revealed) revealed=true;                                    // first real frame is rendered behind the splash
+  if(revealed && !splashDone && (now - splashStart) >= SPLASH_MIN) finishSplash();
+  requestAnimationFrame(loop);
+}
+
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight); composer.setSize(innerWidth,innerHeight); bloom.setSize(innerWidth,innerHeight);
+},{passive:true});
+
+requestAnimationFrame(loop);
+// safety net: if the render loop somehow never fires, still lift the veil
+setTimeout(finishSplash, 4000);   // safety net if the render loop never fires
+</script>
+</body>
+</html>
