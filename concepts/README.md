@@ -78,11 +78,12 @@ Root cause = an extreme camera near/far range (`far=80000`) pushing mid-field bo
 `z_ndc≈1`. Fix = render the Milky Way as `scene.background` (a real skybox, no mesh) and
 keep a modest near/far (`8 / 5600`) with the sky/star spheres pulled inside it.
 
-**Local preview note:** because the textures are now local files, WebGL blocks them
-under `file://` (CORS). Preview over http — e.g. `python -m http.server` from
-`mcantow.github.io/` then open `/concepts/journey.html`. On the deployed https site
-it's same-origin and just works. `concepts/tex/` is ~19MB and currently untracked —
-decide whether to commit it or host the maps elsewhere.
+**Local preview note:** see `PREVIEW.md` for the short version. Textures live in
+`concepts/tex/` (8.2MB, committed). WebGL CORS-blocks local files under `file://`,
+so `loadTiered()` falls back to a CDN tier and the page still renders when opened
+as a plain file — just at lower-res earth maps. To see the real local textures,
+serve over http (`python -m http.server` from `mcantow.github.io/`). On the
+deployed site it's same-origin and just works.
 
 **Open questions / next passes:** real street-level imagery for the Mahwah/Boston
 ground beats (8K blue-marble still can't show a town — pins carry it); an actual
