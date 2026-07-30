@@ -150,8 +150,8 @@
     justify-content: center;
   }
 
-  /* Less busy hero decoration on mobile */
-  .hero-grid { background-size: 50px 50px; opacity: 0.7; }
+  /* Less busy hero decoration on mobile (aurora keeps its natural size) */
+  .hero-grid { opacity: 0.7; }
   .hero-canvas { opacity: 0.5; }
   .hero-scroll { display: none; }
 
@@ -353,8 +353,7 @@
   .marquee { padding: 12px 0; }
   .marquee-item { font-size: 13px; gap: 32px; }
 
-  /* Hero grid less dense on mobile */
-  .hero-grid { background-size: 50px 50px; }
+  /* Hero aurora — natural size on mobile (no grid tiling) */
 }
 
 @media (max-width: 420px) {

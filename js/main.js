@@ -225,21 +225,24 @@
      contact section (bookends the page). Theme-aware via MutationObserver. */
   const setupNetworkCanvas = (canvas, opts = {}) => {
     if (!canvas || prefersReducedMotion) return;
-    const densityMobile  = opts.densityMobile  ?? 28;
-    const densityDesktop = opts.densityDesktop ?? 64;
-    const linkDist = opts.linkDist ?? 130;
+    const densityMobile  = opts.densityMobile  ?? 11;
+    const densityDesktop = opts.densityDesktop ?? 22;
 
     const ctx = canvas.getContext('2d');
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let w = 0, h = 0;
     let nodes = [];
     let mouse = { x: -9999, y: -9999, active: false };
-    let nodeFill, lineBase;
+    let orbHues, blendMode;
 
     const updateThemeColors = () => {
       const isDark = document.documentElement.classList.contains('theme-dark');
-      nodeFill = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(10,10,11,0.5)';
-      lineBase = isDark ? 'rgba(143, 184, 255,'   : 'rgba(120, 115, 245,';
+      // Brand-accent orbs. Light theme tints the paper (source-over); dark theme
+      // glows additively (lighter) so the motes read as light, not ink.
+      orbHues = isDark
+        ? ['143, 184, 255', '138, 128, 255', '90, 200, 245']
+        : ['86, 154, 241', '120, 115, 245', '78, 172, 241'];
+      blendMode = isDark ? 'lighter' : 'source-over';
     };
     updateThemeColors();
     new MutationObserver(updateThemeColors).observe(document.documentElement, {
@@ -247,13 +250,24 @@
       attributeFilter: ['class'],
     });
 
-    const makeNode = (W, H) => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.22,
-      vy: (Math.random() - 0.5) * 0.22,
-      r: 1.4 + Math.random() * 1.6,
-    });
+    // Each orb is a soft radial-gradient blob that dissolves into the paper.
+    // z = depth (0 far → 1 near) drives size, brightness, float amplitude and
+    // pointer-parallax, giving a depth-of-field bokeh field rather than specks.
+    const makeNode = (W, H) => {
+      const z = Math.random();
+      return {
+        ox: Math.random() * W,          // anchor — orb floats gently around it
+        oy: Math.random() * H,
+        z,
+        hueIndex: (Math.random() * 3) | 0,
+        baseR: 26 + z * 132,            // far = small, near = large soft orb
+        alpha: 0.06 + z * 0.11,         // low core opacity so it fuses with the bg
+        driftX: 8 + Math.random() * 18, // float amplitude in px
+        driftY: 8 + Math.random() * 16,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.00004 + Math.random() * 0.00007, // radians/ms — slow, calm drift
+      };
+    };
 
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
@@ -269,13 +283,15 @@
         if (w > 0 && h > 0) {
           const sx = newW / w, sy = newH / h;
           for (const n of nodes) {
-            n.x *= sx;
-            n.y *= sy;
+            n.ox *= sx;
+            n.oy *= sy;
           }
         }
         while (nodes.length < targetCount) nodes.push(makeNode(newW, newH));
         if (nodes.length > targetCount) nodes.length = targetCount;
       }
+      // Painter's order: far orbs first, near orbs last (drawn on top).
+      nodes.sort((a, b) => a.z - b.z);
       w = newW;
       h = newH;
     };
@@ -333,71 +349,66 @@
       mouse.y = -9999;
     });
 
-    const draw = () => {
+    const TAU = Math.PI * 2;
+    let pnx = 0, pny = 0; // eased pointer, normalized (-0.5 .. 0.5) — buttery parallax
+
+    const draw = (now) => {
       ctx.clearRect(0, 0, w, h);
+
+      // Ease the pointer toward its target so parallax glides, never snaps.
+      const tnx = mouse.active ? (mouse.x / w - 0.5) : 0;
+      const tny = mouse.active ? (mouse.y / h - 0.5) : 0;
+      pnx += (tnx - pnx) * 0.045;
+      pny += (tny - pny) * 0.045;
+
+      ctx.globalCompositeOperation = blendMode;
+
       for (const n of nodes) {
-        n.x += n.vx;
-        n.y += n.vy;
-        if (n.x < 0 || n.x > w) n.vx *= -1;
-        if (n.y < 0 || n.y > h) n.vy *= -1;
+        const breathe = Math.sin(now * n.speed + n.phase);
+        // Float around the anchor + depth-scaled pointer parallax (near moves more).
+        const px = n.ox + Math.cos(now * n.speed * 0.8 + n.phase) * n.driftX
+                        - pnx * w * (0.015 + n.z * 0.05);
+        const py = n.oy + breathe * n.driftY
+                        - pny * h * (0.015 + n.z * 0.05);
+        const r  = n.baseR * (1 + breathe * 0.06); // gentle breathing pulse
+
+        // Interactive bloom: the cursor very slightly stirs the field it's over —
+        // orbs within reach brighten a touch (no overlay travels with the pointer).
+        // Smoothstep falloff so the influence fades in gently around the cursor.
+        let a = n.alpha;
         if (mouse.active) {
-          const dx = n.x - mouse.x, dy = n.y - mouse.y;
-          const dist2 = dx * dx + dy * dy;
-          if (dist2 < 14400) {
-            const force = (14400 - dist2) / 14400 * 0.06;
-            n.x += dx * force;
-            n.y += dy * force;
-          }
+          const dx = px - mouse.x, dy = py - mouse.y;
+          const t = 1 - Math.min(1, Math.sqrt(dx * dx + dy * dy) / 320);
+          const near = t * t * (3 - 2 * t); // smoothstep
+          a += near * 0.07 * (0.5 + n.z);   // reaches all orbs, near ones a bit more
         }
-      }
-      for (let i = 0; i < nodes.length; i++) {
-        for (let j = i + 1; j < nodes.length; j++) {
-          const a = nodes[i], b = nodes[j];
-          const dx = a.x - b.x, dy = a.y - b.y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < linkDist * linkDist) {
-            const alpha = (1 - Math.sqrt(d2) / linkDist) * 0.4;
-            ctx.strokeStyle = `${lineBase}${alpha.toFixed(3)})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-      for (const n of nodes) {
-        if (mouse.active) {
-          const dx = n.x - mouse.x, dy = n.y - mouse.y;
-          const d = Math.sqrt(dx * dx + dy * dy);
-          if (d < 180) {
-            const alpha = (1 - d / 180) * 0.55;
-            ctx.strokeStyle = `${lineBase}${alpha.toFixed(3)})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(mouse.x, mouse.y);
-            ctx.lineTo(n.x, n.y);
-            ctx.stroke();
-          }
-        }
-        ctx.fillStyle = nodeFill;
+
+        const hue = orbHues[n.hueIndex];
+        const g = ctx.createRadialGradient(px, py, 0, px, py, r);
+        // Long, smooth falloff so the orb dissolves into the bg with no ring edge.
+        g.addColorStop(0,    `rgba(${hue}, ${a.toFixed(3)})`);
+        g.addColorStop(0.32, `rgba(${hue}, ${(a * 0.42).toFixed(3)})`);
+        g.addColorStop(0.62, `rgba(${hue}, ${(a * 0.12).toFixed(3)})`);
+        g.addColorStop(1,    `rgba(${hue}, 0)`);
+        ctx.fillStyle = g;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.arc(px, py, r, 0, TAU);
         ctx.fill();
       }
+
+      ctx.globalCompositeOperation = 'source-over';
       requestAnimationFrame(draw);
     };
     requestAnimationFrame(draw);
   };
 
-  // Hero — full network with mouse interaction
+  // Hero — soft gradient-orb bokeh field with pointer parallax
   setupNetworkCanvas(document.getElementById('heroCanvas'));
 
-  // Contact (page closing bookend) — slightly less dense than hero
+  // Contact (page closing bookend) — a touch sparser than the hero
   setupNetworkCanvas(document.getElementById('contactCanvas'), {
-    densityMobile: 22,
-    densityDesktop: 50,
-    linkDist: 140,
+    densityMobile: 9,
+    densityDesktop: 18,
   });
 
   /* ──────────── CustomerNode journey mockup: circle → stage detail → loop ──────────── */
@@ -860,5 +871,46 @@
         orb.style.transform = `translate(${x * mult}px, ${y * mult}px)`;
       });
     });
+  }
+
+  /* ──────────── Chapter spotlight (feature/scroll-journey) ────────────
+     Whole-site theatrical progression: the section currently filling the viewport
+     is the lit "chapter"; the rest recede (CSS dims non-active). Works with tall
+     sections because it's a class toggle + filter, never a transform/pin — no
+     content is cut or moved. Active = the section covering the viewport centre.
+     Desktop + motion-allowed only (matches the CSS gate). */
+  if (window.matchMedia('(min-width: 900px)').matches && !prefersReducedMotion) {
+    const main = document.querySelector('main');
+    // Footer is a small bookend, never fills the viewport — leave it out so it
+    // isn't stuck dimmed at the bottom.
+    const chapters = main
+      ? Array.from(main.children).filter(el =>
+          el.matches('.hero, section') && !el.matches('.footer') && el.offsetParent !== null)
+      : [];
+    if (chapters.length > 1) {
+      document.body.classList.add('chapters');
+      let ticking = false, activeEl = null;
+      const pick = () => {
+        ticking = false;
+        const mid = window.innerHeight / 2;
+        let best = chapters[0], bestD = Infinity;
+        for (const el of chapters) {
+          const r = el.getBoundingClientRect();
+          // distance from viewport centre to the section's nearest edge (0 if the
+          // centre is inside the section → that section owns the screen).
+          const d = r.top > mid ? r.top - mid : r.bottom < mid ? mid - r.bottom : 0;
+          if (d < bestD) { bestD = d; best = el; }
+        }
+        if (best !== activeEl) {
+          if (activeEl) activeEl.classList.remove('is-chapter-active');
+          best.classList.add('is-chapter-active');
+          activeEl = best;
+        }
+      };
+      const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(pick); } };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll);
+      pick();
+    }
   }
 })();
