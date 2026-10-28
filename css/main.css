@@ -90,24 +90,6 @@ button { font: inherit; cursor: pointer; }
   border: 0;
 }
 
-/* Paper grain texture — ambient grid pattern across the page */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.025;
-  background-image:
-    radial-gradient(circle at 1px 1px, var(--ink) 1px, transparent 0);
-  background-size: 3px 3px;
-  mix-blend-mode: multiply;
-}
-.theme-dark body::before {
-  mix-blend-mode: screen;
-  opacity: 0.04;
-}
-
 
 /* ═══════════ NAV ═══════════ */
 .nav {
@@ -349,6 +331,28 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
   padding: 100px var(--gutter) 60px;
   overflow: hidden;
   isolation: isolate;
+}
+
+/* Hero wash — the CustomerNode wordmark's blue→purple (135°), diffused to a
+   whisper: blue pools behind the headline, purple behind the identity card.
+   A bottom mask fades the wash out before the hero's edge, so there's no
+   seam into the next section. */
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 65%, transparent 100%);
+  background:
+    radial-gradient(70% 80% at 24% 42%, rgba(86, 154, 241, 0.10), transparent 72%),
+    radial-gradient(60% 75% at 82% 55%, rgba(120, 115, 245, 0.13), transparent 72%);
+}
+.theme-dark .hero::before {
+  background:
+    radial-gradient(70% 80% at 24% 42%, rgba(86, 154, 241, 0.12), transparent 72%),
+    radial-gradient(60% 75% at 82% 55%, rgba(120, 115, 245, 0.18), transparent 72%);
 }
 
 /* Background canvas (subtle connecting nodes) */
@@ -2870,11 +2874,6 @@ html.theme-dark .theme-toggle .icon-moon { display: none; }
 .theme-dark .nav-links a:hover {
   background: rgba(255, 255, 255, 0.06);
 }
-
-
-/* Grain texture overlay: invisible on dark anyway, hide it */
-.theme-dark body::before { display: none; }
-html.theme-dark body::before { display: none; }
 
 /* Buttons: inverted naturally via vars (light bg with dark text on dark page) —
    but .btn-primary's hover bg becomes light purple which might be too bright. */
