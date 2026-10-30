@@ -865,6 +865,128 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   .atmo span, .entry.now .node::after { animation: none !important; }
   .spot { display: none; }
 }
+/* ==================== MOBILE LAYER (iPhone) ====================
+   Phones and touch screens only; desktop (mouse, >720px) never reaches these
+   rules. iOS conventions: safe areas, 44pt touch targets, press feedback
+   instead of hover, no hover state left stuck after a tap, Liquid-Glass
+   material only on chrome (top bar, menu button), an iPhone type scale and
+   one spacing rhythm. Content and colour unchanged. */
+@media (hover: none) and (pointer: coarse) {
+  html { -webkit-tap-highlight-color: transparent; }
+  /* hover effects would stick after a tap: neutralise them */
+  .xm-main ol:hover a { opacity: 1; }
+  .ins-card:hover .ins-cover img { transform: none; filter: saturate(.92) brightness(.94); }
+  .ins-card:hover .ins-title, .mit:hover .mit-title { color: var(--text); }
+  .row:hover .arrow, .map:hover .map-open .arrow, .btn:hover .arrow, .tlink:hover .arrow, .xm-side a:hover .arrow { transform: none; }
+  .quiet.accent .row:hover .arrow { color: var(--muted); }
+  .quiet.accent .btn:hover { border-bottom-color: rgba(236,234,229,.5); }
+  .quiet.accent .tlink:hover { border-bottom-color: transparent; }
+  .map:hover .map-img img { filter: none; }
+  html:not(.menu-open) .burger:hover .burger-icon i:nth-child(2) { width: 62%; }
+  /* press feedback, the iOS way: a quick dim on touch, eased back on release */
+  .ins-card, .row, .map, .btn, .tlink, .more, .e-link, .xm-side a, .loc-link, .foot a { transition: opacity .25s ease; }
+  .ins-card:active, .row:active, .map:active, .xm-main a:active, .e-link:active, .loc-link:active { opacity: .62; transition: none; }
+  .btn:active, .tlink:active, .more:active, .xm-side a:active, .foot a:active, .burger:active { opacity: .5; transition: none; }
+  /* the carousel is swiped on touch: the round arrows go, the position line stays */
+  .car-nav { display: none; }
+}
+
+@media (max-width: 720px) {
+  :root { --nav-h: 52px; }
+  .quiet { --sec-gap: 72px; }
+  body { font-size: 17px; }
+
+  /* top bar: content scrolls under a glass bar, clear of the notch */
+  .nav { height: calc(var(--nav-h) + env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); }
+  .nav.scrolled, .quiet .nav.scrolled {
+    background: rgba(12,12,16,.6); border-bottom-color: rgba(255,255,255,.08);
+    -webkit-backdrop-filter: blur(24px) saturate(180%); backdrop-filter: blur(24px) saturate(180%); }
+  .menu-open .nav, .quiet.menu-open .nav.scrolled { -webkit-backdrop-filter: none; backdrop-filter: none; background: transparent; }
+  .brand { font-size: 17px; font-weight: 600; letter-spacing: -.022em; }
+  /* menu button: a 44pt glass control; the word "Menu" is redundant on a phone */
+  .burger { width: 44px; height: 44px; padding: 0; gap: 0; justify-content: center; margin-right: -4px; border-radius: 50%;
+    background: rgba(255,255,255,.06); box-shadow: inset 0 0 0 .5px rgba(255,255,255,.16), inset 0 1px 0 rgba(255,255,255,.07);
+    -webkit-backdrop-filter: blur(14px) saturate(160%); backdrop-filter: blur(14px) saturate(160%); }
+  .burger-label { display: none; }
+  .burger-icon { width: 20px; height: 9px; }
+
+  /* every text link gets a 44pt hit area without moving its underline */
+  .btn, .tlink, .e-link, .loc-link, .xm-side a { position: relative; }
+  .btn::after, .tlink::after, .e-link::after, .loc-link::after { content: ""; position: absolute; inset: -12px -8px; }
+
+  /* section rhythm and labels */
+  .quiet .sec.ess { padding-top: 64px; }
+  .eyebrow { font-size: 12px; letter-spacing: .12em; gap: 12px; margin-bottom: 18px; }
+  .eyebrow i { width: 20px; }
+  .h2, .quiet .h2 { font-size: clamp(32px, 9.4vw, 40px); line-height: 1.04; letter-spacing: -0.035em; }
+
+  /* hero: portrait, statement, two actions, then the facts as an inset list */
+  .quiet .hero { min-height: 0; padding: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 20px) var(--gutter) 0; }
+  .quiet .photo { width: min(52%, 212px); margin-bottom: 28px; }
+  .quiet .h1 { font-size: clamp(34px, 10.4vw, 46px); line-height: 1.03; letter-spacing: -0.04em; max-width: none; }
+  .quiet .deck { margin-top: 16px; font-size: 17px; line-height: 1.5; }
+  .quiet .ctas { gap: 10px 28px; margin-top: 24px; }
+  .quiet .hero-facts { margin-top: 36px; padding-top: 0; gap: 0; border-top: 1px solid var(--line); }
+  .quiet .hero-facts > div { display: grid; grid-template-columns: 100px minmax(0, 1fr); align-items: baseline; gap: 12px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .quiet .hero-facts dt { font-size: 12px; letter-spacing: .12em; }
+  .quiet .hero-facts dd { margin: 0; font-size: 16px; line-height: 1.4; }
+
+  /* What I'm thinking */
+  .ess-deck { margin-top: 14px; font-size: 17px; }
+  .ins-head { gap: 20px; }
+  .ins-head .tlink { font-size: 16px; }
+  .car { margin-top: 30px; }
+  .ess .ins-grid > li { flex-basis: 84%; }
+  .ins-meta { font-size: 11.5px; letter-spacing: .09em; }
+  .ins-title { margin-top: 8px; font-size: 19px; line-height: 1.25; }
+  .ins-hook { font-size: 15px; line-height: 1.5; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+  .car-foot { margin-top: 20px; }
+
+  /* What I'm building: tighter around the demo, the three verbs as a clean list */
+  .cn-title, .quiet .cn-title { font-size: clamp(42px, 12.4vw, 54px); }
+  .cn-lead { margin-top: 12px; font-size: 18px; line-height: 1.45; }
+  .cn-stage { margin-top: 28px; }
+  .verbs, .quiet .verbs { margin-top: 20px; max-width: none; }
+  .verb, .quiet .verb { display: block; padding: 18px 0 20px; }
+  .verb h3, .quiet .verb h3 { margin: 0; font-size: 19px; }
+  .verb p { margin: 4px 0 0; font-size: 16px; }
+  .verbs .verb:last-child { border-bottom: 1px solid var(--line); }
+  .cn-ctas { gap: 14px; margin-top: 32px; }
+
+  /* Where I've been */
+  .journey-grid { gap: 36px; }
+  .facts { margin-top: 24px; max-width: none; }
+  .facts div { grid-template-columns: 100px minmax(0, 1fr); gap: 12px; padding: 12px 0; font-size: 16px; }
+  .facts dt { font-size: 12px; }
+  .role { font-size: 19px; line-height: 1.25; }
+  .date { font-size: 12px; letter-spacing: .07em; }
+  .desc { font-size: 16px; line-height: 1.55; }
+  .more { height: 44px; margin-top: 0; font-size: 15px; }
+  .e-link { margin-left: 22px; font-size: 15px; }
+
+  /* Where I'm heading */
+  .contact-h, .quiet .contact-h { font-size: clamp(30px, 8.8vw, 36px); line-height: 1.07; }
+  .contact-sub { margin-top: 16px; font-size: 17px; line-height: 1.5; }
+  .rows { margin-top: 32px; }
+  .row { min-height: 64px; padding: 16px 4px; }
+  .row-label { font-size: 18px; }
+  .where { margin-top: 28px; }
+  .map { height: 196px; }
+  .map-attr { font-size: 12px; }
+
+  /* footer: clear of the home indicator */
+  .foot { padding: 20px 0 calc(24px + env(safe-area-inset-bottom, 0px)); font-size: 14px; }
+  .foot a { display: inline-flex; align-items: center; justify-content: flex-end; width: 44px; height: 44px; margin: -11px -11px -11px 0; }
+
+  /* full-screen menu: clear of the notch and home indicator, thumb-reachable */
+  .xm-in { padding: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 12px) 0 calc(28px + env(safe-area-inset-bottom, 0px)); row-gap: 30px; }
+  .xm-main a { padding: 8px 0 10px; }
+  .xm-t > span { font-size: clamp(40px, 12vw, 54px); }
+  .xm-n { font-size: 12px; }
+  .xm-side a { font-size: 17px; min-height: 36px; }
+  .xm-label { font-size: 12px; margin-bottom: 8px; }
+}
+/* ==================== /MOBILE LAYER ==================== */
 </style>
 <script type="application/ld+json">
   {
