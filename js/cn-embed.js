@@ -24,7 +24,7 @@
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
     el.style.overflow = 'hidden';
     var f = document.createElement('iframe');
-    f.src = 'cn-demo.html?theme=' + encodeURIComponent(theme) + (bg ? '&bg=' + encodeURIComponent(bg) : '');
+    f.src = 'cn-demo.html?v=6df984ef&theme=' + encodeURIComponent(theme) + (bg ? '&bg=' + encodeURIComponent(bg) : '');
     f.title = 'CustomerNode live product demo';
     f.setAttribute('scrolling', 'no');
     f.setAttribute('tabindex', '-1');
