@@ -644,15 +644,15 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
    Each major section (CustomerNode, Journey, Contact) opens on a hairline the
    width of the content, with the same generous space above and below it, so
    one section's ending can't read as the next one's beginning (owner: the
-   Sears/Amazon quote ran straight into "02 What I'm building"). */
+   Sears/Amazon quote ran straight into "02 What I'm building").
+   Owner later: "the lines are just noise" -> no hairlines; the section you're
+   reading stays bright while the others step back (the menu's hover move), so
+   the breaks only need one even gap. The section-break overrides live in
+   "Section rhythm" at the end of this stylesheet. */
 .quiet { --sec-gap: clamp(96px, 14vh, 150px); }
+.quiet main > section { transition: opacity .9s var(--qease); }
+.quiet.focusmode main > section:not(.on) { opacity: .3; }
 .quiet .quote { padding-bottom: var(--sec-gap); }
-.quiet .sec.cn, .quiet .sec.journey { padding-bottom: var(--sec-gap); }
-.quiet .sec.cn, .quiet .sec.journey, .quiet .sec.contact { padding-top: 0; }
-.quiet .sec.cn::before, .quiet .sec.journey::before, .quiet .sec.contact::before {
-  content: ""; display: block; width: min(1200px, 100% - 2 * var(--gutter)); margin: 0 auto var(--sec-gap);
-  border-top: 1px solid var(--line);
-}
 
 /* ---------- Menu button + full-screen menu ----------
    Owner: "make these a burger with an ultra premium expand menu". Two hairlines
@@ -987,6 +987,32 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   .xm-label { font-size: 12px; margin-bottom: 8px; }
 }
 /* ==================== /MOBILE LAYER ==================== */
+
+/* ---------- Section rhythm ----------
+   Owner: the space around CustomerNode was too much and inconsistent once the
+   off-screen sections dim. Every break (hero -> essays -> CustomerNode ->
+   journey -> contact) now has the same visible gap, --gap, from the last thing
+   in one section to the first thing in the next. All of it sits in the next
+   section's top padding, minus the bit the previous section already leaves
+   below its last line (measured: hero 4vh pad + 11px, essays 16px,
+   CustomerNode 8px, journey 32px; other numbers on tablet and phone). */
+.quiet { --gap: clamp(140px, 21vh, 220px); }
+.quiet .sec.ess, .quiet .sec.cn, .quiet .sec.journey { padding-bottom: 0; }
+.quiet .sec.cn::before, .quiet .sec.journey::before, .quiet .sec.contact::before { content: none; }
+.quiet .sec.ess { padding-top: calc(var(--gap) - clamp(28px, 4vh, 44px) - 11px); }
+.quiet .sec.cn { padding-top: calc(var(--gap) - 16px); }
+.quiet .sec.journey { padding-top: calc(var(--gap) - 8px); }
+.quiet .sec.contact { padding-top: calc(var(--gap) - 32px); }
+@media (max-width: 900px) {
+  .quiet .sec.journey { padding-top: calc(var(--gap) - 16px); }
+}
+@media (max-width: 720px) {
+  .quiet { --gap: 96px; }
+  .quiet .sec.ess { padding-top: calc(var(--gap) - 26px); }
+  .quiet .sec.cn { padding-top: calc(var(--gap) - 14px); }
+  .quiet .sec.journey { padding-top: calc(var(--gap) - 17px); }
+  .quiet .sec.contact { padding-top: calc(var(--gap) - 46px); }
+}
 </style>
 <script type="application/ld+json">
   {
@@ -1105,7 +1131,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
       <div>
         <p class="xm-label">Follow</p>
         <ul>
-          <li><a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">CustomerNode on LinkedIn <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+          <li><a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">CustomerNode™ on LinkedIn <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
           <li><a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="noopener">Personal LinkedIn <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
           <li><a href="https://customernode.com" target="_blank" rel="noopener">customernode.com <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
         </ul>
@@ -1120,7 +1146,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
 
 <main id="main">
   <p class="sr-only">
-      Michael Cantow is the founder of CustomerNode, the execution layer for multi-stage B2B deals. An MIT-trained engineer (B.S. EECS 2022, MEng in AI 2023) based in Weehawken, NJ, Michael previously led ThoughtLine at the MIT Media Lab — a multi-sided platform for audiotherapy research — taught Intro to Machine Learning at MIT (6.390), interned at Teamworthy Ventures, and led astrophysics and space research at the MIT Kavli Institute on the NASA TESS and NICER missions. Before MIT he grew up in Mahwah, NJ, where he played football and became the first Mahwah student admitted to MIT in over 30 years. He is shipping CustomerNode from Weehawken, NJ.
+      Michael Cantow is the founder of CustomerNode™, the execution layer for multi-stage B2B deals. An MIT-trained engineer (B.S. EECS 2022, MEng in AI 2023) based in Weehawken, NJ, Michael previously led ThoughtLine at the MIT Media Lab — a multi-sided platform for audiotherapy research — taught Intro to Machine Learning at MIT (6.390), interned at Teamworthy Ventures, and led astrophysics and space research at the MIT Kavli Institute on the NASA TESS and NICER missions. Before MIT he grew up in Mahwah, NJ, where he played football and became the first Mahwah student admitted to MIT in over 30 years. He is shipping CustomerNode™ from Weehawken, NJ.
     </p>
   <!-- ============ HERO ============ -->
   <section class="hero" id="top" aria-label="Introduction">
@@ -1135,23 +1161,23 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
 
     <div class="hero-in">
       <p class="pill hf" style="--d:200ms">
-        <span>Founder, CustomerNode <span class="sep">·</span> Weehawken, NJ</span>
+        <span>Founder, CustomerNode™ <span class="sep">·</span> Weehawken, NJ</span>
       </p>
       <h1 class="h1"><span class="hw">Moving</span> <span class="hw">B2B</span> <span class="hw">software</span> <span class="hw">from</span> <span class="hw">record</span> <span class="hw">to</span> <span class="hw lit">action.</span></h1>
-      <p class="deck hf" style="--d:700ms">Founder of CustomerNode, the execution layer for multi-stage B2B deals.</p>
+      <p class="deck hf" style="--d:700ms">I’m Michael, currently the founder of CustomerNode™ and formerly an MIT football player, researcher, and teaching assistant.</p>
       <p class="rot hf" style="--d:900ms">
         <span aria-hidden="true">I’m <span class="rot-slot" id="rotSlot"><span class="rot-word is-on">a founder</span></span></span>
         <span class="sr-only">I’m a founder, which also makes me an engineer, a designer, a sales rep, a marketer, a recruiter, a support rep, a sysadmin, and a janitor.</span>
       </p>
       <div class="ctas hf" style="--d:1050ms">
-        <a class="btn" href="https://customernode.com" target="_blank" rel="noopener">See what we’re shipping
+        <a class="btn" href="https://customernode.com" target="_blank" rel="noopener">Visit CustomerNode™
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        <a class="tlink down" href="#thesis">Read the thesis
+        <a class="tlink down" href="#thesis">Get to know me
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </div>
     <dl class="hero-facts hf" style="--d:900ms">
-      <div><dt>Role</dt><dd>Founder, CustomerNode</dd></div>
+      <div><dt>Role</dt><dd>Founder, CustomerNode™</dd></div>
       <div><dt>Education</dt><dd>MIT, BSc EECS ’22 · MEng AI ’23</dd></div>
       <div><dt>Based</dt><dd><a class="loc-link" href="#where">Weehawken, NJ</a></dd></div>
     </dl>
@@ -1160,16 +1186,17 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   <!-- ============ THESIS = THE ESSAYS ============
        The thesis is argued in writing: the MIT master's thesis (the first system
        of action) leads, then every essay from customernode.com/insights. Cards
-       between the INSIGHTS markers are generated by build_insights.py, which the
-       CustomerNode release re-runs so new essays appear on their own.
+       between the INSIGHTS markers are kept by hand (no generator exists yet).
+       Write the company name as CustomerNode™ in visible text; any future
+       generator must do the same.
        (Replaced the three-axes table and red/blue ocean comparison.) -->
   <section class="sec ess" id="thesis" aria-labelledby="thesis-h" tabindex="-1">
     <div class="wrap">
       <div class="ins-head">
         <div>
-          <p class="eyebrow rv"><b>01</b><i></i>What I’m thinking</p>
-          <h2 class="h2 ins-h rv" id="thesis-h" style="--rd:80ms">News, Ideas, and Takes</h2>
-          <p class="ess-deck rv" style="--rd:140ms">The next generation of B2B platforms will run the work, not just record it. This is the case, in writing.</p>
+          <p class="eyebrow rv"><b>01</b><i></i>Thinking</p>
+          <h2 class="h2 ins-h rv" id="thesis-h" style="--rd:80ms">CustomerNode™ on LinkedIn</h2>
+          <p class="ess-deck rv" style="--rd:140ms">The next generation of B2B platforms will run the work, not just record it.</p>
         </div>
         <a class="tlink ext rv" style="--rd:200ms" href="https://customernode.com/insights/" target="_blank" rel="noopener">Read our insights
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1179,7 +1206,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
            system of action) closes the sequence. Swipe / trackpad / arrows. -->
       <div class="car rv" style="--rd:240ms" data-carousel>
         <ol class="ins-grid" tabindex="0" aria-label="Essays, newest first">
-          <!--INSIGHTS:START (generated by build_insights.py; do not edit by hand)-->
+          <!--INSIGHTS:START (kept by hand; write CustomerNode™ in visible text)-->
         <li><a class="ins-card" href="https://customernode.com/insights/grandpa-and-sps/" target="_blank" rel="noopener">
           <span class="ins-cover"><img src="img/insights/grandpa-and-sps.webp?v=54532946" alt="" loading="lazy" decoding="async" style="object-position:center"></span>
           <span class="ins-meta">Article · <time datetime="2026-09-30">Sep 30, 2026</time></span>
@@ -1214,12 +1241,12 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
           <span class="ins-cover"><img src="img/insights/deal-room-paradox.svg?v=eea638f2" alt="" loading="lazy" decoding="async" style="object-position:center"></span>
           <span class="ins-meta">Article · <time datetime="2026-05-07">May 7, 2026</time></span>
           <span class="ins-title">The Deal Room Paradox</span>
-          <span class="ins-hook">The most intuitive category in B2B sales quietly stalled. CustomerNode is what comes next.</span>
+          <span class="ins-hook">The most intuitive category in B2B sales quietly stalled. CustomerNode™ is what comes next.</span>
         </a></li>
         <li><a class="ins-card" href="https://customernode.com/insights/soc2-type-i/" target="_blank" rel="noopener">
           <span class="ins-cover"><img src="img/insights/soc2-type-i.webp?v=e4e0d503" alt="" loading="lazy" decoding="async" style="object-position:center"></span>
           <span class="ins-meta">Post · <time datetime="2026-04-21">Apr 21, 2026</time></span>
-          <span class="ins-title">CustomerNode Achieves SOC 2 Type I Compliance</span>
+          <span class="ins-title">CustomerNode™ Achieves SOC 2 Type I Compliance</span>
           <span class="ins-hook">A single B2B deal moves across a dozen systems. The risk accumulates in the gaps between them.</span>
         </a></li>
         <li><a class="ins-card" href="https://customernode.com/insights/platform-playbook/" target="_blank" rel="noopener">
@@ -1231,7 +1258,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
         <li><a class="ins-card" href="https://customernode.com/insights/cloud-confidence/" target="_blank" rel="noopener">
           <span class="ins-cover ins-cover--none"></span>
           <span class="ins-meta">Post · <time datetime="2026-03-08">Mar 8, 2026</time></span>
-          <span class="ins-title">CustomerNode Earns a High Cloud Confidence Rating</span>
+          <span class="ins-title">CustomerNode™ Earns a High Cloud Confidence Rating</span>
           <span class="ins-hook">Recognized in the Netskope Cloud Confidence Index, with High GDPR Readiness.</span>
         </a></li>
           <!--INSIGHTS:END-->
@@ -1256,7 +1283,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   <!-- ============ CUSTOMERNODE ============ -->
   <section class="sec cn" id="customernode" aria-labelledby="cn-h" tabindex="-1">
     <div class="wrap">
-      <p class="eyebrow center rv"><b>02</b><i></i>What I’m building</p>
+      <p class="eyebrow center rv"><b>02</b><i></i>Building</p>
       <h2 class="cn-title rv" id="cn-h" style="--rd:80ms"><span class="gt">CustomerNode</span><sup>™</sup></h2>
       <p class="cn-lead rv" style="--rd:160ms">Turn complex deals into executable journeys.</p>
     </div>
@@ -1291,7 +1318,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
         </li>
       </ul>
       <div class="cn-ctas rv">
-        <a class="btn" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">Follow CustomerNode
+        <a class="btn" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">Follow CustomerNode™
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="tlink ext" href="https://customernode.com" target="_blank" rel="noopener">customernode.com
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1303,7 +1330,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   <section class="sec journey" id="journey" aria-labelledby="journey-h" tabindex="-1">
     <div class="wrap journey-grid">
       <div class="journey-head">
-        <p class="eyebrow rv"><b>03</b><i></i>Where I’ve been</p>
+        <p class="eyebrow rv"><b>03</b><i></i>Learning</p>
         <h2 class="h2 rv" id="journey-h" style="--rd:80ms"><span class="gt">My journey</span></h2>
         <dl class="facts rv" style="--rd:160ms">
           <div><dt>Grew up</dt><dd>Mahwah, NJ</dd></div>
@@ -1392,9 +1419,9 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
             <div>
               <div class="e-head">
                 <span class="logo dark contain"><img src="img/cn-logo-black-edge.webp?v=c77c2c5e" alt="" width="28" height="28" loading="lazy"></span>
-                <div><h3 class="role">Founder</h3><p class="org">CustomerNode&nbsp;· Weehawken, NJ</p></div>
+                <div><h3 class="role">Founder</h3><p class="org">CustomerNode™&nbsp;· Weehawken, NJ</p></div>
               </div>
-              <p class="desc clamp" id="d7">My second system of action. Shipping CustomerNode, the execution layer for multi-stage B2B deals. The CRM watches; CustomerNode moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.</p>
+              <p class="desc clamp" id="d7">My second system of action. Shipping CustomerNode™, the execution layer for multi-stage B2B deals. The CRM watches; CustomerNode™ moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.</p>
               <div class="e-acts"><button class="more" type="button" aria-expanded="false" aria-controls="d7"><span>More</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
             </div>
           </li>
@@ -1406,12 +1433,12 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   <!-- ============ CONTACT ============ -->
   <section class="sec contact" id="contact" aria-labelledby="contact-h" tabindex="-1">
     <div class="wrap">
-      <p class="eyebrow center rv"><b>04</b><i></i>Where I’m heading</p>
+      <p class="eyebrow center rv"><b>04</b><i></i>Heading</p>
       <h2 class="contact-h rv" id="contact-h" style="--rd:80ms"><span class="gt">If you sell a solution with a </span><br class="br-d"><span class="lit ph"><span class="nw">multi-stage</span> buying process</span><span class="gt">,</span><br class="br-d"><span class="gt"> let’s talk.</span></h2>
-      <p class="contact-sub rv" style="--rd:160ms">The fastest way to keep up is the CustomerNode page, where the thought leadership and announcements live.</p>
+      <p class="contact-sub rv" style="--rd:160ms">The fastest way to keep up is the CustomerNode™ page, where the thought leadership and announcements live.</p>
       <ul class="rows rv" style="--rd:220ms">
         <li><a class="row" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">
-          <span class="row-label">CustomerNode on LinkedIn</span><span class="row-meta">/company/customernode</span>
+          <span class="row-label">CustomerNode™ on LinkedIn</span><span class="row-meta">/company/customernode</span>
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
         <li><a class="row" href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="noopener">
           <span class="row-label">Personal LinkedIn</span><span class="row-meta">/in/mcantow</span>
@@ -1590,6 +1617,22 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
     rvs.forEach(function (el) { io.observe(el); });
   } else rvs.forEach(function (el) { el.classList.add('in'); });
+
+  /* ---------- Section focus ----------
+     Whichever section crosses the middle of the screen stays bright; the
+     others dim (CSS: .focusmode). Like the menu, where hovering one line
+     steps the rest back. */
+  var secs = $$('main > section');
+  if ('IntersectionObserver' in window && secs.length) {
+    document.documentElement.classList.add('focusmode');
+    secs[0].classList.add('on');
+    var fio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) secs.forEach(function (s) { s.classList.toggle('on', s === e.target); });
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    secs.forEach(function (s) { fio.observe(s); });
+  }
 
   /* ---------- Thesis pin ---------- */
   var thesis = $('#thesis'), track = $('.thesis-track', thesis);
