@@ -1173,7 +1173,13 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   /* hero: the first screen holds only portrait, headline, intro and links; the fact list starts just below the fold.
      hero-in fills what is left of the screen under the portrait (top pad + 4:5 portrait + its 28px gap). */
   .quiet .hero-in { min-height: calc(100svh - var(--nav-h) - env(safe-area-inset-top, 0px) - 48px - min((100vw - 2 * var(--gutter)) * .52, 212px) * 1.25); }
-}</style>
+}
+
+/* ™: a tiny, faint mark in the mono face, lifted so its top meets the cap height, never split from its word */
+.tmw { white-space: nowrap; }
+.tm { display: inline-block; position: relative; line-height: 0; font-family: var(--mono); font-size: .38em; font-weight: 400; font-style: normal; letter-spacing: .02em; top: -1.14em; margin-left: .14em; opacity: .5; -webkit-text-fill-color: currentColor; }
+.cn-title .tm { font-family: inherit; font-size: .16em; font-weight: 500; letter-spacing: 0; vertical-align: top; top: .55em; margin-left: .2em; opacity: 1; color: var(--muted); -webkit-text-fill-color: var(--muted); }
+</style>
 <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1291,7 +1297,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
       <div>
         <p class="xm-label">Follow</p>
         <ul>
-          <li><a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">CustomerNode™ on LinkedIn <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
+          <li><a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span> on LinkedIn</span> <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
           <li><a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="noopener">Personal LinkedIn <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
           <li><a href="https://customernode.com" target="_blank" rel="noopener">customernode.com <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a></li>
         </ul>
@@ -1306,7 +1312,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 
 <main id="main">
   <p class="sr-only">
-      Michael Cantow is the founder of CustomerNode™, the execution layer for multi-stage B2B deals. An MIT-trained engineer (B.S. EECS 2022, MEng in AI 2023) based in Weehawken, NJ, Michael previously led ThoughtLine at the MIT Media Lab — a multi-sided platform for audiotherapy research — taught Intro to Machine Learning at MIT (6.390), interned at Teamworthy Ventures, and led astrophysics and space research at the MIT Kavli Institute on the NASA TESS and NICER missions. Before MIT he grew up in Mahwah, NJ, where he played football and became the first Mahwah student admitted to MIT in over 30 years. He is shipping CustomerNode™ from Weehawken, NJ.
+      <span class="tmr">Michael Cantow is the founder of <span class="tmw">CustomerNode<span class="tm">™</span></span>, the execution layer for multi-stage B2B deals. An MIT-trained engineer (B.S. EECS 2022, MEng in AI 2023) based in Weehawken, NJ, Michael previously led ThoughtLine at the MIT Media Lab — a multi-sided platform for audiotherapy research — taught Intro to Machine Learning at MIT (6.390), interned at Teamworthy Ventures, and led astrophysics and space research at the MIT Kavli Institute on the NASA TESS and NICER missions. Before MIT he grew up in Mahwah, NJ, where he played football and became the first Mahwah student admitted to MIT in over 30 years. He is shipping <span class="tmw">CustomerNode<span class="tm">™</span></span> from Weehawken, NJ.</span>
     </p>
   <!-- ============ HERO ============ -->
   <section class="hero" id="top" aria-label="Introduction">
@@ -1321,23 +1327,23 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 
     <div class="hero-in">
       <p class="pill hf" style="--d:200ms">
-        <span>Founder, CustomerNode™ <span class="sep">·</span> Weehawken, NJ</span>
+        <span><span class="tmr">Founder, <span class="tmw">CustomerNode<span class="tm">™</span></span></span> <span class="sep">·</span> Weehawken, NJ</span>
       </p>
       <h1 class="h1"><span class="hw">Moving</span> <span class="hw">B2B</span> <span class="hw">software</span> <span class="hw">from</span> <span class="hw">record</span> <span class="hw">to</span> <span class="hw lit">action.</span></h1>
-      <p class="deck hf" style="--d:700ms">I’m Michael, currently the founder of CustomerNode™ and formerly an MIT football player, researcher, and teaching assistant.</p>
+      <p class="deck hf" style="--d:700ms"><span class="tmr">I’m Michael, currently the founder of <span class="tmw">CustomerNode<span class="tm">™</span></span> and formerly an MIT football player, researcher, and teaching assistant.</span></p>
       <p class="rot hf" style="--d:900ms">
         <span aria-hidden="true">I’m <span class="rot-slot" id="rotSlot"><span class="rot-word is-on">a founder</span></span></span>
         <span class="sr-only">I’m a founder, which also makes me an engineer, a designer, a sales rep, a marketer, a recruiter, a support rep, a sysadmin, and a janitor.</span>
       </p>
       <div class="ctas hf" style="--d:1050ms">
-        <a class="btn" href="https://customernode.com" target="_blank" rel="noopener">Visit CustomerNode™
+        <a class="btn" href="https://customernode.com" target="_blank" rel="noopener"><span class="tmr">Visit <span class="tmw">CustomerNode<span class="tm">™</span></span></span>
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="tlink down" href="#thesis">Get to know me
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </div>
     <dl class="hero-facts hf" style="--d:900ms">
-      <div><dt>Role</dt><dd>Founder, CustomerNode™</dd></div>
+      <div><dt>Role</dt><dd><span class="tmr">Founder, <span class="tmw">CustomerNode<span class="tm">™</span></span></span></dd></div>
       <div><dt>Education</dt><dd>MIT, BSc EECS ’22 · MEng AI ’23</dd></div>
       <div><dt>Based</dt><dd><a class="loc-link" href="#where">Weehawken, NJ</a></dd></div>
     </dl>
@@ -1355,7 +1361,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
       <div class="ins-head">
         <div>
           <p class="eyebrow rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8068em">&#xe2dc;</span>Thinking</span></p>
-          <h2 class="h2 ins-h rv" id="thesis-h" style="--rd:80ms">CustomerNode™ on LinkedIn</h2>
+          <h2 class="h2 ins-h rv" id="thesis-h" style="--rd:80ms"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span> on LinkedIn</span></h2>
           <p class="ess-deck rv" style="--rd:140ms">The next generation of B2B platforms will run the work, not just record it.</p>
         </div>
       </div>
@@ -1399,12 +1405,12 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
           <span class="ins-cover"><img src="img/insights/deal-room-paradox.svg?v=eea638f2" alt="" loading="lazy" decoding="async" style="object-position:center"></span>
           <span class="ins-meta">Article · <time datetime="2026-05-07">May 7, 2026</time></span>
           <span class="ins-title">The Deal Room Paradox</span>
-          <span class="ins-hook">The most intuitive category in B2B sales quietly stalled. CustomerNode™ is what comes next.</span>
+          <span class="ins-hook"><span class="tmr">The most intuitive category in B2B sales quietly stalled. <span class="tmw">CustomerNode<span class="tm">™</span></span> is what comes next.</span></span>
         </a></li>
         <li><a class="ins-card" href="https://customernode.com/insights/soc2-type-i/" target="_blank" rel="noopener">
           <span class="ins-cover"><img src="img/insights/soc2-type-i.webp?v=e4e0d503" alt="" loading="lazy" decoding="async" style="object-position:center"></span>
           <span class="ins-meta">Post · <time datetime="2026-04-21">Apr 21, 2026</time></span>
-          <span class="ins-title">CustomerNode™ Achieves SOC 2 Type I Compliance</span>
+          <span class="ins-title"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span> Achieves SOC 2 Type I Compliance</span></span>
           <span class="ins-hook">A single B2B deal moves across a dozen systems. The risk accumulates in the gaps between them.</span>
         </a></li>
         <li><a class="ins-card" href="https://customernode.com/insights/platform-playbook/" target="_blank" rel="noopener">
@@ -1416,7 +1422,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
         <li><a class="ins-card" href="https://customernode.com/insights/cloud-confidence/" target="_blank" rel="noopener">
           <span class="ins-cover ins-cover--none"></span>
           <span class="ins-meta">Post · <time datetime="2026-03-08">Mar 8, 2026</time></span>
-          <span class="ins-title">CustomerNode™ Earns a High Cloud Confidence Rating</span>
+          <span class="ins-title"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span> Earns a High Cloud Confidence Rating</span></span>
           <span class="ins-hook">Recognized in the Netskope Cloud Confidence Index, with High GDPR Readiness.</span>
         </a></li>
           <!--INSIGHTS:END-->
@@ -1442,7 +1448,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <section class="sec cn" id="customernode" aria-labelledby="cn-h" tabindex="-1">
     <div class="wrap">
       <p class="eyebrow center rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8068em">&#xe80e;</span>Building</span></p>
-      <h2 class="cn-title rv" id="cn-h" style="--rd:80ms"><span class="gt">CustomerNode</span><sup>™</sup></h2>
+      <h2 class="cn-title rv" id="cn-h" style="--rd:80ms"><span class="gt">CustomerNode</span><span class="tm">™</span></h2>
       <p class="cn-lead rv" style="--rd:160ms">Turn complex deals into executable journeys.</p>
     </div>
     <div class="cjs rv" id="cjs" style="--rd:240ms" aria-hidden="true"></div>
@@ -1459,7 +1465,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
         </li>
       </ul>
       <div class="cn-ctas rv">
-        <a class="btn" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener">Follow CustomerNode™
+        <a class="btn" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener"><span class="tmr">Follow <span class="tmw">CustomerNode<span class="tm">™</span></span></span>
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="tlink ext" href="https://customernode.com" target="_blank" rel="noopener">customernode.com
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -1560,9 +1566,9 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
             <div>
               <div class="e-head">
                 <span class="logo dark contain"><img src="img/cn-logo-black-edge.webp?v=c77c2c5e" alt="" width="28" height="28" loading="lazy"></span>
-                <div><h3 class="role">Founder</h3><p class="org">CustomerNode™&nbsp;· Weehawken, NJ</p></div>
+                <div><h3 class="role">Founder</h3><p class="org"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span>&nbsp;· Weehawken, NJ</span></p></div>
               </div>
-              <p class="desc clamp" id="d7">My second system of action. Shipping CustomerNode™, the execution layer for multi-stage B2B deals. The CRM watches; CustomerNode™ moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.</p>
+              <p class="desc clamp" id="d7"><span class="tmr">My second system of action. Shipping <span class="tmw">CustomerNode<span class="tm">™</span></span>, the execution layer for multi-stage B2B deals. The CRM watches; <span class="tmw">CustomerNode<span class="tm">™</span></span> moves. Stages, owners, outcomes, and agents that drive work forward, replacing the improvisation of selling and buying with a structured journey both sides run together.</span></p>
               <div class="e-acts"><button class="more" type="button" aria-expanded="false" aria-controls="d7"><span>More</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
             </div>
           </li>
@@ -1577,8 +1583,8 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
       <p class="eyebrow center rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8353em">&#xe1c8;</span>Heading</span></p>
       <h2 class="contact-h rv" id="contact-h" style="--rd:80ms"><span class="gt">Making complex things </span><br class="br-d"><span class="lit ph">easier to buy, sell, and build</span><span class="gt">.</span></h2>
       <ul class="wh-cards three rv" style="--rd:200ms">
-        <li><a class="ins-card" href="https://customernode.com" target="_blank" rel="noopener"><span class="fr cov3"><span class="c3" id="c3cn"></span></span><span class="ins-meta">Buying &amp; selling &middot; customernode.com</span><span class="ins-title">CustomerNode™</span><span class="ins-hook">The future of how complex solutions get bought and sold.</span></a></li>
-        <li><a class="ins-card" href="https://github.com/CustomerNode/VibeNode" target="_blank" rel="noopener"><span class="fr cov3"><span class="c3" id="c3vn"></span></span><span class="ins-meta">Building &middot; open source</span><span class="ins-title">VibeNode</span><span class="ins-hook">How complex software like CustomerNode™ gets built.</span></a></li>
+        <li><a class="ins-card" href="https://customernode.com" target="_blank" rel="noopener"><span class="fr cov3"><span class="c3" id="c3cn"></span></span><span class="ins-meta">Buying &amp; selling &middot; customernode.com</span><span class="ins-title"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span></span></span><span class="ins-hook">The future of how complex solutions get bought and sold.</span></a></li>
+        <li><a class="ins-card" href="https://github.com/CustomerNode/VibeNode" target="_blank" rel="noopener"><span class="fr cov3"><span class="c3" id="c3vn"></span></span><span class="ins-meta">Building &middot; open source</span><span class="ins-title">VibeNode</span><span class="ins-hook"><span class="tmr">How complex software like <span class="tmw">CustomerNode<span class="tm">™</span></span> gets built.</span></span></a></li>
         <li><a class="ins-card" href="#work-with-me" data-modal="wwm"><span class="fr cov3"><span class="c3" id="c3co"></span></span><span class="ins-meta">Advisory &middot; collaboration</span><span class="ins-title">Work with me</span><span class="ins-hook">Meeting and building with people moving technology forward.</span></a></li>
       </ul>
       <dialog class="wwm" id="wwm" aria-labelledby="wwm-h">
@@ -1589,7 +1595,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
         <a class="btn" href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="noopener">Connect on LinkedIn <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </dialog>
       <div class="fl fb rv" style="--rd:300ms">
-  <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener"><span class="fb-k"><svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.77 2.55 4.77 5.86v5.59h-4v-4.96c0-1.18-.02-2.7-1.7-2.7-1.7 0-1.96 1.28-1.96 2.61v5.05h-4v-11Z"/></svg>Company</span><span class="fb-n">CustomerNode™</span><span class="fb-h">/company/customernode <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+  <a href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener"><span class="fb-k"><svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.77 2.55 4.77 5.86v5.59h-4v-4.96c0-1.18-.02-2.7-1.7-2.7-1.7 0-1.96 1.28-1.96 2.61v5.05h-4v-11Z"/></svg>Company</span><span class="fb-n"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span></span></span><span class="fb-h">/company/customernode <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
   <a href="https://www.linkedin.com/in/mcantow/" target="_blank" rel="noopener"><span class="fb-k"><svg class="li" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM3 9.75h4v11H3v-11Zm6.5 0h3.8v1.5h.06c.53-.95 1.83-1.95 3.77-1.95 4.03 0 4.77 2.55 4.77 5.86v5.59h-4v-4.96c0-1.18-.02-2.7-1.7-2.7-1.7 0-1.96 1.28-1.96 2.61v5.05h-4v-11Z"/></svg>Personal</span><span class="fb-n">Michael Cantow</span><span class="fb-h">/in/mcantow <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
     </div>
   </section>
