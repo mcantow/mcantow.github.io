@@ -92,5 +92,20 @@ class SyncTests(unittest.TestCase):
             self.run_sync([dict(A, date="")])
 
 
+class VerifyLiveTests(unittest.TestCase):
+    def test_a_site_missing_a_hub_piece_fails_after_the_deadline(self):
+        page = hub([A, B]).encode()
+        site = b'<a class="ins-card" href="https://customernode.com/insights/a/">'
+        get = lambda url: page if "customernode.com" in url else site
+        self.assertEqual(si.verify_live(timeout_s=0, get=get, sleep=lambda s: None), 1)
+
+    def test_a_site_listing_every_piece_passes(self):
+        page = hub([A, B]).encode()
+        site = (b'<a href="https://customernode.com/insights/a/"></a>'
+                b'<a href="https://customernode.com/insights/b/"></a>')
+        get = lambda url: page if "customernode.com" in url else site
+        self.assertEqual(si.verify_live(timeout_s=0, get=get, sleep=lambda s: None), 0)
+
+
 if __name__ == "__main__":
     unittest.main()

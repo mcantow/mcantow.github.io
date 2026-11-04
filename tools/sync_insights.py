@@ -7,8 +7,9 @@ title, teaser, format, date and cover. Covers are saved under img/insights/
 (raster covers as 960px-wide WebP, SVG covers as-is) with a content-hash
 cache buster.
 
-Runs on a schedule in .github/workflows/insights-sync.yml and on demand
-(the CustomerNode release script dispatches it when a release goes live).
+Run by the CustomerNode release pipeline on every live release
+(infra/scripts/sync_personal_site.sh in customerNode_root): sync, push, then
+--verify-live, which fails the step unless michaelcantow.com lists every piece.
 
     python3 tools/sync_insights.py            # fetch the live hub, rewrite
     python3 tools/sync_insights.py --hub FILE # use a saved hub page (tests)
@@ -36,6 +37,7 @@ IMG_DIR = ROOT / "img" / "insights"
 SOURCES = IMG_DIR / "sources.json"  # slug -> sha256 of the hub cover each file was made from
 ORIGIN = "https://customernode.com"
 HUB = ORIGIN + "/insights/"
+SITE = "https://michaelcantow.com/"
 COVER_WIDTH = 960
 START_RE = re.compile(r"^([ \t]*)<!--INSIGHTS:START[^>]*-->\n", re.M)
 END_RE = re.compile(r"^[ \t]*<!--INSIGHTS:END-->", re.M)
@@ -166,7 +168,10 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--hub", help="read the hub page from this file instead of the network")
     ap.add_argument("--check", action="store_true", help="exit 1 if index.html is out of date; write nothing")
+    ap.add_argument("--verify-live", type=int, metavar="SECONDS", help="wait up to SECONDS for michaelcantow.com to list every Insights piece; exit 1 if it never does")
     args = ap.parse_args(argv)
+    if args.verify_live is not None:
+        return verify_live(args.verify_live)
     page = Path(args.hub).read_text(encoding="utf-8") if args.hub else fetch(HUB).decode("utf-8")
     pieces = parse_hub(page)
     index = INDEX.read_text(encoding="utf-8")
@@ -181,6 +186,35 @@ def main(argv=None) -> int:
     INDEX.write_text(new, encoding="utf-8")
     print(f"insights: wrote {len(pieces)} pieces")
     return 0
+
+
+def missing_on_site(hub_page: str, site_page: str) -> list[str]:
+    """Hub pieces whose reader link the published site does not carry."""
+    return [p["slug"] for p in parse_hub(hub_page)
+            if f'href="{html.escape(p["url"])}"' not in site_page]
+
+
+def verify_live(timeout_s: int = 600, interval_s: int = 20, get=fetch, sleep=None) -> int:
+    """Wait for michaelcantow.com to list every Insights piece; exit 1 if it never does.
+
+    This is the check that keeps the carousel honest: the scheduled job runs it
+    after every sync, and the CustomerNode release runs it after going live.
+    """
+    import time
+
+    sleep = sleep or time.sleep
+    deadline = time.monotonic() + timeout_s
+    while True:
+        hub_page = get(HUB).decode("utf-8")
+        site_page = get(f"{SITE}?insights-verify={int(time.time())}").decode("utf-8")
+        missing = missing_on_site(hub_page, site_page)
+        if not missing:
+            print(f"insights: michaelcantow.com lists all {len(parse_hub(hub_page))} Insights pieces")
+            return 0
+        if time.monotonic() >= deadline:
+            print(f"insights: michaelcantow.com is MISSING {', '.join(missing)} after {timeout_s}s")
+            return 1
+        sleep(interval_s)
 
 
 def _existing_cover(index: str, piece: dict) -> str | None:
