@@ -109,7 +109,7 @@ const dots=(l,F,cx,cz)=>{ground.scale.set(L.wide?12.5:9,L.wide?7:10,1);ground.po
 // layout: desktop = picker left, ring right; narrow = picker row in front, ring behind
 let L={};function layout(asp){const wide=asp>1.6;
   if(wide){surf.forEach((s,i)=>s.g.position.set(-5.0,0,-1.35+i*1.3));ringG.position.set(.2,0,.1);teamLayout(true);L={wide:true,cx:-.35,cz:.15,d:Math.max(12.4,(13.4*box.clientWidth/Math.min(1200,box.clientWidth))/(2*Math.tan(THREE.MathUtils.degToRad(11))*asp)),el:.66}}
-  else{surf.forEach((s,i)=>s.g.position.set(-1.85+i*1.85,0,3.55));ringG.position.set(0,0,-1.3);teamLayout(false);L={wide:false,cx:0,cz:.6,d:7.6/(2*Math.tan(THREE.MathUtils.degToRad(11))*asp),el:.82}}}
+  else{surf.forEach((s,i)=>s.g.position.set(-1.85+i*1.85,0,3.55));ringG.position.set(0,0,-1.3);teamLayout(false);L={wide:false,pz0:.45,pz1:3.55,cx:0,cz:.6,d:7.6/(2*Math.tan(THREE.MathUtils.degToRad(11))*asp),el:.82}}}
 const rp=i=>{const a=segs[i].mid;return V(Math.cos(a)*(RI+RO)/2,.42,-Math.sin(a)*(RI+RO)/2).add(ringG.position)};
 const sp=i=>surf[i].g.position.clone().add(V(.45,.5,-.1));
 function arc(a,b,t,h=.9){const p=a.clone().lerp(b,t);p.y+=Math.sin(t*Math.PI)*h;return p}
@@ -117,13 +117,15 @@ const WIN=[[.8,5.6],[5.6,10],[10,24.6]];const TS=10.9,STP=2.15;
 function frame(g,tt,mx,my){const F=sg(g,0,.7)*(1-sg(g,25.4,26.3));let lp=null,la=0,lk=1;
   // CREATE: light lands on Create, then the six stages assemble into the ring
   const actv=[g>=1&&g<5.6,g>=5.6&&g<10,g>=10&&g<19.6];
-  surf.forEach((s,i)=>{const t0=[1.2,5.9,10.15][i],press=Math.sin(sg(g,t0,t0+.5)*Math.PI),rv=io(sg(g,.1+i*.16,.95+i*.16));s.g.position.y=-.4*(1-rv);s.g.rotation.x=.14*(1-rv);s.set(sm('sf'+i,actv[i]?1:0,4),press,rv)});
+  surf.forEach((s,i)=>{const t0=[1.2,5.9,10.15][i],press=Math.sin(sg(g,t0,t0+.5)*Math.PI),rv=io(sg(g,.1+i*.16,.95+i*.16));s.g.position.y=-.4*(1-rv);s.g.rotation.x=.14*(1-rv);s.g.visible=rv>.001;
+    // phone: the picker opens in the middle of the frame and glides down to the front as the ring assembles behind it
+    if(!L.wide)s.g.position.z=lerp(L.pz0,L.pz1,io(sg(g,1.9,3.5)));s.set(sm('sf'+i,actv[i]?1:0,4),press,rv)});
   if(g>=.9&&g<1.9){lp=arc(sp(0).add(V(-1.2,.6,0)),sp(0),io(sg(g,.9,1.4)),.3);la=sg(g,.9,1.2)}
   if(g>=1.9&&g<3.0){lp=arc(sp(0),ringG.position.clone().add(V(0,.6,0)),io(sg(g,1.9,2.8)),1.1);la=1}
   if(g>=3.0&&g<5.0){lp=ringG.position.clone().add(V(0,.6+.05*Math.sin(tt*3),0));la=1-sg(g,4.4,5.0)*.6;lk=1+.5*Math.sin(sg(g,2.7,3.6)*Math.PI)}
   segs.forEach((s,i)=>{const t0=2.75+i*.16,p=spring(g-t0,8,.5),q=cl(p);const a=s.mid,out=lerp(1.8,0,p);s.g.position.set(Math.cos(a)*out,lerp(-1.2,0,p),-Math.sin(a)*out);s.g.rotation.y=(1-p)*.5;
     s.op=cl((g-t0)*3);});
-  const hubOp=sg(g,3.2,3.9);hub.material.opacity=hubOp;hubE.material.opacity=.25*hubOp;hubTxt.update(hubOp*F);
+  const hubOp=sg(g,3.2,3.9);hub.material.opacity=hubOp;hubE.material.opacity=.25*hubOp;hub.visible=hubE.visible=hubOp>.001;// hidden while clear, or its depth cuts a dark disc out of the floor lighthubTxt.update(hubOp*F);
   // SHARE: light hits Share, the switch slides to Customer and the whole journey turns over to the customer's side, then back
   if(g>=5.0&&g<6.0){lp=arc(ringG.position.clone().add(V(0,.6,0)),sp(1),io(sg(g,5.0,5.9)),1);la=lerp(.4,1,sg(g,5,5.4))}
   const tp=i=>people[i].g.position.clone().add(ringG.position).add(V(0,.42,0));

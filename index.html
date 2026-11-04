@@ -1023,11 +1023,10 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   .quiet .sec.journey { padding-top: calc(var(--gap) - 16px); }
 }
 @media (max-width: 720px) {
-  .quiet { --gap: 96px; }
-  .quiet .sec.ess { padding-top: calc(var(--gap) - 26px); }
-  .quiet .sec.cn { padding-top: calc(var(--gap) - 14px); }
-  .quiet .sec.journey { padding-top: calc(var(--gap) - 17px); }
-  .quiet .sec.contact { padding-top: calc(var(--gap) - 46px); }
+  /* re-measured on iPhone after the 3D scene and label icons: each break is now exactly --gap */
+  .quiet { --gap: 150px; }
+  .quiet .sec.ess, .quiet .sec.cn, .quiet .sec.contact { padding-top: var(--gap); }
+  .quiet .sec.journey { padding-top: calc(var(--gap) + 1px); }
 }
 
 .wh-follow { max-width: 760px; margin: 22px auto 0; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; font-size: 14px; color: var(--muted); }
@@ -1142,6 +1141,38 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 @media (max-width: 720px) {
   .cjs canvas { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%); }
+}
+
+/* ---------- iPhone pass 2: the newer pieces (LinkedIn links, footer, name) get the same touch treatment ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .fb a:hover .fb-h { color: var(--muted); }
+  .fb a, .foot .loc, .foot a.fmap, .brand { transition: opacity .25s ease; }
+  .fb a:active, .foot a.fmap:active { opacity: .62; transition: none; }
+  .foot .loc:active, .brand:active { opacity: .5; transition: none; }
+}
+@media (max-width: 720px) {
+  .fb a { padding: 22px 0; }                       /* text sits on the same left edge as the column above */
+  .brand, .foot .loc { position: relative; }
+  .brand::after { content: ""; position: absolute; inset: -9px -8px; }   /* 44pt hit area, nothing moves */
+  .foot .loc::after { content: ""; position: absolute; inset: -12px -8px; }
+  .foot-b .fb-right a { justify-content: center; margin: -11px; }   /* back-to-top icon ends on the column edge, still a 44pt target */
+  /* journey: logo on its own line, title and place under it, so every line starts on the same left edge */
+  .e-head { flex-direction: column; gap: 12px; }
+  .logo { margin-top: 0; }
+  /* Create / Share / Navigate stacked: no progress line filling across the rows; the brightening title marks the step */
+  .cjc-v::before { display: none; }
+  /* Building and Heading: on a phone, title, label, text and links sit on the same left edge as every other section */
+  .cn, .contact { text-align: left; }
+  .eyebrow.center { justify-content: flex-start; }
+  .cn-lead, .contact-h, .contact-sub { margin-inline: 0; }
+  .cn-ctas { justify-content: flex-start; align-items: flex-start; }
+  /* scroll reveals: a slower, even rise that comes into focus from a slight blur */
+  .quiet .rv { transition-property: opacity, transform, filter; transition-duration: 1.6s, 1.6s, 1.2s; transition-timing-function: cubic-bezier(.22,.61,.36,1); }
+  .quiet.js .rv:not(.in) { transform: translate3d(0, 20px, 0); filter: blur(5px); }
+  .quiet main > section { transition-duration: 1.3s; }
+  /* hero: the first screen holds only portrait, headline, intro and links; the fact list starts just below the fold.
+     hero-in fills what is left of the screen under the portrait (top pad + 4:5 portrait + its 28px gap). */
+  .quiet .hero-in { min-height: calc(100svh - var(--nav-h) - env(safe-area-inset-top, 0px) - 48px - min((100vw - 2 * var(--gutter)) * .52, 212px) * 1.25); }
 }</style>
 <script type="application/ld+json">
   {
@@ -1448,7 +1479,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
           <div><dt>Now</dt><dd>Weehawken, NJ</dd></div>
         </dl>
       </div>
-      <div class="log-wrap">
+      <div class="log-wrap rv" style="--rd:160ms">
         <div class="log-line" aria-hidden="true"><div class="log-fill" id="logFill"></div></div>
         <ol class="log" id="log">
           <li class="entry">
@@ -1651,7 +1682,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 })();
 </script>
 <script>(function(){var b=document.getElementById('cjs');if(!b)return;var ok=false;try{var c=document.createElement('canvas');ok=!!(c.getContext('webgl2')||c.getContext('webgl'))}catch(e){}
-  if(!ok){b.style.display='none';return}var go=function(){import('./js/cn-scene.js?v=35eed44d')};
+  if(!ok){b.style.display='none';return}var go=function(){import('./js/cn-scene.js?v=ca181386')};
   // start after parsing, so the page's import map (later in the body) is in place before 'three' is requested
   var start=function(){if('IntersectionObserver' in window){var o=new IntersectionObserver(function(e){if(e[0].isIntersecting){o.disconnect();go()}},{rootMargin:'900px 0px'});o.observe(b)}else go()};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();</script>
@@ -1712,10 +1743,21 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   var nav = $('#nav');
 
   /* ---------- Scroll reveals ---------- */
+  /* Owner: the next section should only reveal at the same moment the dim
+     shifts to it. So inside a section, a reveal waits until that section is
+     the bright one (.on); content outside the sections reveals as before. */
   var rvs = $$('.rv');
+  var focusOn = 'IntersectionObserver' in window && !!$('main > section');
+  /* phone: each piece reveals as it scrolls into view (soft focus, below), instead of a whole section at mid-screen */
+  function secReady(el) { if (matchMedia('(max-width: 720px)').matches) return true; var s = el.closest('main > section'); return !focusOn || !s || s.classList.contains('on'); }
+  var rvSeen = [];
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+      es.forEach(function (e) {
+        if (!e.isIntersecting) { rvSeen = rvSeen.filter(function (x) { return x !== e.target; }); return; }
+        if (secReady(e.target)) { e.target.classList.add('in'); io.unobserve(e.target); }
+        else if (rvSeen.indexOf(e.target) < 0) rvSeen.push(e.target);
+      });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
     rvs.forEach(function (el) { io.observe(el); });
   } else rvs.forEach(function (el) { el.classList.add('in'); });
@@ -1723,14 +1765,20 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   /* ---------- Section focus ----------
      Whichever section crosses the middle of the screen stays bright; the
      others dim (CSS: .focusmode). Like the menu, where hovering one line
-     steps the rest back. */
+     steps the rest back. When a section turns bright, whatever of it is
+     already on screen reveals right then. */
   var secs = $$('main > section');
-  if ('IntersectionObserver' in window && secs.length) {
+  if (focusOn) {
     document.documentElement.classList.add('focusmode');
     secs[0].classList.add('on');
     var fio = new IntersectionObserver(function (es) {
       es.forEach(function (e) {
-        if (e.isIntersecting) secs.forEach(function (s) { s.classList.toggle('on', s === e.target); });
+        if (!e.isIntersecting) return;
+        secs.forEach(function (s) { s.classList.toggle('on', s === e.target); });
+        rvSeen = rvSeen.filter(function (el) {
+          if (!e.target.contains(el)) return true;
+          el.classList.add('in'); if (io) io.unobserve(el); return false;
+        });
       });
     }, { rootMargin: '-45% 0px -45% 0px' });
     secs.forEach(function (s) { fio.observe(s); });
