@@ -1,0 +1,10 @@
+#!/bin/sh
+# Public repo: re-check everything about to be published.
+z=0000000000000000000000000000000000000000
+guard="$(git rev-parse --show-toplevel)/.githooks/public_guard.py"
+while read lref lsha rref rsha; do
+  [ "$lsha" = "$z" ] && continue
+  if [ "$rsha" = "$z" ]; then range="$lsha"; else range="$rsha..$lsha"; fi
+  python3 "$guard" --range "$range" || exit 1
+done
+exit 0
