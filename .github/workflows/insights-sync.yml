@@ -1,0 +1,35 @@
+name: Insights sync
+# Keeps the essay carousel in index.html in step with customernode.com/insights.
+# Runs hourly, on demand, and when the CustomerNode release script dispatches it
+# after a release goes live.
+on:
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: insights-sync
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install --quiet pillow
+      - name: Test the sync
+        run: python3 -m unittest tools/test_sync_insights.py
+      - name: Sync from the live hub
+        run: python3 tools/sync_insights.py
+      - name: Public-repo guard on the result
+        run: python3 .githooks/public_guard.py --all
+      - name: Commit and push if anything changed
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "no change"; exit 0
+          fi
+          git config user.name "Insights sync"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html img/insights
+          git commit -m "Insights: sync essay cards from customernode.com/insights"
+          git push
