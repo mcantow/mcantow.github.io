@@ -1,10 +1,8 @@
 name: Insights sync
 # Keeps the essay carousel in index.html in step with customernode.com/insights.
-# Runs hourly, on demand, and when the CustomerNode release script dispatches it
-# after a release goes live.
+# The CustomerNode release pipeline runs the sync itself on every live release
+# (infra/scripts/sync_personal_site.sh). This workflow is the manual fallback only.
 on:
-  schedule:
-    - cron: "17 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
