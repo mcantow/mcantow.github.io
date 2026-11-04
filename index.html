@@ -111,11 +111,6 @@ section:focus, [tabindex="-1"]:focus { outline: none; }
 .eyebrow b { font-weight: 500; color: var(--text); }
 .eyebrow i { display: block; width: 28px; height: 1px; background: linear-gradient(90deg, var(--blue), var(--violet)); }
 .eyebrow.center { justify-content: center; }
-/* section-label icons: Phosphor Regular glyphs (subset to 4, fonts/phosphor-labels.woff2) set as text so they
-   share the label baseline; each glyph sized so its top meets the cap height (0.71em of Geist Mono). */
-@font-face { font-family: "PhLabels"; src: url("fonts/phosphor-labels.woff2") format("woff2"); font-display: block; }
-.eyebrow .lbl { display: inline; white-space: nowrap; }
-.eyebrow .eb-ic { font-family: "PhLabels"; font-style: normal; font-weight: normal; letter-spacing: 0; text-transform: none; line-height: 0; margin-right: .7em; color: inherit; }
 
 .gt {
   background: linear-gradient(180deg, #FFFFFF 8%, rgba(255,255,255,.55) 100%);
@@ -1101,7 +1096,37 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 .fb-h { display: inline-flex; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); transition: color .4s; }
 .fb a:hover .fb-h { color: var(--text); }
 @media (max-width: 720px) { .fb { grid-template-columns: 1fr; } .fb a + a { border-left: 0; border-top: 1px solid var(--line); } .fb a { padding: 22px 4px; } }
-</style>
+
+/* ---------- Building: CustomerNode 3D scene (js/cn-scene.js) + Create / Share / Navigate columns ---------- */
+/* full-bleed stage: the scene's edges fade out far from the content, never at the column edge */
+.cjs { width: 100vw; margin: clamp(20px, 3vh, 40px) 0 0 calc(50% - 50vw); height: clamp(480px, 44vw, 700px); }
+.cjs canvas { display: block; width: 100%; height: 100%;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%);
+  -webkit-mask-composite: source-in; mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 16%, #000 80%, transparent 100%); mask-composite: intersect; }
+.cjc { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 1140px; margin: 8px auto 0; text-align: left; border-top: 1px solid var(--line); }
+.cjc-v { position: relative; padding: 40px clamp(20px, 2.6vw, 40px) 0; }
+.cjc-v::before { content: ""; position: absolute; left: 0; right: 0; top: -1px; height: 1px; background: linear-gradient(90deg, rgba(127,137,255,0), rgba(127,137,255,.9)); transform-origin: left; transform: scaleX(var(--p, 0)); opacity: var(--po, 0); }
+.cjc-v + .cjc-v { border-left: 1px solid var(--line); }
+.cjp-g { width: 100%; max-width: 380px; aspect-ratio: 340 / 230; margin-bottom: 26px; }
+.cjp-g canvas { display: block; }
+.cjc-n { font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--muted); }
+.cjc-v h3 { margin-top: 8px; font-size: 20px; font-weight: 500; letter-spacing: -.025em; color: rgba(236,234,229,.5); transition: color 1.2s var(--qease); }
+.cjc-v.on h3 { color: var(--text); }
+.cjc-v p { margin-top: 6px; color: var(--muted); font-size: 16px; line-height: 1.55; }
+@media (max-width: 720px) {
+  .cjs { height: auto; aspect-ratio: 390 / 500; width: 100vw; margin: 16px 0 0 calc(50% - 50vw); }
+  .cjc { grid-template-columns: 1fr; margin-top: 4px; }
+  .cjc-v { padding: 26px 0 30px; }
+  .cjc-v + .cjc-v { border-left: 0; border-top: 1px solid var(--line); }
+  .cjc-v + .cjc-v::before { top: -1px; }
+  .cjp-g { margin-bottom: 14px; max-width: none; }
+  .cjc-v h3 { margin-top: 4px; font-size: 18px; } .cjc-v p { margin-top: 2px; font-size: 15px; }
+}
+
+@media (max-width: 720px) {
+  .cjs canvas { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%); }
+}</style>
 <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -1282,10 +1307,12 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     <div class="wrap">
       <div class="ins-head">
         <div>
-          <p class="eyebrow rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8068em">&#xe2dc;</span>Thinking</span></p>
+          <p class="eyebrow rv"><b>01</b><i></i>Thinking</p>
           <h2 class="h2 ins-h rv" id="thesis-h" style="--rd:80ms">CustomerNode™ on LinkedIn</h2>
           <p class="ess-deck rv" style="--rd:140ms">The next generation of B2B platforms will run the work, not just record it.</p>
         </div>
+        <a class="tlink ext rv" style="--rd:200ms" href="https://customernode.com/insights/" target="_blank" rel="noopener">Read our insights
+          <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
 
       <!-- Essay carousel: newest first, the MIT master's thesis (2023, the first
@@ -1369,38 +1396,21 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <!-- ============ CUSTOMERNODE ============ -->
   <section class="sec cn" id="customernode" aria-labelledby="cn-h" tabindex="-1">
     <div class="wrap">
-      <p class="eyebrow center rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8068em">&#xe80e;</span>Building</span></p>
+      <p class="eyebrow center rv"><b>02</b><i></i>Building</p>
       <h2 class="cn-title rv" id="cn-h" style="--rd:80ms"><span class="gt">CustomerNode</span><sup>™</sup></h2>
       <p class="cn-lead rv" style="--rd:160ms">Turn complex deals into executable journeys.</p>
     </div>
-    <div class="cn-stage" id="cnStage">
-      <div class="cn-pool p1" aria-hidden="true"></div>
-      <div class="cn-pool p2" aria-hidden="true"></div>
-      <div class="cn-pool p3" aria-hidden="true"></div>
-      <div class="cn-floor" aria-hidden="true"></div>
-      <div class="cn-tilt" id="cnTilt">
-        <div class="cn-embed" data-theme="dark" data-bg="#07070A"></div>
-      </div>
-    </div>
+    <div class="cjs rv" id="cjs" style="--rd:240ms" aria-hidden="true"></div>
     <div class="wrap">
-      <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-        <defs><linearGradient id="ig" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7AA2FF"/><stop offset="1" stop-color="#A78BFA"/></linearGradient></defs>
-      </svg>
-      <ul class="verbs">
-        <li class="verb rv">
-          <svg viewBox="0 0 24 24" fill="none" stroke="url(#ig)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7.5" y="7.5" width="13" height="13" rx="3"/><path d="M16.5 4.5V4.4A1 1 0 0 0 15.5 3.5H6.5a3 3 0 0 0-3 3v9a1 1 0 0 0 1 1"/><path d="M14 11v6M11 14h6"/></svg>
-          <h3>Create</h3>
-          <p>Your best practices, made repeatable.</p>
+      <ul class="cjc" id="cjc">
+        <li class="cjc-v rv">
+          <span class="cjc-n">01</span><h3>Create</h3><p>Your best practices, made repeatable.</p>
         </li>
-        <li class="verb rv" style="--rd:90ms">
-          <svg viewBox="0 0 24 24" fill="none" stroke="url(#ig)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="12" r="5.5"/><circle cx="15" cy="12" r="5.5"/></svg>
-          <h3>Share</h3>
-          <p>One workflow, both teams. No handoffs.</p>
+        <li class="cjc-v rv" style="--rd:90ms">
+          <span class="cjc-n">02</span><h3>Share</h3><p>One workflow, both teams. No handoffs.</p>
         </li>
-        <li class="verb rv" style="--rd:180ms">
-          <svg viewBox="0 0 24 24" fill="none" stroke="url(#ig)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
-          <h3>Navigate</h3>
-          <p>Predictable execution, at any scale.</p>
+        <li class="cjc-v rv" style="--rd:180ms">
+          <span class="cjc-n">03</span><h3>Navigate</h3><p>Predictable execution, at any scale.</p>
         </li>
       </ul>
       <div class="cn-ctas rv">
@@ -1416,7 +1426,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <section class="sec journey" id="journey" aria-labelledby="journey-h" tabindex="-1">
     <div class="wrap journey-grid">
       <div class="journey-head">
-        <p class="eyebrow rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.9467em">&#xe0e6;</span>Learning</span></p>
+        <p class="eyebrow rv"><b>03</b><i></i>Learning</p>
         <h2 class="h2 rv" id="journey-h" style="--rd:80ms"><span class="gt">My journey</span></h2>
         <dl class="facts rv" style="--rd:160ms">
           <div><dt>Grew up</dt><dd>Mahwah, NJ</dd></div>
@@ -1519,7 +1529,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <!-- ============ CONTACT ============ -->
   <section class="sec contact" id="contact" aria-labelledby="contact-h" tabindex="-1">
     <div class="wrap">
-      <p class="eyebrow center rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8353em">&#xe1c8;</span>Heading</span></p>
+      <p class="eyebrow center rv"><b>04</b><i></i>Heading</p>
       <h2 class="contact-h rv" id="contact-h" style="--rd:80ms"><span class="gt">Making complex things </span><br class="br-d"><span class="lit ph">easier to buy, sell, and build</span><span class="gt">.</span></h2>
       <ul class="wh-cards three rv" style="--rd:200ms">
         <li><a class="ins-card" href="https://customernode.com" target="_blank" rel="noopener"><span class="fr cov3"><span class="c3" id="c3cn"></span></span><span class="ins-meta">Buying &amp; selling &middot; customernode.com</span><span class="ins-title">CustomerNode™</span><span class="ins-hook">The future of how complex solutions get bought and sold.</span></a></li>
@@ -1626,7 +1636,11 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   });
 })();
 </script>
-<script src="js/cn-embed.js?v=b0e38096" defer></script>
+<script>(function(){var b=document.getElementById('cjs');if(!b)return;var ok=false;try{var c=document.createElement('canvas');ok=!!(c.getContext('webgl2')||c.getContext('webgl'))}catch(e){}
+  if(!ok){b.style.display='none';return}var go=function(){import('./js/cn-scene.js?v=35eed44d')};
+  // start after parsing, so the page's import map (later in the body) is in place before 'three' is requested
+  var start=function(){if('IntersectionObserver' in window){var o=new IntersectionObserver(function(e){if(e[0].isIntersecting){o.disconnect();go()}},{rootMargin:'900px 0px'});o.observe(b)}else go()};
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start()})();</script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.20/dist/lenis.min.js" defer></script>
 <script>
 (function () {
