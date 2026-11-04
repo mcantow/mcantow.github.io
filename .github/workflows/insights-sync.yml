@@ -8,6 +8,8 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
 concurrency:
   group: insights-sync
   cancel-in-progress: false
@@ -25,7 +27,7 @@ jobs:
         run: python3 .githooks/public_guard.py --all
       - name: Commit and push if anything changed
         run: |
-          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+          if [ -z "$(git status --porcelain -- index.html img/insights)" ]; then
             echo "no change"; exit 0
           fi
           git config user.name "Insights sync"
