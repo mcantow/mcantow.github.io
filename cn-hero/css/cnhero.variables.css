@@ -3,8 +3,7 @@
 
    The CustomerNode CSS variables, scoped to the .cnhero wrapper so the
    inlined panel gets its palette without touching mc.com's own :root.
-   Source: customerNode_site/templates/style-variables.css (Django-templated
-   light/dark branches). Light lives on .cnhero; dark on .cnhero[data-theme="dark"].
+   Light lives on .cnhero; dark on .cnhero[data-theme="dark"].
    main.js sets data-theme on the wrapper (opposite of the site theme, because
    .cn-showcase is an inverted-theme zone).
    ────────────────────────────────────────────────────────────── */

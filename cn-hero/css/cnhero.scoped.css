@@ -23587,9 +23587,7 @@
 }
 /* ═══════════════════════════════════════════════════════════════
  * AGENT TRIGGER PILL — replaces the old .v6-section-agents block.
- * Per product feedback: "no agent selector inside the collaboration
- * space — you have to click back to get the agent if you want." So
- * agents are surfaced via a single compact pill that sits OUTSIDE
+ * Agents are surfaced via a single compact pill that sits OUTSIDE
  * the collab section (at the foot of the stage panel), reading as a
  * suggestion bar rather than another sub-surface inside the workspace.
  * ═══════════════════════════════════════════════════════════════ */.cnhero .hero .v6-mockup-panel .v6-stage-panel .v6-agent-trigger,
@@ -25630,7 +25628,7 @@
     filter: none !important;
 }
 
-/* TEMP — hide the journey selector tabs in Navigate (EDA / Sustainability / Pest Control).
+/* Hide the journey selector tabs in Navigate (EDA / Sustainability / Pest Control).
  * Logic and panels are untouched; remove this rule to restore the selector. */
 .cnhero .surface-beat--navigate .navigate-journey-selector {
     display: none;

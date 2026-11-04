@@ -1,10 +1,8 @@
 /* ──────────────────────────────────────────────────────────────
-   fonts.css  (de-Djangoified for the standalone CN hero embed)
+   fonts.css  (for the standalone CN hero embed)
 
-   Source: customerNode_site/templates/orbitron_font.css (Orbitron,
-   Sora, Space Grotesk, Satoshi 500/700). Satoshi 400 + the Satoshi
-   variable face are added here so body/UI copy renders at the right
-   weights. {% static %} tags rewritten to local ../fonts/ paths.
+   Orbitron, Sora, Space Grotesk and Satoshi (400/500/700 + variable),
+   served from local ../fonts/ paths.
    ────────────────────────────────────────────────────────────── */
 
 @font-face {
