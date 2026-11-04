@@ -627,6 +627,17 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
    mobile -30px and the dots sat 10px left of the line. */
 @media (max-width: 720px) { .quiet .node { left: -29px; } }
 .quiet .entry.now .node { background: var(--text); border-color: var(--text); }
+/* Owner: "a subtle moment of delight" when the glow line reaches a dot. The
+   dot flashes white, one hairline ring spreads (grown by size so it stays
+   1px), and the date beside it lights up for a beat. Script adds .hit. */
+.quiet .node::before { content: ""; position: absolute; inset: -1px; border-radius: 50%; border: 1px solid var(--accent); opacity: 0; pointer-events: none; }
+.quiet .entry.hit .node { animation: hitFlash .9s cubic-bezier(.2,.7,.2,1); }
+.quiet .entry.hit .node::before { animation: hitRing 1s cubic-bezier(.2,.7,.2,1); }
+.quiet .entry.hit .date { animation: hitText 1.4s ease; }
+@keyframes hitFlash { 0% { background: var(--accent); } 18% { background: #ECEAE5; transform: scale(1.35); } 100% { background: var(--accent); transform: scale(1); } }
+@keyframes hitRing { 0% { inset: -1px; opacity: .9; } 100% { inset: -13px; opacity: 0; } }
+@keyframes hitText { 0%, 100% { color: var(--muted); } 22% { color: var(--text); } }
+@media (prefers-reduced-motion: reduce) { .quiet .entry.hit .node, .quiet .entry.hit .node::before, .quiet .entry.hit .date { animation: none !important; } }
 .quiet .e-link { color: var(--text); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(236,234,229,.4); }
 .quiet .logo { filter: grayscale(1); }
 /* the small second portrait above "let's talk" is gone: the hero already
@@ -1786,7 +1797,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   }
 
   /* ---------- Journey line fill ---------- */
-  var log = $('#log'), fill = $('#logFill'), entries = $$('.entry', log), fCur = 0;
+  var log = $('#log'), fill = $('#logFill'), entries = $$('.entry', log), fCur = 0, logPrimed = false;
   function updLog(vh) {
     var r = log.getBoundingClientRect();
     var target = clamp((vh * 0.62 - r.top) / r.height);
@@ -1796,8 +1807,15 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     fill.style.setProperty('--head', fCur > 0.002 && fCur < 0.998 ? 1 : 0);
     entries.forEach(function (e) {
       var n = e.querySelector('.node');
-      e.classList.toggle('on', n.offsetTop + e.offsetTop <= px + 4);
+      var was = e.classList.contains('on'), on = n.offsetTop + e.offsetTop <= px + 4;
+      e.classList.toggle('on', on);
+      /* owner: a small moment when the glow reaches a dot (CSS: .entry.hit) */
+      if (on && !was && !reduce && logPrimed) {
+        e.classList.remove('hit'); void e.offsetWidth; e.classList.add('hit');
+        clearTimeout(e._hit); e._hit = setTimeout(function () { e.classList.remove('hit'); }, 1800);
+      }
     });
+    logPrimed = true;
   }
 
   /* ---------- Hero spotlight ---------- */
