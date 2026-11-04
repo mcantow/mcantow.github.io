@@ -111,6 +111,11 @@ section:focus, [tabindex="-1"]:focus { outline: none; }
 .eyebrow b { font-weight: 500; color: var(--text); }
 .eyebrow i { display: block; width: 28px; height: 1px; background: linear-gradient(90deg, var(--blue), var(--violet)); }
 .eyebrow.center { justify-content: center; }
+/* section-label icons: Phosphor Regular glyphs (subset to 4, fonts/phosphor-labels.woff2) set as text so they
+   share the label baseline; each glyph sized so its top meets the cap height (0.71em of Geist Mono). */
+@font-face { font-family: "PhLabels"; src: url("fonts/phosphor-labels.woff2") format("woff2"); font-display: block; }
+.eyebrow .lbl { display: inline; white-space: nowrap; }
+.eyebrow .eb-ic { font-family: "PhLabels"; font-style: normal; font-weight: normal; letter-spacing: 0; text-transform: none; line-height: 0; margin-right: .7em; color: inherit; }
 
 .gt {
   background: linear-gradient(180deg, #FFFFFF 8%, rgba(255,255,255,.55) 100%);
@@ -1277,12 +1282,10 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     <div class="wrap">
       <div class="ins-head">
         <div>
-          <p class="eyebrow rv"><b>01</b><i></i>Thinking</p>
+          <p class="eyebrow rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8068em">&#xe2dc;</span>Thinking</span></p>
           <h2 class="h2 ins-h rv" id="thesis-h" style="--rd:80ms">CustomerNode™ on LinkedIn</h2>
           <p class="ess-deck rv" style="--rd:140ms">The next generation of B2B platforms will run the work, not just record it.</p>
         </div>
-        <a class="tlink ext rv" style="--rd:200ms" href="https://customernode.com/insights/" target="_blank" rel="noopener">Read our insights
-          <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
 
       <!-- Essay carousel: newest first, the MIT master's thesis (2023, the first
@@ -1366,7 +1369,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <!-- ============ CUSTOMERNODE ============ -->
   <section class="sec cn" id="customernode" aria-labelledby="cn-h" tabindex="-1">
     <div class="wrap">
-      <p class="eyebrow center rv"><b>02</b><i></i>Building</p>
+      <p class="eyebrow center rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8068em">&#xe80e;</span>Building</span></p>
       <h2 class="cn-title rv" id="cn-h" style="--rd:80ms"><span class="gt">CustomerNode</span><sup>™</sup></h2>
       <p class="cn-lead rv" style="--rd:160ms">Turn complex deals into executable journeys.</p>
     </div>
@@ -1413,7 +1416,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <section class="sec journey" id="journey" aria-labelledby="journey-h" tabindex="-1">
     <div class="wrap journey-grid">
       <div class="journey-head">
-        <p class="eyebrow rv"><b>03</b><i></i>Learning</p>
+        <p class="eyebrow rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.9467em">&#xe0e6;</span>Learning</span></p>
         <h2 class="h2 rv" id="journey-h" style="--rd:80ms"><span class="gt">My journey</span></h2>
         <dl class="facts rv" style="--rd:160ms">
           <div><dt>Grew up</dt><dd>Mahwah, NJ</dd></div>
@@ -1516,7 +1519,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <!-- ============ CONTACT ============ -->
   <section class="sec contact" id="contact" aria-labelledby="contact-h" tabindex="-1">
     <div class="wrap">
-      <p class="eyebrow center rv"><b>04</b><i></i>Heading</p>
+      <p class="eyebrow center rv"><span class="lbl"><span class="eb-ic" aria-hidden="true" style="font-size:0.8353em">&#xe1c8;</span>Heading</span></p>
       <h2 class="contact-h rv" id="contact-h" style="--rd:80ms"><span class="gt">Making complex things </span><br class="br-d"><span class="lit ph">easier to buy, sell, and build</span><span class="gt">.</span></h2>
       <ul class="wh-cards three rv" style="--rd:200ms">
         <li><a class="ins-card" href="https://customernode.com" target="_blank" rel="noopener"><span class="fr cov3"><span class="c3" id="c3cn"></span></span><span class="ins-meta">Buying &amp; selling &middot; customernode.com</span><span class="ins-title">CustomerNode™</span><span class="ins-hook">The future of how complex solutions get bought and sold.</span></a></li>
