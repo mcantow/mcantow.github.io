@@ -1,0 +1,19 @@
+name: Public-repo guard
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: pip install --quiet pillow
+      - name: Scan every file
+        run: python3 .githooks/public_guard.py --all
+      - name: Check commit emails
+        if: github.event_name == 'push' && github.event.before != '0000000000000000000000000000000000000000' && !github.event.forced
+        run: python3 .githooks/public_guard.py --commits "${{ github.event.before }}..${{ github.sha }}"
