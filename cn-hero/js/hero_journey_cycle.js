@@ -1054,8 +1054,7 @@
                 cta: 'Accept · Assign owners',
                 wsTile: '.v6-section-collab .v6-app-tile',
             },
-            { /* 5 Success host — Cheat Sheet (report). Sections mirror the
-                 * actual CheatSheetAgent schema (core/platform/.../cheat_sheet.py):
+            { /* 5 Success host — Cheat Sheet (report). Sections:
                  * Executive Summary · Key Team Members · {Guest} Strategic Goals
                  * · Progress & Value Realization · Health Signals · Next Steps. */
                 name: 'Cheat Sheet', sub: 'Stage report · Acme handoff',
