@@ -449,6 +449,24 @@ section:focus, [tabindex="-1"]:focus { outline: none; }
 .e-acts { display: flex; align-items: center; flex-wrap: wrap; }
 .e-acts .e-link:first-child { margin-left: 0; }
 
+/* ---------- Hometown highlight reel (revealed by More) ---------- */
+.film-inline img { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.85) brightness(.82); transition: filter .5s var(--ease), transform .7s var(--ease); }
+.film-inline .fi-btn:hover img { filter: saturate(1) brightness(.95); transform: scale(1.03); }
+.film-play { position: absolute; inset: 0; margin: auto; width: 34px; height: 34px; border-radius: 50%; background: rgba(10,10,12,.55); box-shadow: inset 0 0 0 1px rgba(236,234,229,.45); display: grid; place-items: center; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: background .4s var(--ease); }
+.film-play svg { width: 12px; height: 12px; margin-left: 2px; fill: var(--text); }
+.film-inline .fi-btn:hover .film-play { background: var(--accent, #7F89FF); box-shadow: none; }
+.film-inline { margin: 18px 0 0; max-width: 520px; }
+.film-inline .fi-box { position: relative; aspect-ratio: 16/9; border-radius: 8px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--line); background: #0b0b0d; }
+.film-inline .fi-btn { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; cursor: pointer; }
+.film-inline .film-play { width: 52px; height: 52px; }
+.film-inline .film-play svg { width: 16px; height: 16px; }
+.film-inline iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.film-inline figcaption { margin-top: 10px; display: flex; justify-content: space-between; gap: 12px; font-size: 13px; color: var(--muted); }
+.film-inline figcaption a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(236,234,229,.25); }
+.film-inline figcaption a:hover { color: var(--accent, #fff); }
+.film-inline[hidden] { display: none; }
+@media (max-width: 720px) { .film-inline { max-width: none; } }
+
 /* ---------- Contact ---------- */
 .contact { text-align: center; padding-bottom: clamp(90px, 13vh, 140px); }
 .avatar { width: 68px; height: 68px; margin: 0 auto 30px; border-radius: 50%; padding: 2px; background: conic-gradient(from 200deg, var(--blue), var(--violet), #3a3a48, var(--blue)); box-shadow: 0 10px 40px -10px rgba(139,92,246,.6); }
@@ -1497,7 +1515,8 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
                 <div><h3 class="role">Hometown</h3><p class="org">Mahwah High School&nbsp;· Mahwah, NJ</p></div>
               </div>
               <p class="desc clamp" id="d1">Played football and baseball. Earned a spot on the Academic Wall of Fame, and became the first Mahwah student admitted to MIT in over 30 years.</p>
-              <div class="e-acts"><button class="more" type="button" aria-expanded="false" aria-controls="d1"><span>More</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+              <div class="e-acts"><button class="more" type="button" aria-expanded="false" aria-controls="d1" data-extra="film1"><span>More</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 7.5 9 4.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+              <figure class="film-inline" id="film1" hidden><div class="fi-box"><button class="fi-btn" type="button" data-film-inline aria-label="Play senior-year football highlights, 5 minutes 22 seconds"><img src="img/mahwah-film.webp?v=5f11916f" alt="" width="960" height="540" loading="lazy"><span class="film-play" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></span></button></div><figcaption><span>Senior-year highlights · #57 · Fall 2017</span><a href="https://www.hudl.com/video/3/6452931/59c6a23490f93f11accc6518" target="_blank" rel="noopener">Hudl ↗</a></figcaption></figure>
             </div>
           </li>
           <li class="entry">
@@ -1899,7 +1918,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     mores.forEach(function (b) {
       var d = document.getElementById(b.getAttribute('aria-controls'));
       if (d.classList.contains('open')) return;
-      b.classList.toggle('show', d.scrollHeight > d.clientHeight + 2);
+      b.classList.toggle('show', b.hasAttribute('data-extra') || d.scrollHeight > d.clientHeight + 2);
     });
   }
   mores.forEach(function (b) {
@@ -1909,6 +1928,11 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
       var h0 = d.offsetHeight;
       d.classList.toggle('open', open);
       var h1 = d.offsetHeight;
+      var x = b.hasAttribute('data-extra') && document.getElementById(b.getAttribute('data-extra'));
+      if (x) {
+        if (open) { x.hidden = false; if (!reduce && x.animate) x.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 650, delay: 120, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' }); }
+        else { x.hidden = true; if (window.__mcFilmReset) window.__mcFilmReset(x); }
+      }
       b.setAttribute('aria-expanded', String(open));
       b.querySelector('span').textContent = open ? 'Less' : 'More';
       if (!reduce && d.animate) d.animate([{ height: h0 + 'px', overflow: 'hidden' }, { height: h1 + 'px', overflow: 'hidden' }], { duration: 650, easing: 'cubic-bezier(.16,1,.3,1)' });
@@ -2160,6 +2184,17 @@ function loop(st, frame) {
   d.querySelector('.wwm-x').addEventListener('click', close);
   d.addEventListener('click', function(e){ if(e.target===d) close(); });
   d.addEventListener('close', function(){ if(window.__mcLenis) window.__mcLenis.start(); });
+})();
+</script>
+<script>
+(function () {
+  var EMB = 'https://www.hudl.com/embed/video/3/6452931/59c6a23490f93f11accc6518';
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-film-inline]'); if (!b) return;
+    var f = document.createElement('iframe'); f.src = EMB + '?autoplay=true'; f.allow = 'autoplay; fullscreen'; f.allowFullscreen = true; f.title = 'Senior-year football highlights';
+    b.__still = b; f.__still = b; b.replaceWith(f);
+  });
+  window.__mcFilmReset = function (fig) { var f = fig.querySelector('iframe'); if (f && f.__still) f.replaceWith(f.__still); };
 })();
 </script></body>
 </html>
