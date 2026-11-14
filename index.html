@@ -1225,6 +1225,13 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   .gl-f dt { display: flex; align-items: center; gap: 12px; }
   .gl-f .logo { margin: 0; }
 }
+
+.eyebrow .eb-svg { width: 1.05em; height: 1.05em; margin-right: .7em; flex: none; vertical-align: -.15em; }
+
+/* At a glance label (phone) */
+@media (max-width: 720px) {
+  .quiet .glance .gl-big { margin-top: 10px; }
+}
 </style>
 <script type="application/ld+json">
   {
@@ -1398,6 +1405,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   <section class="sec glance gl-b gl-h gl-f" id="glance" aria-labelledby="glance-h" tabindex="-1">
     <div class="wrap">
       
+      <p class="eyebrow rv gl-eb"><span class="lbl">At a glance</span></p>
       <h2 class="sr-only" id="glance-h">At a glance</h2>
       <dl class="gl-big">
         <div class="rv" style="--rd:120ms"><dt><span class="logo dark contain"><img src="img/cn-logo-black-edge.webp?v=c77c2c5e" alt="" width="28" height="28"></span><span>Role</span></dt><dd>Founder,<br><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span></span></dd></div>
