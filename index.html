@@ -2236,15 +2236,8 @@ function stage(el, fov) {
   return { R, S, cam, add, tex, sprite, glow, floor, get vis() { return vis; } };
 }
 function loop(st, frame) {
-  /* the scene's clock starts when its card fades in (the scroll reveal adds .in),
-     so each graphic begins its story as it arrives, in the order the cards do,
-     instead of all of them running in step since page load */
-  const card = st.R.domElement.parentNode.closest('.rv');
-  let t0 = null;
-  const go = () => {
-    if (t0 == null && (!card || card.classList.contains('in'))) t0 = performance.now();
-    const t = FT != null ? +FT : t0 == null ? 0 : (performance.now() - t0)/1000;
-    if (st.vis || FT != null) { frame(reduce ? 4 : t); st.R.render(st.S, st.cam); } if (!reduce && FT == null) requestAnimationFrame(go); };
+  const t0 = performance.now();
+  const go = () => { const t = FT != null ? +FT : (performance.now() - t0)/1000; if (st.vis || FT != null) { frame(reduce ? 4 : t); st.R.render(st.S, st.cam); } if (!reduce && FT == null) requestAnimationFrame(go); };
   go(); if (FT != null || reduce) setTimeout(go, 300);
 }
 
