@@ -14,6 +14,8 @@
 //             phone: a new section starts at least 250ms after the previous one
 //   tall      a reveal unit may not be taller than 75% of the screen (same fix)
 //   handset   no hand-written delays (style="--rd:...") in the markup
+//   dim       a piece must not start before its section is the lit one (it would
+//             play out dimmed and look like it was just there)
 //   complete  every piece is revealed by the end, and no page errors
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
@@ -53,7 +55,9 @@ const PACES = [['reading', 12], ['flick', 90]];
           if (!el.classList.contains('in')) return; o.disconnect();
           const rr = el.getBoundingClientRect();
           const rd = parseFloat(el.style.getPropertyValue('--rd')) || 0;
-          L.starts.push({ sec: name(el), what: label(el), t: performance.now() + rd, top: rr.top + scrollY, left: rr.left + scrollX, h: rr.height, onScreen: rr.bottom > 0 && rr.top < innerHeight, below: rr.top >= innerHeight, sy: scrollY, vh: innerHeight });
+          const sec = el.closest('main > section');
+          const af = sec && getComputedStyle(sec, '::after'); const lit = sec ? (+getComputedStyle(sec).opacity) * (af.content && af.content !== 'none' ? 1 - (+af.opacity || 0) : 1) : 1;
+          L.starts.push({ lit, secOn: !sec || !document.documentElement.classList.contains('focusmode') || sec.classList.contains('on'),  sec: name(el), what: label(el), t: performance.now() + rd, top: rr.top + scrollY, left: rr.left + scrollX, h: rr.height, onScreen: rr.bottom > 0 && rr.top < innerHeight, below: rr.top >= innerHeight, sy: scrollY, vh: innerHeight });
         }).observe(el, { attributes: true, attributeFilter: ['class'] });
       });
       const f = () => {
@@ -80,6 +84,7 @@ const PACES = [['reading', 12], ['flick', 90]];
       const cAfter = Math.abs(a.top - c.top) <= tol ? c.left > a.left + 1 : c.top > a.top + tol;
       if (cAfter && c.t < a.t - 5) local.push(`order: in ${a.sec}, "${c.what}" started ${Math.round(a.t - c.t)}ms before "${a.what}", which sits above/left of it`);
     }
+    m.starts.filter(s => s.onScreen && !s.secOn).forEach(s => local.push(`dim: in ${s.sec}, "${s.what}" started while its section was still dimmed (${Math.round(s.lit * 100)}% lit)`));
     m.starts.filter(s => s.below).forEach(s => local.push(`unseen: in ${s.sec}, "${s.what}" started revealing while still below the screen`));
     if (W > 720) { if (m.overlapFrames) local.push(`overlap: ${m.overlapFrames} frames with two sections revealing at once (${Object.keys(m.pairs).join(', ')})`); }
     else {

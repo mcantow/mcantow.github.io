@@ -1210,7 +1210,9 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
      painting gradient-clipped text under a running blur and then pop it in at the end */
   .quiet .rv:has(.gt, .lit) { transition-property: opacity, transform; }
   .quiet.js .rv:not(.in):has(.gt, .lit) { filter: none; }
-  .quiet main > section { transition-duration: 1.3s; }
+  /* a section lights up quickly as you reach it, so its title fades in on a lit
+     section rather than inside a slow brightening */
+  .quiet main > section, .quiet.focusmode main > section::after { transition-duration: .45s; }
   /* hero: the first screen holds only portrait, headline, intro and links; the fact list starts just below the fold.
      hero-in fills what is left of the screen under the portrait (top pad + 4:5 portrait + its 28px gap). */
   .quiet .hero-in { min-height: calc(100svh - var(--nav-h) - env(safe-area-inset-top, 0px) - 48px - min((100vw - 2 * var(--gutter)) * .52, 212px) * 1.25); }
@@ -1951,7 +1953,11 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
   });
   var rvs = $$('.rv');
   var focusOn = 'IntersectionObserver' in window && !!$('main > section');
-  function secReady(el) { if (rvPhone) return true; var s = el.closest('main > section'); return !focusOn || !s || s.classList.contains('on'); }
+  /* every size: a piece in a section reveals only once that section is the bright
+     one, so it never plays out while its section is still dimmed. (Phones used to
+     reveal on entry; a title then faded in dim at the bottom edge, partly behind
+     Safari's toolbar, and was simply there by the time you looked at it.) */
+  function secReady(el) { var s = el.closest('main > section'); return !focusOn || !s || s.classList.contains('on'); }
   function rvSec(el) { return el.closest('main > section') || document.body; }
   function rvOnScreen(el) { var r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
   /* reading order as laid out now: rows (tops within half the shorter piece's
@@ -2020,7 +2026,7 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
       });
       now.forEach(function (el) { io.unobserve(el); });
       rvQueue(now);
-    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+    }, { rootMargin: rvPhone ? '0px 0px -15% 0px' : '0px 0px -8% 0px', threshold: 0.12 });   /* phone: start clear of the bottom toolbar */
     rvs.forEach(function (el) { io.observe(el); });
   } else rvs.forEach(function (el) { el.classList.add('in'); });
 
