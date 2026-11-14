@@ -682,6 +682,22 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
 .quiet { --sec-gap: clamp(96px, 14vh, 150px); }
 .quiet main > section { transition: opacity .9s var(--qease); }
 .quiet.focusmode main > section:not(.on) { opacity: .3; }
+/* iPhone and iPad (Safari): fading a whole section's opacity, with the titles'
+   gradient lettering (clipped to the text) inside it, makes Safari skip painting
+   those titles while the fade runs and then pop them in. There the dim is a sheet
+   of the page colour laid over the section instead (the same 30% look, with no
+   fade on the section itself), and titles that rise into view use plain lettering. */
+@supports (-webkit-touch-callout: none) {
+  .quiet main > section { transition: none; isolation: isolate; }
+  .quiet.focusmode main > section:not(.on) { opacity: 1; }
+  .quiet.focusmode main > section::after {
+    content: ""; position: absolute; inset: 0; z-index: 9999; pointer-events: none;
+    background: var(--bg); opacity: 0; transition: opacity 1.3s var(--qease);
+  }
+  .quiet.focusmode main > section:not(.on)::after { opacity: .7; }
+  .rv .gt { background: none; -webkit-text-fill-color: currentColor; color: rgba(255,255,255,.9); }
+  .rv .lit { background: none; -webkit-text-fill-color: currentColor; color: #7E8CFF; }
+}
 .quiet .quote { padding-bottom: var(--sec-gap); }
 
 /* ---------- Menu button + full-screen menu ----------
