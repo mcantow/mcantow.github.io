@@ -1272,6 +1272,30 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 @media (max-width: 720px) and (prefers-reduced-motion: reduce) {
   .js .cjc[data-m="c"]:not(.in-view) { opacity: 1; transform: none; filter: none; }
 }
+
+/* ---------- At a glance, round 2 (phone only): every fact the same shape ---------- */
+@media (max-width: 720px) {
+  .quiet .glance .gl-eb { margin-bottom: 0; }
+  .g2 .g2-w { display: block; color: var(--text); font-weight: 500; letter-spacing: -0.035em; }
+  .g2 .g2-l { display: block; color: var(--muted); font-size: 16px; line-height: 1.45; letter-spacing: 0; font-weight: 400; }
+  .g2 dt, .g2 .g2-k { font-family: var(--mono); font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .g2 .logo { flex: none; margin: 0; }
+  .g2 .logo.gl-maplogo { filter: none; background: #111116; }
+  /* MIT seal: light trace on dark, like the other tiles */
+  .g2 .logo.gl-mit { background: #111116; }
+  .g2 .logo.gl-mit img { filter: none; }
+  .g2 .logo.gl-maplogo img { object-fit: cover; object-position: 8% 50%; transform: scale(2.4); transform-origin: 50% 38%; }
+}
+
+@media (max-width: 720px) {
+  .g2b .g2-list { margin: 30px 0 0; }
+  .g2b .g2-list > div { padding: 18px 0 30px; border-top: 1px solid var(--line); }
+  .g2b dt { display: flex; align-items: center; gap: 14px; }
+  .g2b dt .logo { margin-left: auto; width: 24px; height: 24px; border-radius: 5px; }
+  .g2b dd { margin: 18px 0 0; }
+  .g2b .g2-w { font-size: clamp(40px, 11.6vw, 50px); line-height: .98; letter-spacing: -0.045em; }
+  .g2b .g2-l { margin-top: 10px; font-size: 17px; }
+}
 </style>
 <script type="application/ld+json">
   {
@@ -1442,15 +1466,15 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     </dl>
   </section>
 
-  <section class="sec glance gl-b gl-h gl-f" id="glance" aria-labelledby="glance-h" tabindex="-1">
+  <section class="sec glance g2 g2b" id="glance" aria-labelledby="glance-h" tabindex="-1">
     <div class="wrap">
       
       <p class="eyebrow rv gl-eb"><span class="lbl">At a glance</span></p>
       <h2 class="sr-only" id="glance-h">At a glance</h2>
-      <dl class="gl-big">
-        <div class="rv" style="--rd:120ms"><dt><span class="logo dark contain"><img src="img/cn-logo-black-edge.webp?v=c77c2c5e" alt="" width="28" height="28"></span><span>Role</span></dt><dd>Founder,<br><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span></span></dd></div>
-        <div class="rv" style="--rd:180ms"><dt><span class="logo"><img src="img/mit-seal.png?v=03ca341b" alt="" width="28" height="28"></span><span>Education</span></dt><dd>MIT <span class="gl-sub">BSc EECS ’22<br>MEng in AI ’23</span></dd></div>
-        <div class="rv" style="--rd:240ms"><dt><span class="logo gl-maplogo"><img src="img/map-weehawken-wide.webp?v=e40be1e3" alt="" width="28" height="28"></span><span>Based</span></dt><dd><a href="#where">Weehawken, NJ</a></dd></div>
+      <dl class="g2-list">
+        <div class="rv"><dt><span>Role</span><span class="logo dark contain"><img src="img/cn-logo-black-edge.webp?v=c77c2c5e" alt="" width="28" height="28"></span></dt><dd><span class="g2-w">Founder</span><span class="g2-l"><span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span></span></span></dd></div>
+        <div class="rv"><dt><span>Education</span><span class="logo gl-mit"><img src="img/mit-seal-dark.png?v=37a727dd" alt="" width="28" height="28"></span></dt><dd><span class="g2-w">MIT</span><span class="g2-l">BSc EECS ’22 · MEng AI ’23</span></dd></div>
+        <div class="rv"><dt><span>Based</span><span class="logo gl-maplogo"><img src="img/map-weehawken-wide.webp?v=e40be1e3" alt="" width="28" height="28"></span></dt><dd><span class="g2-w">Weehawken</span><span class="g2-l">New Jersey</span></dd></div>
       </dl>
     </div>
   </section>
