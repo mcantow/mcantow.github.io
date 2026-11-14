@@ -1904,48 +1904,6 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
   /* phone: each piece reveals as it scrolls into view (soft focus, below), instead of a whole section at mid-screen */
   function secReady(el) { if (rvPhone) return true; var s = el.closest('main > section'); return !focusOn || !s || s.classList.contains('on'); }
   var rvSeen = [];
-  /* phone: one section's reveals at a time. When a scroll brings the next
-     section in while the current one is still rising into focus, the next
-     one waits until the last running reveal has finished, then cascades
-     top to bottom. More pieces of the section that is playing join its
-     cascade. A waiting piece the reader has already scrolled past just
-     appears (it would hold the queue for nothing); one scrolled back out
-     below waits to come into view again. */
-  var qSec = null, qStart = 0, qEnd = 0, qN = 0, qWait = [], qTimer = 0, rvDur = 0;
-  function rvPlay(el, t) {
-    var rd = Math.max(0, qN++ * 90 - (t - qStart));   /* joining late: no extra wait */
-    el.style.setProperty('--rd', Math.round(rd) + 'ms');
-    el.classList.add('in');
-    qEnd = Math.max(qEnd, t + rd + rvDur + 100);       /* +100: the transition starts a frame or two after the class */
-  }
-  function rvPump() {
-    clearTimeout(qTimer);
-    var t = performance.now();
-    if (!qWait.length) return;
-    if (t < qEnd) { qTimer = setTimeout(rvPump, qEnd - t); return; }
-    var vh = innerHeight;
-    qWait.sort(function (a, b) { return a.getBoundingClientRect().top - b.getBoundingClientRect().top; });
-    qSec = null; qN = 0; qStart = t;
-    qWait = qWait.filter(function (el) {
-      var r = el.getBoundingClientRect(), sec = el.closest('main > section') || document.body;
-      if (r.bottom <= 0) { el.style.setProperty('--rd', '0ms'); el.classList.add('in'); return false; }
-      if (r.top >= vh) { io.observe(el); return false; }
-      if (!qSec) qSec = sec;
-      if (sec !== qSec) return true;
-      rvPlay(el, t); return false;
-    });
-    if (qWait.length) rvPump();
-  }
-  function rvQueue(els) {
-    var t = performance.now();
-    if (!rvDur && els[0]) rvDur = Math.max.apply(null, getComputedStyle(els[0]).transitionDuration.split(',').map(function (d) { return parseFloat(d) * (/ms/.test(d) ? 1 : 1000) || 0; }));
-    els.forEach(function (el) {
-      var sec = el.closest('main > section') || document.body;
-      if (sec === qSec && (t < qEnd || !qWait.length) && qWait.indexOf(el) < 0) rvPlay(el, t);
-      else if (qWait.indexOf(el) < 0) qWait.push(el);
-    });
-    rvPump();
-  }
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (es) {
       var now = [];
@@ -1958,9 +1916,9 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
          but the phone reorders and stacks pieces and reveals them one by one, so a
          piece arriving alone would wait for nothing. Cascade only what arrives
          together, in its on-screen order, top to bottom. */
-      now.forEach(function (el) { io.unobserve(el); });
-      if (rvPhone) rvQueue(now.sort(function (a, b) { var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return (ra.top - rb.top) || (ra.left - rb.left); }));
-      else now.forEach(function (el) { el.classList.add('in'); });
+      if (rvPhone) now.sort(function (a, b) { var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return (ra.top - rb.top) || (ra.left - rb.left); })
+        .forEach(function (el, k) { el.style.setProperty('--rd', (k * 90) + 'ms'); });
+      now.forEach(function (el) { el.classList.add('in'); io.unobserve(el); });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
     rvs.forEach(function (el) { io.observe(el); });
   } else rvs.forEach(function (el) { el.classList.add('in'); });
