@@ -1890,35 +1890,18 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
   /* The next section should only reveal at the same moment the dim
      shifts to it. So inside a section, a reveal waits until that section is
      the bright one (.on); content outside the sections reveals as before. */
-  var rvPhone = matchMedia('(max-width: 720px)').matches;
-  /* phone: blocks that sit side by side on desktop (the three Heading cards) or
-     beside the text (the journey timeline) stack into one tall column, so a
-     single reveal for the whole block faded in cards still far below the fold
-     and held the first ones back. There, each card / journey entry reveals on its own. */
-  if (rvPhone) $$('.wh-cards.rv, .log-wrap.rv').forEach(function (b) {
-    b.classList.remove('rv');
-    $$(b.matches('.wh-cards') ? ':scope > li' : '.entry', b).forEach(function (c) { c.classList.add('rv'); });
-  });
   var rvs = $$('.rv');
   var focusOn = 'IntersectionObserver' in window && !!$('main > section');
   /* phone: each piece reveals as it scrolls into view (soft focus, below), instead of a whole section at mid-screen */
-  function secReady(el) { if (rvPhone) return true; var s = el.closest('main > section'); return !focusOn || !s || s.classList.contains('on'); }
+  function secReady(el) { if (matchMedia('(max-width: 720px)').matches) return true; var s = el.closest('main > section'); return !focusOn || !s || s.classList.contains('on'); }
   var rvSeen = [];
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (es) {
-      var now = [];
       es.forEach(function (e) {
         if (!e.isIntersecting) { rvSeen = rvSeen.filter(function (x) { return x !== e.target; }); return; }
-        if (secReady(e.target)) now.push(e.target);
+        if (secReady(e.target)) { e.target.classList.add('in'); io.unobserve(e.target); }
         else if (rvSeen.indexOf(e.target) < 0) rvSeen.push(e.target);
       });
-      /* phone: the desktop delays (--rd) cascade a whole section in reading order,
-         but the phone reorders and stacks pieces and reveals them one by one, so a
-         piece arriving alone would wait for nothing. Cascade only what arrives
-         together, in its on-screen order, top to bottom. */
-      if (rvPhone) now.sort(function (a, b) { var ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return (ra.top - rb.top) || (ra.left - rb.left); })
-        .forEach(function (el, k) { el.style.setProperty('--rd', (k * 90) + 'ms'); });
-      now.forEach(function (el) { el.classList.add('in'); io.unobserve(el); });
     }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
     rvs.forEach(function (el) { io.observe(el); });
   } else rvs.forEach(function (el) { el.classList.add('in'); });
