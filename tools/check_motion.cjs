@@ -16,7 +16,9 @@
 //   handset   no hand-written delays (style="--rd:...") in the markup
 //   dim       a piece must not start before its section is the lit one (it would
 //             play out dimmed and look like it was just there)
-//   complete  every piece is revealed by the end, and no page errors
+//   nested    phone: a piece must not start while its section is still brightening
+//             (iPhone Safari snaps a fade that runs inside another fade)
+//   complete  after scrolling down and back up, nothing on screen is left hidden; no page errors
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
 const CHROME = process.env.CHROME || [
@@ -57,6 +59,7 @@ const PACES = [['reading', 12], ['flick', 90]];
           const rd = parseFloat(el.style.getPropertyValue('--rd')) || 0;
           const sec = el.closest('main > section');
           const af = sec && getComputedStyle(sec, '::after'); const lit = sec ? (+getComputedStyle(sec).opacity) * (af.content && af.content !== 'none' ? 1 - (+af.opacity || 0) : 1) : 1;
+          if (window.__up) return;
           L.starts.push({ lit, secOn: !sec || !document.documentElement.classList.contains('focusmode') || sec.classList.contains('on'),  sec: name(el), what: label(el), t: performance.now() + rd, top: rr.top + scrollY, left: rr.left + scrollX, h: rr.height, onScreen: rr.bottom > 0 && rr.top < innerHeight, below: rr.top >= innerHeight, sy: scrollY, vh: innerHeight });
         }).observe(el, { attributes: true, attributeFilter: ['class'] });
       });
@@ -73,7 +76,11 @@ const PACES = [['reading', 12], ['flick', 90]];
     for (let y = 0; y <= max; y += step) { await p.evaluate(v => scrollTo(0, v), y); await sleep(16); }
     await p.evaluate(v => scrollTo(0, v), max);
     await sleep(5000);
-    const m = await p.evaluate(() => { const left = [...document.querySelectorAll('.rv:not(.in)')].filter(el => el.getBoundingClientRect().height).length; return { ...__m, left }; });
+    // pieces skipped by a fast scroll reveal when the reader comes back to them: scroll back up and settle
+    await p.evaluate(() => { window.__up = true; });
+    for (let y = max; y >= 0; y -= 40) { await p.evaluate(v => scrollTo(0, v), y); await sleep(24); }
+    await sleep(3000);
+    const m = await p.evaluate(() => { const leftEls = [...document.querySelectorAll('.rv:not(.in)')].filter(el => { const r = el.getBoundingClientRect(); return r.height && r.bottom > 0 && r.top < innerHeight * 0.8; }); const left = leftEls.length; window.__leftNames = leftEls.map(e => ((e.closest('main > section') || {}).id || 'page') + ' › ' + (e.className || '').toString().replace(/rv/g, '').trim().slice(0, 24)); return { ...__m, left }; });
     const local = [];
     // order: within one section, among pieces that started on screen within the same cascade window,
     // a piece clearly lower on the page (or same row, further right) must not start before one above/left of it (page coordinates)
@@ -85,6 +92,7 @@ const PACES = [['reading', 12], ['flick', 90]];
       if (cAfter && c.t < a.t - 5) local.push(`order: in ${a.sec}, "${c.what}" started ${Math.round(a.t - c.t)}ms before "${a.what}", which sits above/left of it`);
     }
     m.starts.filter(s => s.onScreen && !s.secOn).forEach(s => local.push(`dim: in ${s.sec}, "${s.what}" started while its section was still dimmed (${Math.round(s.lit * 100)}% lit)`));
+    if (W <= 720) m.starts.filter(s => s.onScreen && s.secOn && s.lit > 0.32 && s.lit < 0.97).forEach(s => local.push(`nested: in ${s.sec}, "${s.what}" started while its section was still brightening (${Math.round(s.lit * 100)}%)`));
     m.starts.filter(s => s.below).forEach(s => local.push(`unseen: in ${s.sec}, "${s.what}" started revealing while still below the screen`));
     if (W > 720) { if (m.overlapFrames) local.push(`overlap: ${m.overlapFrames} frames with two sections revealing at once (${Object.keys(m.pairs).join(', ')})`); }
     else {
@@ -93,7 +101,7 @@ const PACES = [['reading', 12], ['flick', 90]];
       on.forEach(s => Object.keys(firsts).forEach(k => { const f = firsts[k]; if (k !== s.sec && f.t > s.t && f.t - s.t < 250 && s.top + s.h - f.sy > 40 && s.top - f.sy < f.vh - 40) local.push(`overlap: ${k} started ${Math.round(f.t - s.t)}ms after a piece of ${s.sec} (needs 250ms)`); }));
     }
     if (pace === 'reading') m.tall.forEach(t => local.push(`tall: ${t} is one reveal taller than 75% of the screen; mark its parent data-rv-each`));
-    if (m.left) local.push(`complete: ${m.left} piece(s) never revealed`);
+    if (m.left) local.push(`complete: ${m.left} piece(s) never revealed: ${(await p.evaluate(() => window.__leftNames)).join(', ')}`);
     if (errs.length) local.push(`complete: page errors: ${errs.join(' | ')}`);
     const uniq = [...new Set(local)];
     console.log(`${uniq.length ? 'FAIL' : 'ok  '}  ${tag.padEnd(28)} ${m.starts.length} reveals` + (uniq.length ? '\n      ' + uniq.slice(0, 8).join('\n      ') + (uniq.length > 8 ? `\n      … ${uniq.length - 8} more` : '') : ''));
