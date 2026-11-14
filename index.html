@@ -1983,37 +1983,18 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
   var secs = $$('main > section');
   if (focusOn) {
     document.documentElement.classList.add('focusmode');
-    /* Bright = the section under the middle of the screen (or nearest it),
-       measured every scroll frame. An observer on a thin middle band only
-       acted on ENTER: when the band touched two sections and a reverse scroll
-       settled it back into one, the other's exit was ignored and it stayed lit. */
-    var onSec = null, secTick = false;
-    function setOn(sec) {
-      if (sec === onSec) return;
-      onSec = sec;
-      secs.forEach(function (s) { s.classList.toggle('on', s === sec); });
-      rvSeen = rvSeen.filter(function (el) {
-        if (!sec.contains(el)) return true;
-        el.classList.add('in'); if (io) io.unobserve(el); return false;
+    secs[0].classList.add('on');
+    var fio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        secs.forEach(function (s) { s.classList.toggle('on', s === e.target); });
+        rvSeen = rvSeen.filter(function (el) {
+          if (!e.target.contains(el)) return true;
+          el.classList.add('in'); if (io) io.unobserve(el); return false;
+        });
       });
-    }
-    function pickSec() {
-      secTick = false;
-      var mid = innerHeight / 2, best = null, bestD = Infinity;
-      secs.forEach(function (s) {
-        var r = s.getBoundingClientRect();
-        if (!r.height) return;
-        var d = r.top > mid ? r.top - mid : r.bottom < mid ? mid - r.bottom : 0;
-        if (d < bestD) { bestD = d; best = s; }
-      });
-      if (best) setOn(best);
-    }
-    function onSecScroll() { if (!secTick) { secTick = true; requestAnimationFrame(pickSec); } }
-    addEventListener('scroll', onSecScroll, { passive: true });
-    addEventListener('resize', onSecScroll);
-    addEventListener('load', onSecScroll);
-    setOn(secs[0]);
-    pickSec();
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    secs.forEach(function (s) { fio.observe(s); });
   }
 
   /* ---------- Thesis pin ---------- */
