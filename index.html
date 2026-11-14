@@ -1241,6 +1241,37 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 @media (max-width: 720px) {
   .quiet .glance .gl-big { margin-top: 10px; }
 }
+
+/* ---------- Create / Share / Navigate as a carousel (phone only) ---------- */
+.cjc-bar { display: none; }
+@media (max-width: 720px) {
+  .cjc-bar { display: flex; gap: 6px; margin-top: 18px; }
+  .cjc-bar i { position: relative; flex: 1; height: 2px; border-radius: 1px; background: var(--line2); overflow: hidden; }
+  .cjc-bar i::after { content: ""; position: absolute; inset: 0; background: #7F89FF; transform-origin: left; transform: scaleX(var(--f, 0)); }
+  .cjc .cjc-v.on h3 { color: var(--text); }
+}
+
+@media (max-width: 720px) {
+  /* one grid for the whole row: number and title per column, and every step's line stacked in one
+     full-width cell below. No absolute positioning, so the line cannot jump while the row animates in. */
+  .cjc { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: 0; margin-top: 4px; }
+  .cjc-v { display: contents; }
+  .cjc-v > .cjc-n { grid-row: 1; padding-top: 18px; }
+  .cjc-v > h3 { grid-row: 2; margin: 0; padding-top: 4px; font-size: 18px; }
+  .cjc-v:nth-child(1) > * { grid-column: 1; }
+  .cjc-v:nth-child(2) > * { grid-column: 2; }
+  .cjc-v:nth-child(3) > * { grid-column: 3; }
+  .cjc-v + .cjc-v > .cjc-n, .cjc-v + .cjc-v > h3 { padding-left: 14px; border-left: 1px solid var(--line); }
+  .cjc-v > p, .cjc-v:nth-child(n) > p { grid-row: 3; grid-column: 1 / -1; margin: 0; padding-top: 24px; font-size: 16px; opacity: 0; transition: opacity .8s var(--qease); }
+  .cjc-v.on > p, .cjc:not(.has-on) .cjc-v:first-child > p { opacity: 1; }
+  .cjc + .cjc-bar { margin-top: 18px; }
+  /* the row reveals as one piece (its steps no longer have their own box to animate) */
+  .js .cjc[data-m="c"] { transition: opacity 1.6s cubic-bezier(.22,.61,.36,1), transform 1.6s cubic-bezier(.22,.61,.36,1), filter 1.2s cubic-bezier(.22,.61,.36,1); }
+  .js .cjc[data-m="c"]:not(.in-view) { opacity: 0; transform: translate3d(0, 20px, 0); filter: blur(5px); }
+}
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+  .js .cjc[data-m="c"]:not(.in-view) { opacity: 1; transform: none; filter: none; }
+}
 </style>
 <script type="application/ld+json">
   {
@@ -1534,7 +1565,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     </div>
     <div class="cjs rv" id="cjs" style="--rd:240ms" aria-hidden="true"></div>
     <div class="wrap">
-      <ul class="cjc" id="cjc">
+      <ul class="cjc" id="cjc" data-m="c">
         <li class="cjc-v rv">
           <span class="cjc-n">01</span><h3>Create</h3><p>Your best practices, made repeatable.</p>
         </li>
@@ -1545,6 +1576,7 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
           <span class="cjc-n">03</span><h3>Navigate</h3><p>Predictable execution, at any scale.</p>
         </li>
       </ul>
+      <div class="cjc-bar" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="cn-ctas rv">
         <a class="btn" href="https://www.linkedin.com/company/customernode/posts/" target="_blank" rel="noopener"><span class="tmr">Follow <span class="tmw">CustomerNode<span class="tm">™</span></span></span>
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
@@ -2302,6 +2334,42 @@ function loop(st, frame) {
   }
   fit(); addEventListener('load', fit); addEventListener('resize', fit);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+})();
+</script>
+<script>
+/* Create / Share / Navigate carousel (phone): follows the 3D scene's lit step; a swipe takes over for 8s */
+(function () {
+  var row = document.getElementById('cjc'); if (!row) return;
+  var mq = matchMedia('(max-width: 720px)'), mode = row.getAttribute('data-m');
+  var lis = [].slice.call(row.querySelectorAll('.cjc-v'));
+  var segs = [].slice.call(document.querySelectorAll('.cjc-bar i'));
+  var touched = 0, last = -1;
+  row.addEventListener('touchstart', function () { touched = Date.now(); }, { passive: true });
+  row.addEventListener('wheel', function () { touched = Date.now(); }, { passive: true });
+  if (mode === 'c') {
+    if ('IntersectionObserver' in window) {
+      var rio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { row.classList.add('in-view'); rio.disconnect(); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      rio.observe(row);
+    } else row.classList.add('in-view');
+  }
+  function tick() {
+    if (mq.matches) {
+      var cur = -1, all = true;
+      lis.forEach(function (li, i) { if (li.classList.contains('on')) cur = i; else all = false; });
+      if (all) cur = -1;
+      lis.forEach(function (li, i) {
+        var p = parseFloat(li.style.getPropertyValue('--p')) || 0;
+        if (segs[i]) segs[i].style.setProperty('--f', cur < 0 ? 0 : i < cur ? 1 : i === cur ? p : 0);
+      });
+      if ((mode === 'a' || mode === 'b') && cur >= 0 && cur !== last && Date.now() - touched > 8000) {
+        row.scrollTo({ left: lis[cur].offsetLeft - lis[0].offsetLeft, behavior: 'smooth' });
+      }
+      if (cur >= 0) last = cur;
+      row.classList.toggle('has-on', cur >= 0);
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
 })();
 </script>
 </body>
