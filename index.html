@@ -1191,6 +1191,23 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 .tmw { white-space: nowrap; }
 .tm { display: inline-block; position: relative; line-height: 0; font-family: var(--mono); font-size: .38em; font-weight: 400; font-style: normal; letter-spacing: .02em; top: -1.14em; margin-left: .14em; opacity: .5; -webkit-text-fill-color: currentColor; }
 .cn-title .tm { font-family: inherit; font-size: .16em; font-weight: 500; letter-spacing: 0; vertical-align: top; top: .55em; margin-left: .2em; opacity: 1; color: var(--muted); -webkit-text-fill-color: var(--muted); }
+
+/* ---------- At a glance (phone only) ----------
+   On a phone the hero's fact list moves out of the hero into its own section,
+   with a label and heading like every other section. Desktop keeps the facts row in the hero. */
+.glance { display: none; }
+.eyebrow .eb-svg { width: 1.05em; height: 1.05em; margin-right: .7em; flex: none; }
+@media (max-width: 720px) {
+  .quiet .hero-facts { display: none; }
+  .quiet .glance { display: block; padding-top: var(--gap); padding-bottom: 0; }
+}
+
+@media (max-width: 720px) {
+  .gl-a .gl-list { margin: 28px 0 0; border-top: 1px solid var(--line2); }
+  .gl-a .gl-list > div { display: grid; grid-template-columns: 104px minmax(0, 1fr); align-items: baseline; gap: 12px; padding: 18px 0; border-bottom: 1px solid var(--line2); }
+  .gl-a dt { font-family: var(--mono); font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .gl-a dd { margin: 0; font-size: 19px; line-height: 1.35; letter-spacing: -0.01em; color: var(--text); }
+}
 </style>
 <script type="application/ld+json">
   {
@@ -1359,6 +1376,18 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
       <div><dt>Education</dt><dd>MIT, BSc EECS ’22 · MEng AI ’23</dd></div>
       <div><dt>Based</dt><dd><a class="loc-link" href="#where">Weehawken, NJ</a></dd></div>
     </dl>
+  </section>
+
+  <section class="sec glance gl-a" id="glance" aria-labelledby="glance-h" tabindex="-1">
+    <div class="wrap">
+      <p class="eyebrow rv"><span class="lbl"><svg class="eb-svg" viewBox="0 0 256 256" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><rect x="32" y="48" width="192" height="160" rx="10"/><circle cx="96" cy="120" r="24"/><path d="M60 168c6-20 20-28 36-28s30 8 36 28M156 112h40M156 144h40"/></g></svg>Introducing</span></p>
+      <h2 class="h2 rv" id="glance-h" style="--rd:80ms">At a glance</h2>
+      <dl class="gl-list rv" style="--rd:160ms">
+        <div><dt>Role</dt><dd>Founder, <span class="tmr"><span class="tmw">CustomerNode<span class="tm">™</span></span></span></dd></div>
+        <div><dt>Education</dt><dd>MIT, BSc EECS ’22<br>MEng in AI ’23</dd></div>
+        <div><dt>Based</dt><dd><a class="loc-link" href="#where">Weehawken, NJ</a></dd></div>
+      </dl>
+    </div>
   </section>
 
   <!-- ============ THESIS = THE ESSAYS ============
