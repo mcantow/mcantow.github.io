@@ -2526,5 +2526,53 @@ function loop(st, frame) {
   tick();
 })();
 </script>
+<script>
+/* Reveal diagnostics, off unless the address has ?rvlog=<name>. Reports, from a real
+   phone, when each section lights up and how each title fades in, so motion problems
+   that only show on a device can be seen. Sends timings only (no personal data) to
+   ntfy.sh/<name>. */
+(function () {
+  var m = /[?&]rvlog=([\w-]{6,40})/.exec(location.search); if (!m) return;
+  var topic = m[1], T0 = performance.now(), buf = [], sent = 0;
+  function now() { return Math.round(performance.now() - T0); }
+  function op(e) { return (+getComputedStyle(e).opacity).toFixed(2); }
+  function L(s) { buf.push(now() + ' ' + s); }
+  function flush() {
+    if (!buf.length) return; var out = buf.splice(0, buf.length), chunk = '';
+    out.forEach(function (l) { if (chunk.length + l.length > 3500) { post(chunk); chunk = ''; } chunk += l + '\n'; });
+    if (chunk) post(chunk);
+  }
+  function post(t) { sent++; fetch('https://ntfy.sh/' + topic, { method: 'POST', body: t, keepalive: true }).catch(function () {}); }
+  setInterval(flush, 2500); addEventListener('pagehide', flush);
+  var vv = window.visualViewport;
+  L('start ua=' + navigator.userAgent.replace(/\s+/g, ' ').slice(0, 160) + ' ih=' + innerHeight + ' vvh=' + (vv ? Math.round(vv.height) : '-') + ' y=' + Math.round(scrollY) + ' nav=' + (performance.getEntriesByType('navigation')[0] || {}).type);
+  var badge = document.createElement('div'); badge.textContent = 'motion log on';
+  badge.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99999;font:11px/1 ui-monospace,monospace;color:#9f9;background:rgba(0,0,0,.6);padding:5px 7px;border-radius:6px;pointer-events:none';
+  document.body.appendChild(badge);
+  addEventListener('load', function () {
+    var secs = [].slice.call(document.querySelectorAll('main > section'));
+    secs.forEach(function (s) {
+      var was = s.classList.contains('on');
+      new MutationObserver(function () { var on = s.classList.contains('on'); if (on !== was) { was = on;
+        var r = s.getBoundingClientRect(); L('SEC ' + s.id + (on ? ' ON' : ' off') + ' top=' + Math.round(r.top / innerHeight * 100) + '% secOp=' + op(s) + ' y=' + Math.round(scrollY) + ' ih=' + innerHeight + ' vvh=' + (vv ? Math.round(vv.height) : '-')); } })
+        .observe(s, { attributes: true, attributeFilter: ['class'] });
+    });
+    var watch = [].slice.call(document.querySelectorAll('main > section .rv'));
+    watch.forEach(function (e) {
+      var name = (e.closest('main > section') || {}).id + '>' + (e.id || (e.className.replace(/\b(rv|in)\b/g, '').trim().split(/\s+/)[0]) || e.tagName.toLowerCase());
+      var seen = false, inAt = null, sec = e.closest('main > section');
+      if (e.classList.contains('in')) L('RV ' + name + ' already-in at load');
+      new MutationObserver(function () { if (inAt != null || !e.classList.contains('in')) return; inAt = now();
+        var r = e.getBoundingClientRect(), rd = e.style.getPropertyValue('--rd') || '0';
+        L('IN ' + name + ' top=' + Math.round(r.top / innerHeight * 100) + '% rd=' + rd + ' op=' + op(e) + ' secOn=' + (sec && sec.classList.contains('on') ? 1 : 0) + ' secOp=' + (sec ? op(sec) : '-') + ' trans=' + getComputedStyle(e).transitionDuration);
+        [120, 350, 700, 1200, 2000].forEach(function (d) { setTimeout(function () { var r2 = e.getBoundingClientRect(); L('  ' + name + ' +' + d + ' op=' + op(e) + ' tf=' + getComputedStyle(e).transform.replace(/matrix\(1, 0, 0, 1, 0, ([\d.-]+)\)/, 'y$1') + ' secOp=' + (sec ? op(sec) : '-') + ' top=' + Math.round(r2.top / innerHeight * 100) + '%'); }, d); });
+      }).observe(e, { attributes: true, attributeFilter: ['class'] });
+      (function tick() { if (seen) return; var r = e.getBoundingClientRect();
+        if (r.height && r.top < innerHeight * 0.9 && r.bottom > 0) { seen = true; L('SEEN ' + name + ' top=' + Math.round(r.top / innerHeight * 100) + '% in=' + (e.classList.contains('in') ? 1 : 0) + ' op=' + op(e) + ' secOn=' + (sec && sec.classList.contains('on') ? 1 : 0) + ' secOp=' + (sec ? op(sec) : '-')); return; }
+        requestAnimationFrame(tick); })();
+    });
+  });
+})();
+</script>
 </body>
 </html>
