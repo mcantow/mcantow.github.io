@@ -1911,23 +1911,18 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
      cascade. A waiting piece the reader has already scrolled past just
      appears (it would hold the queue for nothing); one scrolled back out
      below waits to come into view again. */
-  var qSec = null, qStart = 0, qEnd = 0, qN = 0, qWait = [], qPlay = [], qTimer = 0, rvDur = 0;
+  var qSec = null, qStart = 0, qEnd = 0, qN = 0, qWait = [], qTimer = 0, rvDur = 0;
   function rvPlay(el, t) {
     var rd = Math.max(0, qN++ * 90 - (t - qStart));   /* joining late: no extra wait */
     el.style.setProperty('--rd', Math.round(rd) + 'ms');
     el.classList.add('in');
-    qPlay.push(el);
     qEnd = Math.max(qEnd, t + rd + rvDur + 100);       /* +100: the transition starts a frame or two after the class */
   }
-  /* a reveal the reader has scrolled off screen is invisible, so it no longer holds the next section back */
-  function rvOnScreen(el) { var r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
   function rvPump() {
     clearTimeout(qTimer);
     var t = performance.now();
     if (!qWait.length) return;
-    if (t < qEnd && !qPlay.some(rvOnScreen)) qEnd = t;
     if (t < qEnd) { qTimer = setTimeout(rvPump, qEnd - t); return; }
-    qPlay = [];
     var vh = innerHeight;
     qWait.sort(function (a, b) { return a.getBoundingClientRect().top - b.getBoundingClientRect().top; });
     qSec = null; qN = 0; qStart = t;
@@ -1951,11 +1946,6 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
     });
     rvPump();
   }
-  var qTick = false;
-  if (rvPhone) addEventListener('scroll', function () {
-    if (qTick || !qWait.length) return;
-    qTick = true; requestAnimationFrame(function () { qTick = false; rvPump(); });
-  }, { passive: true });
   if ('IntersectionObserver' in window && !reduce) {
     var io = new IntersectionObserver(function (es) {
       var now = [];
