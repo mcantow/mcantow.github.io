@@ -71,6 +71,17 @@ const hubTxt=(()=>{const mk=()=>{const T=canvasTex(1024,1024),m=new THREE.Mesh(n
   const A=mk(),B=mk();let cur=A,old=B,key=null,t=1;
   return{set(k,fn){if(k===key)return;key=k;const o=cur;cur=old;old=o;const x=cur.T.x;x.clearRect(0,0,1024,1024);fn(x,1024,1024);cur.T.t.needsUpdate=true;t=0},
     update(op){t=Math.min(1,t+DT/.55);const e=io(t);cur.m.material.opacity=op*e;old.m.material.opacity=op*(1-e)}}})();
+//SKEL:SCENE
+// skeleton: a faint outline of the finished ring + hub that holds the ring's place until the stages land
+// (continues the page's SVG skeleton, which shows before this script has loaded)
+const skel=(()=>{const g=add(new THREE.Group(),ringG),lm=new THREE.LineBasicMaterial({color:TXT,transparent:true,opacity:0,depthWrite:false,fog:false}),fm=new THREE.MeshBasicMaterial({color:TXT,transparent:true,opacity:0,depthWrite:false,fog:false});
+  const ring=(r,y,a0,a1,n)=>{const P=[];for(let k=0;k<=n;k++){const a=a0+(a1-a0)*k/n;P.push(V(Math.cos(a)*r,y,-Math.sin(a)*r))}return P};
+  STAGES.forEach((_,i)=>{const a0=Math.PI/2-i*Math.PI/3-GAP,a1=Math.PI/2-(i+1)*Math.PI/3+GAP,P=ring(RO,.095,a0,a1,48).concat(ring(RI,.095,a1,a0,48));P.push(P[0].clone());
+    add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(P),lm),g);const sh=new THREE.Shape();sh.absarc(0,0,RO,a0,a1,true);sh.absarc(0,0,RI,a1,a0,false);sh.closePath();
+    const fg=new THREE.ShapeGeometry(sh,28);fg.rotateX(-Math.PI/2);add(new THREE.Mesh(fg,fm),g).position.y=.095});
+  add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(ring(1.2,.02,0,2*Math.PI,96)),lm),g);const hg=new THREE.CircleGeometry(1.2,96);hg.rotateX(-Math.PI/2);add(new THREE.Mesh(hg,fm),g).position.y=.02;
+  g.renderOrder=-1;return{set(o){g.visible=o>.001;lm.opacity=.10*o;fm.opacity=.022*o}}})();
+//SKEL:SCENE:END
 // teams beside the ring: the seller team forms on Create; on Share more sellers and the customer's buying team join
 const PEOPLE=[['SK','Sarah K.',0],['DR','Dev R.',0],['LM','Lena M.',0],['JB','Jay B.',1],['PS','Priya S.',1],['TW','Tom W.',1]];
 const AVG=new THREE.CylinderGeometry(.27,.27,.09,48),AVE=new THREE.EdgesGeometry(AVG,30);
@@ -125,7 +136,7 @@ function frame(g,tt,mx,my){const F=sg(g,0,.7)*(1-sg(g,25.4,26.3));let lp=null,la
   if(g>=3.0&&g<5.0){lp=ringG.position.clone().add(V(0,.6+.05*Math.sin(tt*3),0));la=1-sg(g,4.4,5.0)*.6;lk=1+.5*Math.sin(sg(g,2.7,3.6)*Math.PI)}
   segs.forEach((s,i)=>{const t0=2.75+i*.16,p=spring(g-t0,8,.5),q=cl(p);const a=s.mid,out=lerp(1.8,0,p);s.g.position.set(Math.cos(a)*out,lerp(-1.2,0,p),-Math.sin(a)*out);s.g.rotation.y=(1-p)*.5;
     s.op=cl((g-t0)*3);});
-  const hubOp=sg(g,3.2,3.9);hub.material.opacity=hubOp;hubE.material.opacity=.25*hubOp;hub.visible=hubE.visible=hubOp>.001;// hidden while clear, or its depth cuts a dark disc out of the floor lighthubTxt.update(hubOp*F);
+  skel.set(F*(1-sg(g,2.9,3.9)));/*SKEL:CALL*/const hubOp=sg(g,3.2,3.9);hub.material.opacity=hubOp;hubE.material.opacity=.25*hubOp;hub.visible=hubE.visible=hubOp>.001;// hidden while clear, or its depth cuts a dark disc out of the floor lighthubTxt.update(hubOp*F);
   // SHARE: light hits Share, the switch slides to Customer and the whole journey turns over to the customer's side, then back
   if(g>=5.0&&g<6.0){lp=arc(ringG.position.clone().add(V(0,.6,0)),sp(1),io(sg(g,5.0,5.9)),1);la=lerp(.4,1,sg(g,5,5.4))}
   const tp=i=>people[i].g.position.clone().add(ringG.position).add(V(0,.42,0));
