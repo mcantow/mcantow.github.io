@@ -18,6 +18,8 @@
 //             play out dimmed and look like it was just there)
 //   nested    phone: a piece must not start while its section is still brightening
 //             (iPhone Safari snaps a fade that runs inside another fade)
+//   animated  nothing may fade in (opacity from ~0 to shown) through a CSS transition;
+//             fade-ins must use mcSwap() (iPhone Safari drops transitions mid-scroll)
 //   complete  after scrolling down and back up, nothing on screen is left hidden; no page errors
 const puppeteer = require('puppeteer-core');
 const fs = require('fs');
@@ -63,10 +65,18 @@ const PACES = [['reading', 12], ['flick', 90]];
           L.starts.push({ lit, secOn: !sec || !document.documentElement.classList.contains('focusmode') || sec.classList.contains('on'),  sec: name(el), what: label(el), t: performance.now() + rd, top: rr.top + scrollY, left: rr.left + scrollX, h: rr.height, onScreen: rr.bottom > 0 && rr.top < innerHeight, below: rr.top >= innerHeight, sy: scrollY, vh: innerHeight });
         }).observe(el, { attributes: true, attributeFilter: ['class'] });
       });
+      L.trans = {};
+      const lbl = el => { const sec = el.closest && el.closest('main > section, footer'); return (sec ? (sec.id || sec.tagName.toLowerCase()) : 'page') + ' › ' + ((el.className || el.tagName) + '').replace(/\s+/g, '.').slice(0, 30); };
+      const scanT = () => { (document.getAnimations ? document.getAnimations() : []).forEach(a => {
+        if (!a.transitionProperty || a.transitionProperty !== 'opacity' || !a.effect || !a.effect.getKeyframes) return;
+        const k = a.effect.getKeyframes(); if (k.length < 2) return;
+        const o0 = +k[0].opacity, o1 = +k[k.length - 1].opacity, t = a.effect.target;
+        if (o0 < 0.2 && o1 > 0.8 && t && !t.closest('.nav, .menu, dialog')) L.trans[lbl(t)] = 1; }); };
       const f = () => {
         const mid = new Set();
         all.forEach(el => { if (!el.classList.contains('in')) return; const r = el.getBoundingClientRect(); if (!r.height || r.bottom <= 0 || r.top >= innerHeight) return;
           const o = +getComputedStyle(el).opacity; if (o > 0.02 && o < 0.98) mid.add(name(el)); });
+        scanT();
         if (mid.size > 1) { L.overlapFrames++; const k = [...mid].join(' + '); L.pairs[k] = (L.pairs[k] || 0) + 1; }
         requestAnimationFrame(f);
       };
@@ -102,6 +112,7 @@ const PACES = [['reading', 12], ['flick', 90]];
     }
     if (pace === 'reading') m.tall.forEach(t => local.push(`tall: ${t} is one reveal taller than 75% of the screen; mark its parent data-rv-each`));
     if (m.left) local.push(`complete: ${m.left} piece(s) never revealed: ${(await p.evaluate(() => window.__leftNames)).join(', ')}`);
+    Object.keys(m.trans || {}).forEach(k => local.push(`animated: ${k} faded in through a CSS transition; use mcSwap()`));
     if (errs.length) local.push(`complete: page errors: ${errs.join(' | ')}`);
     const uniq = [...new Set(local)];
     console.log(`${uniq.length ? 'FAIL' : 'ok  '}  ${tag.padEnd(28)} ${m.starts.length} reveals` + (uniq.length ? '\n      ' + uniq.slice(0, 8).join('\n      ') + (uniq.length > 8 ? `\n      … ${uniq.length - 8} more` : '') : ''));

@@ -44,6 +44,36 @@
   <!-- Performance hints -->
   <link rel="preload" as="image" href="img/michael-cantow-headshot.jpg" />
 <script>
+  /* Motion rule for the whole site: anything that appears (hidden -> shown) is played
+     with mcSwap(), never by switching a class and letting a CSS transition run.
+     iPhone Safari intermittently drops a transition that starts mid-scroll and shows
+     the end state at once; an explicit animation always plays from its first frame.
+     mcSwap(el, add, remove, delay): switches the classes and animates every property
+     the element's own transition lists (opacity, transform, filter...) from the old
+     look to the new one, with the stylesheet's durations, easing and delay. The motion
+     check in the site's tools fails any fade-in still done by a transition. */
+  window.mcSwap = function (el, add, remove, delay) {
+    function cls() { [].concat(remove || []).forEach(function (c) { el.classList.remove(c); }); [].concat(add || []).forEach(function (c) { el.classList.add(c); }); }
+    if (!el.animate || !el.isConnected) { cls(); return; }
+    function ms(s) { return parseFloat(s) * (/ms/.test(s) ? 1 : 1000) || 0; }
+    var cs = getComputedStyle(el), list = cs.transitionProperty.split(',').map(function (s) { return s.trim(); });
+    if (list.indexOf('all') >= 0) list = ['opacity', 'transform', 'filter'];
+    var durs = cs.transitionDuration.split(','), dels = cs.transitionDelay.split(','), eases = cs.transitionTimingFunction.split(/,(?![^(]*\))/);
+    var from = {}; list.forEach(function (p) { from[p] = cs.getPropertyValue(p); });
+    el.style.transition = 'none';
+    cls();
+    var end = getComputedStyle(el), runs = [];
+    list.forEach(function (p, i) {
+      var a = from[p], b = end.getPropertyValue(p), d = ms(durs[i % durs.length]);
+      if (!d || a === b) return;
+      var k1 = {}, k2 = {}; k1[p] = a; k2[p] = b;
+      runs.push(el.animate([k1, k2], { duration: d, delay: delay == null ? ms(dels[i % dels.length]) : delay, easing: (eases[i % eases.length] || 'ease').trim(), fill: 'backwards' }));
+    });
+    var left = runs.length;
+    function done() { if (--left <= 0) el.style.transition = ''; }
+    if (!left) el.style.transition = '';
+    runs.forEach(function (r) { r.onfinish = r.oncancel = done; });
+  };
   /* Gate every hidden/animated start state behind .js. If the main script
      never reports in, drop .js so nothing is ever left invisible. */
   (function (d) {
@@ -1930,8 +1960,8 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
     slot.appendChild(w);
     slot.style.width = w.offsetWidth + 'px';
     w.getBoundingClientRect();
-    requestAnimationFrame(function () { w.classList.remove('is-in'); w.classList.add('is-on'); });
-    if (old) { old.classList.remove('is-on'); old.classList.add('is-out'); setTimeout(function () { old.remove(); }, 900); }
+    requestAnimationFrame(function () { mcSwap(w, 'is-on', 'is-in'); });
+    if (old) { mcSwap(old, 'is-out', 'is-on'); setTimeout(function () { old.remove(); }, 900); }
     var hold = roles[ri] === 'a janitor' ? 3400 : (ri === 0 ? 3200 : 1650);
     setTimeout(rotNext, hold);
   }
@@ -1985,28 +2015,9 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
     return m.map(function (x) { return x.el; });
   }
   var rvSeen = [], qSec = null, qStart = 0, qEnd = 0, qN = 0, qWait = [], qPlay = [], qTimer = 0, rvDur = 0;
-  /* A reveal is an explicit animation from the hidden look to the shown look, not a
-     CSS transition triggered by the class. iPhone Safari sometimes drops a transition
-     that starts mid-scroll and shows the end state at once (a title simply there while
-     the rest fades in); an animation always plays from its first frame. Look, length
-     and easing are read from the stylesheet, so each screen size keeps its own motion. */
-  function msOf(list) { var d = String(list).split(',')[0]; return parseFloat(d) * (/ms/.test(d) ? 1 : 1000) || 0; }
-  function rvShow(el, rd) {
+  function rvShow(el, rd) {   /* see mcSwap at the top of the page */
     el.style.setProperty('--rd', Math.round(rd) + 'ms');
-    if (!el.animate) { el.classList.add('in'); return; }
-    var cs = getComputedStyle(el), dur = msOf(cs.transitionDuration);
-    var props = cs.transitionProperty.split(',').map(function (s) { return s.trim(); });
-    var fDur = props.indexOf('filter') >= 0 ? msOf(cs.transitionDuration.split(',')[props.indexOf('filter')] || dur) : 0;
-    var ease = (cs.transitionTimingFunction.match(/cubic-bezier\([^)]*\)|[a-z-]+/) || ['ease'])[0];
-    var from = { opacity: cs.opacity, transform: cs.transform }, fromF = cs.filter;
-    el.style.transition = 'none';
-    el.classList.add('in');
-    var end = getComputedStyle(el), to = { opacity: end.opacity, transform: end.transform };
-    if (!dur) { el.style.transition = ''; return; }
-    var a = el.animate([from, to], { duration: dur, delay: rd, easing: ease, fill: 'backwards' });
-    if (fDur && fromF && fromF !== 'none' && fromF !== end.filter)
-      el.animate([{ filter: fromF }, { filter: end.filter }], { duration: fDur, delay: rd, easing: ease, fill: 'backwards' });
-    a.onfinish = a.oncancel = function () { el.style.transition = ''; };
+    mcSwap(el, 'in', null, rd);
   }
   function rvPlay(el, t) {
     var rd = Math.max(0, qN++ * RV_STEP - (t - qStart));   /* joining a cascade late: no extra wait */
@@ -2547,7 +2558,7 @@ function loop(st, frame) {
   row.addEventListener('wheel', function () { touched = Date.now(); }, { passive: true });
   if (mode === 'c') {
     if ('IntersectionObserver' in window) {
-      var rio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { row.classList.add('in-view'); rio.disconnect(); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+      var rio = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { mcSwap(row, 'in-view'); rio.disconnect(); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
       rio.observe(row);
     } else row.classList.add('in-view');
   }
