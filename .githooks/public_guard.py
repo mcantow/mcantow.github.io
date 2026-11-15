@@ -10,7 +10,8 @@ address.
     public_guard.py --staged          scan what is about to be committed
     public_guard.py --all             scan every tracked file
     public_guard.py --commits A..B    check commit author/committer emails
-    public_guard.py --range A..B      both: emails, plus files changed in A..B
+    public_guard.py --range A..B      emails and messages, plus files changed in A..B
+    public_guard.py --message FILE    scan a commit message (commit-msg hook)
 
 A line containing "public-guard: allow" is skipped (use sparingly).
 
@@ -61,6 +62,12 @@ RULES = [
     ("internal note", r"\b(TODO|FIXME|XXX|HACK|TEMP|WIP)\b"),
     ("internal note", r"(?i)\b(do not (ship|commit|publish)|internal[ -]only|confidential|"
                       r"not for (public|release)|uncommitted in)\b"),
+    # The owner's own words never go in code or commit messages: describe what
+    # the code does, not who asked for it or what they said.
+    ("personal: quotes or cites the owner",
+     r"(?i)\(owner\)|\bowner(\s+later)?\s*:|\b(the )?owner (said|says|wants|wanted|asked|hates|likes|thinks)\b|"
+     r"\b(mike|michael|the user|user) (said|says|wants|wanted|asked|hates|thinks)\b|"
+     r"\b(per|as) (the )?(owner|user)('s)? (request|ask|feedback)"),
 ]
 RULES = [(label, re.compile(p)) for label, p in RULES]
 
@@ -141,10 +148,34 @@ def check_commits(rng, problems):
                 problems.append(f"commit {h}: {who} email {e} is not your GitHub no-reply address")
 
 
+def check_message(text, where, problems):
+    """Commit messages are public too: same personal and crude-word rules."""
+    for line in text.splitlines():
+        if ALLOW in line:
+            continue
+        for label, pat in RULES:
+            if label.startswith(("personal: quotes", "internal note")) and pat.search(line):
+                problems.append(f"{where}: {label}: {line.strip()[:60]}")
+        for m in CRUDE_RE.finditer(line):
+            problems.append(f"{where}: unprofessional language: {m.group(0)}")
+
+
+def check_messages(rng, problems):
+    out = git("log", "--format=%h%x00%B%x01", rng)
+    for chunk in filter(None, (c.strip() for c in out.split("\x01"))):
+        h, _, body = chunk.partition("\x00")
+        check_message(body, f"commit {h} message", problems)
+
+
 def main(argv):
     problems, private = [], private_strings()
     if "--commits" in argv:
         check_commits(argv[argv.index("--commits") + 1], problems)
+        check_messages(argv[argv.index("--commits") + 1], problems)
+    if "--message" in argv:
+        with open(argv[argv.index("--message") + 1], encoding="utf-8", errors="replace") as fh:
+            msg = "\n".join(l for l in fh.read().splitlines() if not l.startswith("#"))
+        check_message(msg, "commit message", problems)
     if "--staged" in argv:
         files = git("diff", "--cached", "--name-only", "--diff-filter=ACMR", "-z").split("\0")
         for f in filter(None, files):
@@ -157,6 +188,7 @@ def main(argv):
         rng = argv[argv.index("--range") + 1]
         tip = rng.split("..")[-1]
         check_commits(rng, problems)
+        check_messages(rng, problems)
         files = git("diff", "--name-only", "--diff-filter=ACMR", "-z", *rng.split("..")).split("\0") \
             if ".." in rng else git("ls-tree", "-r", "--name-only", "-z", tip).split("\0")
         for f in filter(None, files):
