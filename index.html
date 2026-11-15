@@ -1278,6 +1278,11 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 @media (max-width: 720px) and (prefers-reduced-motion: reduce) {
   .js .cjc[data-m="c"]:not(.in-view) { opacity: 1; transform: none; filter: none; }
 }
+/* On a phone, Building goes straight from the 3D scene to the Follow button
+   (the Create / Share / Navigate steps and their bar are hidden). */
+@media (max-width: 720px) {
+  .cjc, .cjc-bar { display: none !important; }
+}
 
 /* ---------- At a glance, round 2 (phone only): every fact the same shape ---------- */
 @media (max-width: 720px) {
