@@ -1163,8 +1163,8 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
 @media (max-width: 720px) {
   .cjs canvas { -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0, #000 3%, #000 97%, transparent 100%), linear-gradient(180deg, transparent 0, #000 9%, #000 88%, transparent 100%); }
-  /* the scene has no edge on phone: hairlines above and below, edge to edge, clear of the Follow link */
-  .cjs::after { content: ""; position: absolute; z-index: 2; inset: 12% 0 14%; pointer-events: none; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  /* the scene has no edge on phone: hairlines above and below on the 20px text margins, clear of the Follow link */
+  .cjs::after { content: ""; position: absolute; z-index: 2; inset: 12% 20px 14%; pointer-events: none; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 }
 
 /* ---------- iPhone pass 2: the newer pieces (LinkedIn links, footer, name) get the same touch treatment ---------- */
