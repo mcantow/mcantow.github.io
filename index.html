@@ -448,7 +448,14 @@ section:focus, [tabindex="-1"]:focus { outline: none; }
 .facts dt { font-family: var(--mono); font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
 .facts dd { margin: 0; color: var(--text); }
 .log-wrap { position: relative; padding-left: 40px; }
-.log-line { position: absolute; left: 4px; top: 12px; bottom: 12px; width: 1px; background: var(--line2); }
+/* The grey timeline line is drawn by the entries themselves (.entry::before), one
+   piece per entry, so each piece fades in with its entry's words. A line drawn once
+   for the whole list showed up before any entry had revealed: a bare line beside
+   empty space. .log-line only carries the scroll glow (.log-fill). */
+.log-line { position: absolute; left: 4px; top: 12px; bottom: 12px; width: 1px; }
+.entry::before { content: ""; position: absolute; left: -36px; top: -1px; bottom: 0; width: 1px; background: var(--line2); pointer-events: none; }
+.entry:first-child::before { top: 12px; }
+.entry:last-child::before { bottom: 12px; }
 .log-fill { position: absolute; left: 0; top: 0; width: 1px; height: 0; background: linear-gradient(180deg, var(--blue), var(--violet)); }
 .log-fill::after { content: ""; position: absolute; left: -3px; bottom: -3px; width: 7px; height: 7px; border-radius: 50%; background: #C9BDFF; box-shadow: 0 0 12px 3px rgba(139,92,246,.7); opacity: var(--head, 0); }
 .entry { position: relative; display: grid; grid-template-columns: 168px minmax(0, 1fr); gap: 0 28px; padding: 22px 0 20px; border-top: 1px solid var(--line); }
@@ -562,6 +569,7 @@ html { scrollbar-gutter: stable; }   /* the scrollbar's space is always reserved
   .entry:first-child .node { top: 4px; }
   .log-wrap { padding-left: 30px; }
   .node { left: -30px; }
+  .entry::before { left: -26px; }
   .role { font-size: 19px; }
   .row { grid-template-columns: minmax(0, 1fr) 18px; gap: 4px 16px; padding: 20px 4px; }
   .row-meta { grid-row: 2; grid-column: 1; font-size: 14px; }
@@ -2196,6 +2204,12 @@ draw();if(window.ResizeObserver)new ResizeObserver(draw).observe(b);
   function updLog(vh) {
     var r = log.getBoundingClientRect();
     var target = clamp((vh * 0.62 - r.top) / r.height);
+    /* the glow never runs past the last entry that is showing: no lit line beside
+       entries still invisible, including ones queued but still in their cascade delay
+       (the grey line is per entry for the same reason) */
+    var cap = 0;
+    entries.forEach(function (e) { if (e.classList.contains('in') && +getComputedStyle(e).opacity > 0.2) cap = e.offsetTop + e.offsetHeight; });
+    target = Math.min(target, cap / r.height);
     fCur += (target - fCur) * (reduce ? 1 : 0.14);
     var px = fCur * r.height;
     fill.style.height = px.toFixed(1) + 'px';
