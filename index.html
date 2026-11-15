@@ -1282,6 +1282,8 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
    (the Create / Share / Navigate steps and their bar are hidden). */
 @media (max-width: 720px) {
   .cjc, .cjc-bar { display: none !important; }
+  /* the scene's canvas ends in empty fade below the tiles: pull the links up into it */
+  #customernode .cn-ctas { margin-top: -48px; position: relative; z-index: 2; }
 }
 
 /* ---------- At a glance, round 2 (phone only): every fact the same shape ---------- */
