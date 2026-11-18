@@ -1375,6 +1375,29 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
   .contact .wh-cards.three > li:nth-child(2) .ins-meta, .contact .wh-cards.three > li:nth-child(2) .ins-title, .contact .wh-cards.three > li:nth-child(2) .ins-hook { grid-column: 1; }
 
 }
+/* WWM VARIANT a */
+
+  .quiet .wwm .eyebrow b, .quiet .wwm .eyebrow i { display: none; }
+  .quiet .wwm .wwm-x:focus { outline: none; box-shadow: none; }
+  .quiet .wwm .wwm-x:focus-visible { outline: 1px solid var(--line2); outline-offset: 2px; }
+  @keyframes wwmRise { from { opacity: 0; transform: translateY(18px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes wwmLine { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @media (prefers-reduced-motion: reduce) { .quiet .wwm[open] * { animation: none !important; } }
+
+  .quiet .wwm { width: min(680px, calc(100vw - 32px)); padding: 76px 72px 68px; border-radius: 2px; background: linear-gradient(180deg, #0D0D10, #08080A);
+        box-shadow: 0 0 0 1px rgba(255,255,255,.10), inset 0 1px 0 rgba(255,255,255,.06), 0 60px 160px -30px rgba(0,0,0,.95); transition-duration: .9s; }
+  .quiet .wwm::backdrop { background: rgba(4,4,6,.86); backdrop-filter: blur(14px) saturate(.6); -webkit-backdrop-filter: blur(14px) saturate(.6); }
+  .quiet .wwm .eyebrow { margin-bottom: 34px; }
+  .quiet .wwm .wwm-h { font-size: clamp(30px, 3.4vw, 44px); line-height: 1.08; letter-spacing: -0.035em; }
+  .quiet .wwm .wwm-p { margin-top: 26px; font-size: 17px; line-height: 1.7; max-width: 34em; }
+  .quiet .wwm .btn { margin-top: 0; }
+  .quiet .wwm .wwm-p::after { content: ""; display: block; height: 1px; margin: 44px 0 30px; background: var(--line2); transform-origin: left; animation: wwmLine 1.2s .55s var(--ease) both; }
+  .quiet .wwm .wwm-x { top: 22px; right: 22px; }
+  .quiet .wwm[open] .eyebrow { animation: wwmRise 1s .12s var(--ease) both; }
+  .quiet .wwm[open] .wwm-h { animation: wwmRise 1.1s .22s var(--ease) both; }
+  .quiet .wwm[open] .wwm-p { animation: wwmRise 1.1s .34s var(--ease) both; }
+  .quiet .wwm[open] .btn { animation: wwmRise 1s .62s var(--ease) both; }
+  @media (max-width: 720px) { .quiet .wwm { padding: 64px 28px 40px; } }
 </style>
 <script type="application/ld+json">
   {
