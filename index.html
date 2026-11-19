@@ -270,7 +270,7 @@ section:focus, [tabindex="-1"]:focus { outline: none; }
 .photo { overflow: hidden; pointer-events: none; }
 .photo img { width: 100%; height: 100%; object-fit: cover; }
 .js .photo { opacity: 0; }
-.ready .photo { animation: qIn 1.1s var(--qease) .15s both; }
+.ready .photo { animation: qIn 1.1s var(--qease) 0s both; }
 
 .h1 {
   font-size: clamp(52px, 7.6vw, 128px); line-height: .98; font-weight: 600; letter-spacing: -0.045em;
@@ -300,11 +300,11 @@ section:focus, [tabindex="-1"]:focus { outline: none; }
 .js .hw, .js .hf, .js .bloom, .js .atmo, .js .nav { opacity: 0; }
 .js .horizon { clip-path: inset(-200px 50% 0 50%); }
 .ready .horizon { clip-path: inset(-200px 0 0 0); transition: clip-path 2s var(--ease); }
-.ready .atmo { animation: fadeIn 2.4s var(--ease) .1s both; }
-.ready .bloom { animation: fadeIn 2s var(--ease) .55s both; }
-.ready .nav { animation: fadeIn 1.2s var(--ease) .5s both; }
+.ready .atmo { animation: fadeIn 2.4s var(--ease) 0s both; }
+.ready .bloom { animation: fadeIn 2s var(--ease) .25s both; }
+.ready .nav { animation: fadeIn 1.2s var(--ease) .2s both; }
 .ready .hf { animation: fadeUp 1.1s var(--ease) both; animation-delay: var(--d, 0ms); }
-.ready .hw { animation: rise 1.25s var(--ease) both; animation-delay: calc(420ms + var(--line, 0) * 90ms); }
+.ready .hw { animation: rise 1.25s var(--ease) both; animation-delay: calc(140ms + var(--line, 0) * 80ms); }
 
 /* ---------- Sections ---------- */
 .sec { position: relative; padding-block: clamp(110px, 16vh, 180px); }
@@ -1545,23 +1545,23 @@ a:hover .fr img, .fr:hover img { transform: scale(1.03); filter: none; }
     </figure>
 
     <div class="hero-in">
-      <p class="pill hf" style="--d:200ms">
+      <p class="pill hf" style="--d:40ms">
         <span><span class="tmr">Founder, <span class="tmw">CustomerNode<span class="tm">™</span></span></span> <span class="sep">·</span> Weehawken, NJ</span>
       </p>
       <h1 class="h1"><span class="hw">Moving</span> <span class="hw">B2B</span> <span class="hw">software</span> <span class="hw">from</span> <span class="hw">record</span> <span class="hw">to</span> <span class="hw lit">action.</span></h1>
-      <p class="deck hf" style="--d:700ms"><span class="tmr">I’m Michael, currently the founder of <span class="tmw">CustomerNode<span class="tm">™</span></span> and formerly an MIT football player, researcher, and teaching assistant.</span></p>
-      <p class="rot hf" style="--d:900ms">
+      <p class="deck hf" style="--d:380ms"><span class="tmr">I’m Michael, currently the founder of <span class="tmw">CustomerNode<span class="tm">™</span></span> and formerly an MIT football player, researcher, and teaching assistant.</span></p>
+      <p class="rot hf" style="--d:480ms">
         <span aria-hidden="true">I’m <span class="rot-slot" id="rotSlot"><span class="rot-word is-on">a founder</span></span></span>
         <span class="sr-only">I’m a founder, which also makes me an engineer, a designer, a sales rep, a marketer, a recruiter, a support rep, a sysadmin, and a janitor.</span>
       </p>
-      <div class="ctas hf" style="--d:1050ms">
+      <div class="ctas hf" style="--d:580ms">
         <a class="btn" href="https://customernode.com" target="_blank" rel="noopener"><span class="tmr">Visit <span class="tmw">CustomerNode<span class="tm">™</span></span></span>
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 8h11M9 3.5 13.5 8 9 12.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <a class="tlink down" href="#thesis">Get to know me
           <svg class="arrow" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v11M3.5 9 8 13.5 12.5 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
       </div>
     </div>
-    <dl class="hero-facts hf" style="--d:900ms">
+    <dl class="hero-facts hf" style="--d:560ms">
       <div><dt>Role</dt><dd><span class="tmr">Founder, <span class="tmw">CustomerNode<span class="tm">™</span></span></span></dd></div>
       <div><dt>Education</dt><dd>MIT, BSc EECS ’22 · MEng AI ’23</dd></div>
       <div><dt>Based</dt><dd><a class="loc-link" href="#where">Weehawken, NJ</a></dd></div>
@@ -2357,6 +2357,16 @@ const BG = 0x07070A, TXT = new THREE.Color('#ECEAE5');
 const V = (x, y, z) => new THREE.Vector3(x, y, z), cl = t => t < 0 ? 0 : t > 1 ? 1 : t, lerp = (a, b, t) => a + (b - a) * t;
 const io = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3)/2;
 await document.fonts.ready;
+/* The three card graphics take ~300ms of main thread to build. Built at load they froze
+   the hero's opening fade part-way, so they wait until the entrance has played (or the
+   cards come near the screen, whichever is first) and build one per frame. */
+await new Promise(go => {
+  let o = null; const done = () => { if (o) o.disconnect(); go(); };
+  const els = ['c3cn', 'c3vn', 'c3co'].map(id => document.getElementById(id)).filter(Boolean);
+  if ('IntersectionObserver' in window && els.length) { o = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) done(); }, { rootMargin: '1200px 0px' }); els.forEach(e => o.observe(e)); }
+  setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(done, { timeout: 600 }) : done()), 1600);
+});
+const nextFrame = () => new Promise(r => requestAnimationFrame(() => setTimeout(r, 0)));
 const MONO = '"Geist Mono", ui-monospace, monospace', SANS = '"Geist", system-ui, sans-serif';
 
 function studio() {
@@ -2441,6 +2451,7 @@ function loop(st, frame) {
       x.fillStyle = 'rgba(236,234,229,.45)'; x.font = '400 30px ' + SANS; x.fillText('Seller + buyer, one plan', w/2, 252); });
   });
 })();
+await nextFrame();
 
 // ---------- DevelopNode: the handoff card is the product. A fleet of sessions behind; one ending is sent back, then the real card writes itself
 (() => {
@@ -2520,6 +2531,7 @@ function loop(st, frame) {
     beamG.setFromPoints([V(tp.x, .1, tp.z), cp]); beam.material.opacity = .35*cl(f/.8)*(1 - cl((f - 8.3)/.5));
   });
 })();
+await nextFrame();
 
 // ---------- Work with me: you at the centre, the people you build with around you, one connection lighting at a time
 (() => {
